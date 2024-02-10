@@ -1,3 +1,5 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
 
 
 --This table contains login info for user as well as their karma
@@ -10,11 +12,24 @@ CREATE TABLE Users (
   created_at timestamp NOT NULL
 );
 
+--This table stores course information and the aggregate rating
+CREATE TABLE Course (
+  id varchar PRIMARY KEY NOT NULL,
+  descrip text NOT NULL, --description of course
+  rating float --weighted average rating of course
+);
+
+--This table stores prof information and aggregate rating
+CREATE TABLE Professor (
+  id varchar PRIMARY KEY,
+  descrip text, --about me for professor
+  rating float --weighted average rating for professor
+);
 
 --This table contains the reviews posted by our users
-CREATE SEQUENCE review_id start with 10000;
+CREATE SEQUENCE review_counter start with 10000;
 CREATE TABLE Reviews (
-  review_id int NOT NULL DEFAULT nextval("review_id"),
+  review_id int NOT NULL DEFAULT nextval('review_counter'),
   course_id varchar NOT NULL, --primary key for course being reviewed
   prof_id varchar NOT NULL, --primary key for professor being reviewed
   user_id varchar NOT NULL, -- primary key of user posting review
@@ -41,17 +56,3 @@ CREATE TABLE Likes (
   FOREIGN KEY (review_id) REFERENCES Reviews
 );
 
---This table stores course information and the aggregate rating
-CREATE TABLE Course (
-  id varchar PRIMARY KEY NOT NULL,
-  descrip text NOT NULL, --description of course
-  rating float, --weighted average rating of course
-);
-
---This table stores prof information and aggregate rating
-CREATE TABLE Professor (
-  id varchar PRIMARY KEY,
-  descrip text, --about me for professor
-  rating float, --weighted average rating for professor
-  created_at timestamp NOT NULL
-);
