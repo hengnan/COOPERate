@@ -1,7 +1,10 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
+DROP DATABASE cooperate;
+CREATE DATABASE cooperate;
 
+\c cooperate;
 --This table contains login info for user as well as their karma
 
 CREATE TABLE Users (
