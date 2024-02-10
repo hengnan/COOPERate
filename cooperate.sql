@@ -12,8 +12,9 @@ CREATE TABLE Users (
 
 
 --This table contains the reviews posted by our users
-
+CREATE SEQUENCE review_id start with 10000;
 CREATE TABLE Reviews (
+  review_id int NOT NULL DEFAULT nextval("review_id"),
   course_id varchar NOT NULL, --primary key for course being reviewed
   prof_id varchar NOT NULL, --primary key for professor being reviewed
   user_id varchar NOT NULL, -- primary key of user posting review
@@ -24,7 +25,7 @@ CREATE TABLE Reviews (
   hyperlink varchar, --hyperlink to the google drive folder in which any attached documents for review are stored
   created_at timestamp NOT NULL,
 
-  PRIMARY KEY (user_id, prof_id, course_id), 
+  PRIMARY KEY(review_id),
   FOREIGN KEY (course_id) REFERENCES Course,
   FOREIGN KEY (prof_id) REFERENCES Professor,
   FOREIGN KEY (user_id) REFERENCES Users
