@@ -47,7 +47,7 @@ public class Course implements DataTransferObject{
 
     public void updateRating(int course_rating, float karma)
     {
-        this.rating = (rating*totalRating + course_rating*karma)/(rating*totalRating + karma);
+        this.rating = (rating*totalRating + course_rating*karma)/(totalRating +karma);
         totalRating += karma;
     }
     @Override

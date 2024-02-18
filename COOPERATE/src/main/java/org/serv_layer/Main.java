@@ -13,14 +13,24 @@ public class Main {
             Connection connection = dcm.getConnection();
             UserDao userDao = new UserDao(connection);
             User user = userDao.findById(10000);
-            int success = user.makeReview(10000, 10000,
+            user.makeReview(10000, 10000,
                     "great class loved it", 4,
                     5, "", connection);
 
-            System.out.println(success);
             ReviewDao reviewDao = new ReviewDao(connection);
             Review review = reviewDao.findById(10000);
 
+            System.out.println(review);
+            user.like(10000, 1, connection);
+            User otherUser = userDao.findById(10001);
+            otherUser.like(10000, 1, connection);
+
+            otherUser.makeReview(10000, 10000,
+                    "terrible class hated it", 1,
+                    1, "", connection);
+            int out = user.like(10001, -1, connection);
+            System.out.println(out);
+            review = reviewDao.findById(10001);
             System.out.println(review);
         }
         catch(SQLException e) {

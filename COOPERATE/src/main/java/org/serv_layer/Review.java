@@ -104,11 +104,14 @@ public class Review implements DataTransferObject{
         this.timestamp = timestamp;
     }
 
-
+    public void updateNetLikes(int react)
+    {
+        this.net_likes += react;
+    }
     @Override
     public String toString() {
         return "Review{" +
-                ", ReviewID='" + id + '\'' +
+                "ReviewID='" + id + '\'' +
                 ",userID='" + user_id + '\'' +
                 ",courseID= '" + course_id + '\'' +
                 ",profID= '" + prof_id + '\'' +

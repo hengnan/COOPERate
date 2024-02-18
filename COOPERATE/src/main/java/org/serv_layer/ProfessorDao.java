@@ -9,8 +9,8 @@ public class ProfessorDao extends DataAccessObject<Professor>{
     private static final String GET_ONE = "SELECT * " +
             "FROM Professor WHERE id=?";
 
-    private static final String INSERT = "INSERT INTO Professor (id, prof_name, rating, descrip)" +
-            " VALUES (?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Professor (prof_name, rating, descrip)" +
+            " VALUES (?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Professor SET rating = ?, total_rating = ? WHERE id=?";
 
@@ -45,10 +45,9 @@ public class ProfessorDao extends DataAccessObject<Professor>{
         Professor professor = new Professor();
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
             // counts from 1!!
-            statement.setInt(1, dto.getId());
-            statement.setString(2, dto.getName());
-            statement.setFloat(3, dto.getRating());
-            statement.setString(4, dto.getDescription());
+            statement.setString(1, dto.getName());
+            statement.setFloat(2, dto.getRating());
+            statement.setString(3, dto.getDescription());
             statement.execute();
             return this.findById(dto.getId());
         } catch(SQLException e) {

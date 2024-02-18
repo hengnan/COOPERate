@@ -58,25 +58,27 @@ public class User implements DataTransferObject{
 
         public void updateKarma(int react, float likerKarma)
         {
-            this.karma += Math.min(10, (float) (Math.exp(likerKarma)))*react;
+            this.karma += likerKarma*react*5/100;
+            if (this.karma > 100) {this.karma = 100;}
+            else if (this.karma < 0) {this.karma = 0;}
         }
         public int like(int review_id, int react, Connection connection)
         {
-            ReviewDao reviewDao = new ReviewDao(connection);
-            Review review = reviewDao.findById(review_id);
-
             LikesDao likedao = new LikesDao(connection);
-            boolean liked = likedao.exists(this.id, review.getId());
+            boolean liked = likedao.exists(this.id, review_id);
 
             if (liked){ return -1;}
 
             Likes likes = new Likes();
             likes.set_userId(this.id);
-            likes.set_reviewId(review.getId());
+            likes.set_reviewId(review_id);
+            likes.setReact(react);
             likedao.create(likes);
 
-            int updated_net_likes = review.getNetLikes() + react;
-            review.setNetLikes(updated_net_likes);
+            ReviewDao reviewDao = new ReviewDao(connection);
+            Review review = reviewDao.findById(review_id);
+
+            review.updateNetLikes(react);
 
             reviewDao.update(review);
             UserDao userDao = new UserDao(connection);
@@ -100,17 +102,11 @@ public class User implements DataTransferObject{
 
             reviewDao.create(review);
 
-            System.out.println(review);
-
-
-
             CourseDao courseDao = new CourseDao(connection);
 
             Course course = courseDao.findById(course_id);
 
             course.updateRating(course_rating, this.karma);
-
-            System.out.println(course);
 
             courseDao.update(course);
 
@@ -122,7 +118,6 @@ public class User implements DataTransferObject{
 
             profDao.update(prof);
 
-            System.out.println(prof);
             return 0;
         }
         @Override

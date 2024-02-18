@@ -9,14 +9,11 @@ public class LikesDao extends DataAccessObject<Likes>{
     private static final String GET_ONE = "SELECT * " +
             "FROM Likes WHERE id=?";
 
-    private static final String MATCH = "SELECT * " +
-            "FROM Likes WHERE user_id=? AND review_id=?";
-
-    private static final String INSERT = "INSERT INTO Likes (id, user_id, review_id, react)" +
-            " VALUES (?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Likes (user_id, review_id, react)" +
+            " VALUES (?, ?, ?)";
 
     private static final String EXISTS = "SELECT *" +
-            "FROM Like WHERE user_id =? AND review_id=?";
+            "FROM Likes WHERE user_id =? AND review_id=?";
 
     public LikesDao(Connection connection) {
         super(connection);
@@ -43,7 +40,7 @@ public class LikesDao extends DataAccessObject<Likes>{
     }
 
     public boolean exists(int user_id, int review_id){
-        try(PreparedStatement statement = this.connection.prepareStatement(MATCH);)
+        try(PreparedStatement statement = this.connection.prepareStatement(EXISTS);)
         {
             statement.setInt(1, user_id);
             statement.setInt(2, review_id);
@@ -61,10 +58,9 @@ public class LikesDao extends DataAccessObject<Likes>{
         //return Null
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
             // counts from 1!!
-            statement.setInt(1, dto.getId());
-            statement.setInt(2, dto.get_userId());
-            statement.setInt(3, dto.get_reviewId());
-            statement.setInt(4, dto.getReact());
+            statement.setInt(1, dto.get_userId());
+            statement.setInt(2, dto.get_reviewId());
+            statement.setInt(3, dto.getReact());
             statement.execute();
 
             //UserDao dao = new UserDao(connection);

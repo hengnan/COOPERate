@@ -14,7 +14,7 @@ CREATE TABLE Users (
   username varchar  NOT NULL, --username
   email_address varchar NOT NULL, --must be a cooper email address
   hashed_password varchar NOT NULL, --salted hashed password used
-  karma int NOT NULL DEFAULT 1, --net number of likes that a user gets
+  karma int NOT NULL DEFAULT 20, --net number of likes that a user gets
   created_at timestamp NOT NULL DEFAULT NOW(),
 
   PRIMARY KEY (id)
