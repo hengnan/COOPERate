@@ -39,6 +39,9 @@ public class ReviewDao extends DataAccessObject<Review>{
                 review.setReview(rs.getString("review"));
                 review.setCourseRating(rs.getFloat("course_rating"));
                 review.setProfRating(rs.getFloat("prof_rating"));
+                review.setNetLikes(rs.getInt("net_likes"));
+                review.setTimestamp(rs.getTimestamp("created_at"));
+                review.setHyperLink(rs.getString("hyperlink"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

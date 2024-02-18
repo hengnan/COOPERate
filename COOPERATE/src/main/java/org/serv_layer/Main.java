@@ -7,6 +7,8 @@ import java.sql.SQLException;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
+
+
         DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost",
                 "cooperate", "postgres", "password");
         try {
@@ -20,7 +22,6 @@ public class Main {
             ReviewDao reviewDao = new ReviewDao(connection);
             Review review = reviewDao.findById(10000);
 
-            System.out.println(review);
             user.like(10000, 1, connection);
             User otherUser = userDao.findById(10001);
             otherUser.like(10000, 1, connection);
@@ -28,15 +29,19 @@ public class Main {
             otherUser.makeReview(10000, 10000,
                     "terrible class hated it", 1,
                     1, "", connection);
-            int out = user.like(10001, -1, connection);
-            System.out.println(out);
+            user.like(10001, -1, connection);
+            review = reviewDao.findById(10000);
+            System.out.println(review);
             review = reviewDao.findById(10001);
             System.out.println(review);
         }
         catch(SQLException e) {
             e.printStackTrace();
         }
+
     }
+
+
 }
 
 

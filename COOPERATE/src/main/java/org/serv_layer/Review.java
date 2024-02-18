@@ -41,23 +41,23 @@ public class Review implements DataTransferObject{
         return user_id;
     }
 
-    public void setUserId(int id)
+    public void setUserId(int user_id)
     {
-        this.user_id = id;
+        this.user_id = user_id;
     }
     public int getCourseId() {
         return course_id;
     }
 
     public void setCourseId(int course_id) {
-        this.id = course_id;
+        this.course_id = course_id;
     }
     public int getProfId() {
         return prof_id;
     }
 
     public void setProfId(int prof_id) {
-        this.id = prof_id;
+        this.prof_id = prof_id;
     }
 
     public String getReview(){
@@ -115,6 +115,8 @@ public class Review implements DataTransferObject{
                 ",userID='" + user_id + '\'' +
                 ",courseID= '" + course_id + '\'' +
                 ",profID= '" + prof_id + '\'' +
+                ",profRating= '" + prof_rating + '\'' +
+                ",courseRating= '" + course_rating + '\'' +
                 "net_likes= '" + net_likes + '\'' +
                 "\n\ndescription '" + review + '\'' +
                 '}';

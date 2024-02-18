@@ -58,7 +58,7 @@ public class User implements DataTransferObject{
 
         public void updateKarma(int react, float likerKarma)
         {
-            this.karma += likerKarma*react*5/100;
+            this.karma += likerKarma*react*5.0/100.0;
             if (this.karma > 100) {this.karma = 100;}
             else if (this.karma < 0) {this.karma = 0;}
         }
