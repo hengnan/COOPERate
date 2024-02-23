@@ -31,9 +31,10 @@ public class CooperateApplication {
 		}
 		return user;
 	}
-	@GetMapping("/{source}/{id}/Reviews/{order}/{pageNum}")
+	@GetMapping("/{source}/{id}/Reviews/{orderedBy}/{order}/{pageNum}")
 	public ArrayList<Review> getReviews(@PathVariable("source") String source,
 										@PathVariable("id") int id,
+										@PathVariable("orderedBy") String orderBy,
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
 		System.out.println(id);
@@ -42,7 +43,8 @@ public class CooperateApplication {
 
 		try {
 			Connection connection = dcm.getConnection();
-			ReviewPage page = new ReviewPage(id, source, order, 15, pageNum*15);
+			ReviewPage page = new ReviewPage(id, source, orderBy, order,
+					15, pageNum*15);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			reviews = reviewDao.getReviews(page);
 			System.out.println(reviews);

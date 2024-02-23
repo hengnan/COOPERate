@@ -21,7 +21,7 @@ public class ReviewDao extends DataAccessObject<Review> {
             "FROM Reviews WHERE user_id =? AND course_id = ? AND prof_id = ?";
 
     private static final String REVIEWS = "SELECT * FROM Reviews " +
-            "WHERE source = ? ORDER BY order_by " +
+            "WHERE source = ? ORDER BY order_by direction " +
             "LIMIT ? OFFSET ?";
 
     public ReviewDao(Connection connection) {
@@ -105,8 +105,8 @@ public class ReviewDao extends DataAccessObject<Review> {
         ArrayList<Review> reviews = new ArrayList<Review>();
 
         String command = REVIEWS.replace("source", page.getSource());
-        command = command.replace("order_by", page.getOrder());
-
+        command = command.replace("order_by", page.getOrderBy());
+        command = command.replace("direction", page.getOrder());
         try (PreparedStatement statement = this.connection.prepareStatement(command);) {
 
 
