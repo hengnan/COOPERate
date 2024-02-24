@@ -23,6 +23,7 @@ public class ReviewDao extends DataAccessObject<Review> {
     private static final String REVIEWS = "SELECT * FROM Reviews " +
             "WHERE source = ? ORDER BY order_by direction " +
             "LIMIT ? OFFSET ?";
+    private static final String LASTVAL = "SELECT last_value FROM review_counter";
 
     public ReviewDao(Connection connection) {
         super(connection);
@@ -57,7 +58,6 @@ public class ReviewDao extends DataAccessObject<Review> {
 
     @Override
     public Review create(Review dto) {
-        Review review = new Review();
         try (PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
 
             statement.setInt(1, dto.getUserId());
@@ -67,7 +67,14 @@ public class ReviewDao extends DataAccessObject<Review> {
             statement.setFloat(5, dto.getCourseRating());
             statement.setFloat(6, dto.getProfRating());
             statement.execute();
-            return this.findById(dto.getId());
+            Review review = this.findById(dto.getId());
+
+            int nextID = -1;
+            ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
+            if (rs.next()){nextID = rs.getInt(1);}
+
+            review.setId(nextID);
+            return review;
 
         } catch (SQLException e) {
             e.printStackTrace();

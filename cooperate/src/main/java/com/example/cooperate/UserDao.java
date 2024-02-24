@@ -14,6 +14,7 @@ public class UserDao extends DataAccessObject<User> {
 
     private static final String UPDATE = "UPDATE users SET karma = ? WHERE id=?";
 
+    private static final String LASTVAL = "SELECT last_value FROM user_counter";
     public UserDao(Connection connection) {
         super(connection);
     }
@@ -43,14 +44,23 @@ public class UserDao extends DataAccessObject<User> {
 
     @Override
     public User create(User dto) {
+
         try (PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
             // counts from 1!!
-            statement.setInt(1, dto.getId());
-            statement.setString(2, dto.getUserName());
-            statement.setString(3, dto.getPassword());
-            statement.setString(4, dto.getEmail());
+
+
+            statement.setString(1, dto.getUserName());
+            statement.setString(2, dto.getPassword());
+            statement.setString(3, dto.getEmail());
             statement.execute();
-            return this.findById(dto.getId());
+            User user = this.findById(dto.getId());
+
+            int nextID = -1;
+            ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
+            if (rs.next()){nextID = rs.getInt(1);}
+
+            user.setId(nextID);
+            return user;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

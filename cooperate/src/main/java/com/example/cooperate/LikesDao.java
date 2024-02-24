@@ -15,6 +15,8 @@ public class LikesDao extends DataAccessObject<Likes>{
     private static final String EXISTS = "SELECT * " +
             "FROM Likes WHERE user_id =? AND review_id=?";
 
+    private static final String LASTVAL = "SELECT last_value FROM likes_counter";
+
     public LikesDao(Connection connection) {
         super(connection);
     }
@@ -58,12 +60,20 @@ public class LikesDao extends DataAccessObject<Likes>{
 
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
             // counts from 1!!
+
             statement.setInt(1, dto.get_userId());
             statement.setInt(2, dto.get_reviewId());
             statement.setInt(3, dto.getReact());
             statement.execute();
 
-            return this.findById(dto.getId());
+            Likes likes = this.findById(dto.getId());
+
+            int nextID = -1;
+            ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
+            if (rs.next()){nextID = rs.getInt(1);}
+
+            likes.setId(nextID);
+            return likes;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

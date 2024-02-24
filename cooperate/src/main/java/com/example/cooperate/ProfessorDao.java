@@ -13,6 +13,7 @@ public class ProfessorDao extends DataAccessObject<Professor>{
 
     private static final String UPDATE = "UPDATE Professor SET rating = ?, total_rating = ? WHERE id=?";
 
+    private static final String LASTVAL = "SELECT last_value FROM prof_counter";
 
     public ProfessorDao(Connection connection) {
         super(connection);
@@ -41,14 +42,21 @@ public class ProfessorDao extends DataAccessObject<Professor>{
     }
     @Override
     public Professor create(Professor dto) {
-        Professor professor = new Professor();
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
             // counts from 1!!
+
             statement.setString(1, dto.getName());
             statement.setFloat(2, dto.getRating());
             statement.setString(3, dto.getDescription());
             statement.execute();
-            return this.findById(dto.getId());
+            Professor professor =  this.findById(dto.getId());
+
+            int nextID = -1;
+            ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
+            if (rs.next()){nextID = rs.getInt(1);}
+
+            professor.setID(nextID);
+            return professor;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

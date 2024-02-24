@@ -15,6 +15,7 @@ public class CourseDao extends DataAccessObject<Course>{
 
     private static final String UPDATE = "UPDATE Course SET rating = ?, total_rating = ? WHERE id=?";
 
+    private static final String LASTVAL = "SELECT last_value FROM course_counter";
 
     public CourseDao(Connection connection) {
         super(connection);
@@ -44,13 +45,20 @@ public class CourseDao extends DataAccessObject<Course>{
     @Override
     public Course create(Course dto) {
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
-            // counts from 1!!
+
             statement.setInt(1, dto.getId());
             statement.setString(2, dto.getName());
             statement.setFloat(3, dto.getRating());
             statement.setString(4, dto.getDescription());
             statement.execute();
-            return this.findById(dto.getId());
+            Course course = this.findById(dto.getId());
+
+            int nextID = -1;
+            ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
+            if (rs.next()){nextID = rs.getInt(1);}
+
+            course.setId(nextID);
+            return course;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

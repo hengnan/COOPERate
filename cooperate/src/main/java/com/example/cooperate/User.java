@@ -11,7 +11,6 @@ public class User implements DataTransferObject{
 
         private String email;
         private float karma;
-
         private Timestamp timestamp;
 
         public int getId() {return id;}
@@ -100,6 +99,7 @@ public class User implements DataTransferObject{
                                int course_rating, int prof_rating, String hyperlink, Connection connection)
         {
             ReviewDao reviewDao = new ReviewDao(connection);
+            System.out.println(this.id);
             boolean reviewed = reviewDao.exists(this.id, course_id, prof_id);
 
             if (reviewed) {return -1;}
@@ -107,7 +107,7 @@ public class User implements DataTransferObject{
             Review review = new Review(this.id, course_id, prof_id,
                     course_rating, prof_rating, review_des, hyperlink);
 
-            reviewDao.create(review);
+            review = reviewDao.create(review);
 
             CourseDao courseDao = new CourseDao(connection);
 
@@ -125,7 +125,7 @@ public class User implements DataTransferObject{
 
             profDao.update(prof);
 
-            return 0;
+            return review.getId();
         }
 
         @Override
