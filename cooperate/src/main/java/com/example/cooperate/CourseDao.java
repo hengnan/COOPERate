@@ -10,7 +10,7 @@ public class CourseDao extends DataAccessObject<Course>{
     private static final String GET_ONE = "SELECT * " +
             "FROM Course WHERE id=?";
 
-    private static final String INSERT = "INSERT INTO Course (id, name, rating, descrip)" +
+    private static final String INSERT = "INSERT INTO Course (name, rating, descrip)" +
             " VALUES (?, ?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Course SET rating = ?, total_rating = ? WHERE id=?";
@@ -46,19 +46,17 @@ public class CourseDao extends DataAccessObject<Course>{
     public Course create(Course dto) {
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
 
-            statement.setInt(1, dto.getId());
-            statement.setString(2, dto.getName());
-            statement.setFloat(3, dto.getRating());
-            statement.setString(4, dto.getDescription());
+            statement.setString(1, dto.getName());
+            statement.setFloat(2, dto.getRating());
+            statement.setString(3, dto.getDescription());
             statement.execute();
-            Course course = this.findById(dto.getId());
 
             int nextID = -1;
             ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
             if (rs.next()){nextID = rs.getInt(1);}
 
-            course.setId(nextID);
-            return course;
+            dto.setId(nextID);
+            return dto;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

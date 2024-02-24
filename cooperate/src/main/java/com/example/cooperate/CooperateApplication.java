@@ -102,13 +102,15 @@ public class CooperateApplication {
 		try {
 			Connection connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
-			user.setId(Integer.parseInt(inputMap.get("id")));
+
+
 			user.setUserName(inputMap.get("username"));
 			user.setPassword(inputMap.get("hashed_password"));
 			user.setEmail(inputMap.get("email_address"));
+			System.out.println(user);
 
 			user = userDao.create(user);
-			System.out.println(user);
+
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -129,7 +131,7 @@ public class CooperateApplication {
 			Connection connection = dcm.getConnection();
 			ReviewDao reviewDao = new ReviewDao(connection);
 			user.setId(Integer.parseInt(inputMap.get("liker_id")));
-			user.setKarma(Integer.parseInt(inputMap.get("liker_karma")));
+			user.setKarma(Float.parseFloat(inputMap.get("liker_karma")));
 
 			int react = Integer.parseInt(inputMap.get("reaction"));
 
@@ -187,9 +189,6 @@ public class CooperateApplication {
 
 		return review;
 	}
-
-
-
 
 	public static void main(String[] args) {
 		SpringApplication.run(CooperateApplication.class, args);

@@ -9,8 +9,8 @@ public class UserDao extends DataAccessObject<User> {
     private static final String GET_ONE = "SELECT * " +
             "FROM Users WHERE id=?";
 
-    private static final String INSERT = "INSERT INTO users (id, username, hashed_password, email_address)" +
-            " VALUES (?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO users (username, hashed_password, email_address)" +
+            " VALUES (?, ?, ?)";
 
     private static final String UPDATE = "UPDATE users SET karma = ? WHERE id=?";
 
@@ -53,14 +53,13 @@ public class UserDao extends DataAccessObject<User> {
             statement.setString(2, dto.getPassword());
             statement.setString(3, dto.getEmail());
             statement.execute();
-            User user = this.findById(dto.getId());
 
             int nextID = -1;
             ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
             if (rs.next()){nextID = rs.getInt(1);}
 
-            user.setId(nextID);
-            return user;
+            dto.setId(nextID);
+            return dto;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

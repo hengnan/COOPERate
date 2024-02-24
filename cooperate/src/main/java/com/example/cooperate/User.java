@@ -10,7 +10,7 @@ public class User implements DataTransferObject{
         private String password;
 
         private String email;
-        private float karma;
+        private float karma = 20;
         private Timestamp timestamp;
 
         public int getId() {return id;}

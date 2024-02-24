@@ -49,14 +49,13 @@ public class ProfessorDao extends DataAccessObject<Professor>{
             statement.setFloat(2, dto.getRating());
             statement.setString(3, dto.getDescription());
             statement.execute();
-            Professor professor =  this.findById(dto.getId());
 
             int nextID = -1;
             ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
             if (rs.next()){nextID = rs.getInt(1);}
 
-            professor.setID(nextID);
-            return professor;
+            dto.setID(nextID);
+            return dto;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

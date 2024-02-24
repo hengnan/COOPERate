@@ -66,14 +66,12 @@ public class LikesDao extends DataAccessObject<Likes>{
             statement.setInt(3, dto.getReact());
             statement.execute();
 
-            Likes likes = this.findById(dto.getId());
-
             int nextID = -1;
             ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
             if (rs.next()){nextID = rs.getInt(1);}
 
-            likes.setId(nextID);
-            return likes;
+            dto.setId(nextID);
+            return dto;
         } catch(SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

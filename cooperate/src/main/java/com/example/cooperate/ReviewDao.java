@@ -67,14 +67,13 @@ public class ReviewDao extends DataAccessObject<Review> {
             statement.setFloat(5, dto.getCourseRating());
             statement.setFloat(6, dto.getProfRating());
             statement.execute();
-            Review review = this.findById(dto.getId());
 
             int nextID = -1;
             ResultSet rs = this.connection.prepareStatement(LASTVAL).executeQuery();
             if (rs.next()){nextID = rs.getInt(1);}
 
-            review.setId(nextID);
-            return review;
+            dto.setId(nextID);
+            return dto;
 
         } catch (SQLException e) {
             e.printStackTrace();
