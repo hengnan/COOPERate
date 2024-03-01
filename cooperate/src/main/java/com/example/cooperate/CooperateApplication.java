@@ -15,11 +15,13 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 
+	String hostname = "db";
+
 	@GetMapping("/Users/{userId}")
 	public User getUser(@PathVariable("userId") int userId)
 	{
 		System.out.println(userId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -39,7 +41,7 @@ public class CooperateApplication {
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
 		System.out.println(id);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		ArrayList<Review> reviews = new ArrayList<Review>();
 
 		try {
@@ -59,7 +61,7 @@ public class CooperateApplication {
 	@GetMapping("/Courses/{courseId}")
 	public Course getByCourseId(@PathVariable("courseId") int courseId) {
 		System.out.println(courseId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		Course course = new Course();
 		try {
 			Connection connection = dcm.getConnection();
@@ -77,7 +79,7 @@ public class CooperateApplication {
 	public Professor getByProfessorId(@PathVariable("profId") int profId)
 	{
 		System.out.println(profId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		Professor prof = new Professor();
 		try {
 			Connection connection = dcm.getConnection();
@@ -97,7 +99,7 @@ public class CooperateApplication {
 		System.out.println(json);
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -123,7 +125,7 @@ public class CooperateApplication {
 		System.out.println(json);
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		Review review = new Review();
 		try {
 			User user = new User();
@@ -157,7 +159,7 @@ public class CooperateApplication {
 		System.out.println(json);
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
 		Review review = new Review();
 
 		try {
@@ -189,6 +191,25 @@ public class CooperateApplication {
 
 		return review;
 	}
+
+	@DeleteMapping("/Review/{reviewId}")
+    public String deleteReview(@PathVariable("reviewId") int reviewId) {
+        System.out.println("Deleting user with ID: " + reviewId);
+        DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+        try {
+            Connection connection = dcm.getConnection();
+            ReviewDao reviewDao = new ReviewDao(connection);
+            boolean isDeleted = reviewDao.deleteById(reviewId);
+            if (isDeleted) {
+                return "User with ID " + reviewId + " was successfully deleted.";
+            } else {
+                return "User with ID " + reviewId + " could not be found or deleted.";
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "An error occurred while trying to delete user with ID " + reviewId + ".";
+        }
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(CooperateApplication.class, args);

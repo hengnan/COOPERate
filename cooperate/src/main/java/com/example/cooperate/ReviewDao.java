@@ -25,8 +25,21 @@ public class ReviewDao extends DataAccessObject<Review> {
             "LIMIT ? OFFSET ?";
     private static final String LASTVAL = "SELECT last_value FROM review_counter";
 
+    public static final String DELETE = "DELETE FROM Reviews WHERE review_id = ?";
+
     public ReviewDao(Connection connection) {
         super(connection);
+    }
+
+    public boolean deleteById(int id){
+        try (PreparedStatement statement = this.connection.prepareStatement(DELETE);) {
+            statement.setInt(1, id);
+            int deletedRows = statement.executeUpdate();
+        return deletedRows == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
