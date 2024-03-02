@@ -54,10 +54,10 @@ def getReviews():
         ordered_by = input("Press L or T to sort the reviews by their netlikes and the time they were created respectively: ")
 
         if ordered_by == "L":
-            ordered_by = "netlikes"
+            ordered_by = "net_likes"
             break
         elif ordered_by == "T":
-            ordered_by = "timestamp"
+            ordered_by = "created_at"
             break
         else:
             print("Invalid argument! Please try again")
@@ -79,16 +79,16 @@ def getReviews():
     while(True):
         os.system('cls' if os.name == 'nt' else 'clear')
         print(text + "\n\n")
-        url = "http://localhost:8080/" + source + "/" + id + "/" + ordered_by + "/" + order + "/" + str(pagenum)
+        url = "http://localhost:8080/" + source + "/" + id + "/Reviews/" + ordered_by + "/" + order + "/" + str(pagenum)
 
         info = requests.get(url).json()
 
         print(info)
-        action = input("Press l or r to move to the previous or next page. Additionally, you can enter a number to jump to a page as well. If you would like to return to the home page, please press enter")
+        action = input("Press l or r to move to the previous or next page. Additionally, you can enter a number to jump to a page as well. If you would like to return to the home page, please press enter ")
 
         match action:
             case "l":
-                pagenum -=1
+                pagenum = min(pagenum -1, 0)
             case "r":
                 pagenum += 1
             case "":
@@ -100,6 +100,69 @@ def getReviews():
                     print("Invalid argument! Please try again")
                     time.sleep(2)
 
+
+def makeReview():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(text + "\n\n")
+
+
+    while(True):
+        user_id = input("Please enter the id of the reviewer: ")
+        if user_id.isdigit():
+            break
+        else:
+            print("Invalid argument! Please try again")
+    while(True):
+        prof_id = input("Please enter the id of the professor being reviewed: ")
+
+        if prof_id.isdigit():
+            break
+        else:
+            print("Invalid argument! Please try again")
+
+    while(True):
+        course_id=  input("Please enter the id of the course being reviewed: ")
+
+        if course_id.isdigit():
+            break
+        else:
+            print("Invalid argument! Please try again")
+
+    course_rating = input("Please enter the user's rating for the course (1-5): ")
+    prof_rating = input("Please enter the user's rating for the professor (1-5): ")
+
+    
+    review = input("What is their review of the course: ")
+
+    hyperlink = input("Any google drive hyperlinks to course documents that we should store? ")
+
+    url = "http://localhost:8080/makeReview"
+    json = {"reviewer_id": user_id,
+            "course_id": course_id,
+            "prof_id": prof_id,
+            "prof_rating": prof_rating,
+            "course_rating": course_rating,
+            "review": review,
+            "hyperlink": hyperlink
+            }
+    response = requests.post(url, json = json).text
+
+    match int(response):
+        case -1:
+            print("User already gave a review for this course!")
+        case -2:
+            print("This course does not exist!")
+        case -3:
+            print("This professor does not exist!")
+        case -4:
+            print("Uh-oh an error has occurred. Please review the logs")
+        case _:
+            print("Review successfully made!")
+    
+    input("To return to the main page, please press enter")
+
+    
+    
 
 
 
@@ -144,7 +207,7 @@ if __name__ == "__main__":
             case "3":
                 print("\nI see that you want to like a review")
             case "4":
-                print("\nI see that you want to make a review")
+                makeReview()
             case "5":
                 getInfo("Courses")
             case "6":
