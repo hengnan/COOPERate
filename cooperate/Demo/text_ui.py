@@ -225,8 +225,6 @@ def likeReview():
             print("User already liked this review!")
         case -2:
             print("This user doesn't exist!")
-        case -3:
-            print("An unexpected error has occurred! Please read the logs.")
         case _:
             print("User successfully liked review!")
 
@@ -234,8 +232,31 @@ def likeReview():
     input("To return to the main page, please press enter")
     
 
+def makeAccount():
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print(text + "\n\n")
 
+        username = input("Please enter the username that this user would like: ")
+        hashed_password = input("Please enter the password that this user would like: ")
+        email = input("Please enter the email address that this user would like: ")
 
+        json = {"username": username,
+            "hashed_password": hashed_password,
+            "email_address": email
+            }
+        url = "http://localhost:8080/createUser"
+        response = requests.post(url, json=  json).text
+
+        if response != "true" and response != "false":
+            print("An expected error has occurred! Please read the logs.")
+            input("To return to the main page, please press enter")
+            return
+        if response == "true":
+            print("Account was successfully made!")
+        else:
+            print("Account could not be made!")
+        
+        input("To return to the main page, please press enter")
 
 if __name__ == "__main__":
 
@@ -269,7 +290,7 @@ if __name__ == "__main__":
         printLines = 11
         match action:
             case "1":
-                print("\nI see that you want to make an account")
+                makeAccount()
             case "2":
                 getReviews()
             case "3":
