@@ -7,32 +7,27 @@ with open("logo.txt", "r") as f:
         text = f.read()
 
 
-def getCourse():
+def getInfo(obj):
     os.system('cls' if os.name == 'nt' else 'clear')
     print(text + "\n\n")
 
-    courseID = ""
+    id = ""
+
     while(True):
-        courseID = input("Please enter the ID of the course that you would like to see: ")
-        if courseID.isdigit():
+        id = input("Please enter the ID of the "  + obj.lower()[:-1]  + " that you would like to search for: ")
+        if id.isdigit():
             break
         else:
             print("ID must be an integer! Please try again")
-        
-    
-    url = "http://localhost:8080/Users/" + courseID
-    user_info = requests.get(url).json()
 
-    fields = ["id", "userName", "password", "email", "karma", "timestamp"]
-    
-    print("\n")
-    for field in fields:
-        print(field + ": " + str(user_info[field]))
+    url = "http://localhost:8080/" + obj + "/" +  id
+    info = requests.get(url).json()
+
+    for field in info.keys():
+        print(field + ": " + str(info[field]))
 
     print("\n")
-    input("Here's the user's information. Press Enter when you're ready to return to the home page")
-
-    
+    input("Here's the " + obj.lower()[:-1] + "'s " + "information. Press Enter when you're ready to return to the home page")
     
 
 if __name__ == "__main__":
@@ -55,10 +50,11 @@ if __name__ == "__main__":
         print("What would you like to do?")
         print("\n\t1.Create an account")
         print("\t2.Look at reviews")
-        print("\t3.Search for a course")
-        print("\t4.Search for a user")
-        print("\t5.Search for a professor")
-        print("\t6.Exit")
+        print("\t3.Like a review")
+        print("\t4.Search for a course")
+        print("\t5.Search for a user")
+        print("\t6.Search for a professor")
+        print("\t7.Exit")
 
         action = input("\nPlease enter a number from 1-6 corresponding to the action you would like to perform: ")
 
@@ -69,12 +65,14 @@ if __name__ == "__main__":
             case "2":
                 print("\nI see that you want to look at reviews")
             case "3":
-                print("\nI see that you want to search for a course")
+                print("\nI see that you want to like a review")
             case "4":
-                getCourse()
+                getInfo("Courses")
             case "5":
-                print("\nI see that you want to search for a professor")
+                getInfo("Users")
             case "6":
+                getInfo("Professors")
+            case "7":
                 print("\nGoodbye!")
                 exit
             case _:
