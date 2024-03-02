@@ -83,12 +83,17 @@ def getReviews():
 
         info = requests.get(url).json()
 
-        print(info)
+        print("Showing results for page "+  str(pagenum) + "\n")
+        for review in info:
+            for field in review.keys():
+                print(field + ": " + str(review[field]))
+            print("\n\n")
+        
         action = input("Press l or r to move to the previous or next page. Additionally, you can enter a number to jump to a page as well. If you would like to return to the home page, please press enter ")
 
         match action:
             case "l":
-                pagenum = min(pagenum -1, 0)
+                pagenum = max(pagenum -1, 0)
             case "r":
                 pagenum += 1
             case "":
@@ -146,7 +151,12 @@ def makeReview():
             "hyperlink": hyperlink
             }
     response = requests.post(url, json = json).text
-
+    
+    if not response.isdigit():
+        print("Uh-oh an error has occurred. Please review the logs")
+        input("To return to the main page, please press enter")
+        return
+    
     match int(response):
         case -1:
             print("User already gave a review for this course!")
@@ -156,15 +166,73 @@ def makeReview():
             print("This professor does not exist!")
         case -4:
             print("Uh-oh an error has occurred. Please review the logs")
+        case -5:
+            print("Oh no! This review triggered our profanity filter!")
         case _:
             print("Review successfully made!")
     
     input("To return to the main page, please press enter")
 
     
+ 
+
+
+def likeReview():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(text + "\n\n")
+
+
+    while(True):
+        review_id = input("Please enter the id of the review: ")
+        if review_id.isdigit():
+            break
+        print("Invalid argument! Please try again")
+
+
+    while(True):
+        user_id = input("Please enter the id of the user liking the review: ")
+        if user_id.isdigit():
+            break
+        print("Invalid argument! Please try again")
+
+
+    while(True):
+        react = input("Did they like it or dislike it? ")
+        if react == "like":
+            react = "1"
+            break
+        elif react == "dislike":
+            react = "-1"
+            break
+        else:
+            print("Invalid argument! Please try again")
     
+    url = "http://localhost:8080/likeReview"
+
+    json = {"liker_id": user_id,
+            "review_id": review_id,
+            "reaction": react
+            }
+    
+    response = requests.post(url, json = json).text
+    
+    if not response.isdigit():
+        print("Uh-oh an error has occurred. Please review the logs")
+        input("To return to the main page, please press enter")
+        return
+    match int(response):
+        case -1:
+            print("User already liked this review!")
+        case -2:
+            print("This user doesn't exist!")
+        case -3:
+            print("An unexpected error has occurred! Please read the logs.")
+        case _:
+            print("User successfully liked review!")
 
 
+    input("To return to the main page, please press enter")
+    
 
 
 
@@ -196,7 +264,7 @@ if __name__ == "__main__":
         print("\t7.Search for a professor")
         print("\t8.Exit")
 
-        action = input("\nPlease enter a number from 1-6 corresponding to the action you would like to perform: ")
+        action = input("\nPlease enter a number from 1-8 corresponding to the action you would like to perform: ")
 
         printLines = 11
         match action:
@@ -205,7 +273,7 @@ if __name__ == "__main__":
             case "2":
                 getReviews()
             case "3":
-                print("\nI see that you want to like a review")
+                likeReview()
             case "4":
                 makeReview()
             case "5":
@@ -216,7 +284,7 @@ if __name__ == "__main__":
                 getInfo("Professors")
             case "8":
                 print("\nGoodbye!")
-                exit
+                break
             case _:
                 print("\nUh-oh it looks like you entered an invalid argument :(. Please try again")
                 time.sleep(2)
