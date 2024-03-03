@@ -20,8 +20,7 @@ public class CooperateApplication {
 	@GetMapping("/Users/{userId}")
 	public User getUser(@PathVariable("userId") int userId)
 	{
-		System.out.println(userId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -40,8 +39,8 @@ public class CooperateApplication {
 										@PathVariable("orderedBy") String orderBy,
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
-		System.out.println(id);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		ArrayList<Review> reviews = new ArrayList<Review>();
 
 		try {
@@ -50,7 +49,6 @@ public class CooperateApplication {
 					2, pageNum*2);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			reviews = reviewDao.getReviews(page);
-			System.out.println(reviews);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -61,13 +59,13 @@ public class CooperateApplication {
 	@GetMapping("/Courses/{courseId}")
 	public Course getByCourseId(@PathVariable("courseId") int courseId) {
 		System.out.println(courseId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Course course = new Course();
 		try {
 			Connection connection = dcm.getConnection();
 			CourseDao courseDao = new CourseDao(connection);
 			course = courseDao.findById(courseId);
-			System.out.println(course);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -79,7 +77,7 @@ public class CooperateApplication {
 	public Professor getByProfessorId(@PathVariable("profId") int profId)
 	{
 		System.out.println(profId);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Professor prof = new Professor();
 		try {
 			Connection connection = dcm.getConnection();
@@ -95,11 +93,10 @@ public class CooperateApplication {
 
 
 	@PostMapping("/createUser")
-	public User createNewUser(@RequestBody String json) throws JsonProcessingException {
-		System.out.println(json);
+	public boolean createNewUser(@RequestBody String json) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -116,51 +113,48 @@ public class CooperateApplication {
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+			return false;
 		}
-		return user;
+		return true;
 	}
 
 	@PostMapping("/likeReview")
-	public Review likeReview(@RequestBody String json) throws JsonProcessingException {
-		System.out.println(json);
+	public int likeReview(@RequestBody String json) throws JsonProcessingException {
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
-		Review review = new Review();
-		try {
-			User user = new User();
 
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
+		try {
 			Connection connection = dcm.getConnection();
 			ReviewDao reviewDao = new ReviewDao(connection);
-			user.setId(Integer.parseInt(inputMap.get("liker_id")));
-			user.setKarma(Float.parseFloat(inputMap.get("liker_karma")));
+			UserDao userDao = new UserDao(connection);
 
+			User user = userDao.findById(Integer.parseInt(inputMap.get("liker_id")));
+
+			if (user.getId() == 0) {return -2;}
 			int react = Integer.parseInt(inputMap.get("reaction"));
 
 			int review_id = Integer.parseInt(inputMap.get("review_id"));
 
 			int success = user.like(review_id, react, connection);
 
-			if (success == 0) {System.out.println("User # " + user.getId() + " successfully liked "+
-					"Review # " + review_id + "!");}
-			else {System.out.println("User # " + user.getId() + " already liked "+
-					"Review # " + review_id + "!");}
+			return success;
 
-			review = reviewDao.findById(review_id);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+			return -3;
 		}
-		return review;
 	}
 
 	@PostMapping("/makeReview")
-	public Review makeReview(@RequestBody String json) throws JsonProcessingException {
-		System.out.println(json);
+	public int makeReview(@RequestBody String json) throws JsonProcessingException {
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
-		Review review = new Review();
+
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 
 		try {
 			Connection connection = dcm.getConnection();
@@ -168,28 +162,25 @@ public class CooperateApplication {
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
+      // Define the maximum allowed length for the review description
+			int maxDescriptionLength = 1000;
+      
+      if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
+      
 			int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("review"),
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
 					inputMap.get("hyperlink"), connection);
+			
+			return review_id;
 
-			if(review_id == -1) {{System.out.println("User # " + inputMap.get("reviewer_id") + " already made review "+
-					"for course " + inputMap.get("course_id") + " and professor "
-					+ inputMap.get("prof_id") + "!");}}
-
-			else { {System.out.println("User # " + user.getId() + " successfully made review "+
-					"for course " + inputMap.get("course_id") + " and professor "
-					+ inputMap.get("prof_id") + "!");}}
-
-			review  = reviewDao.findById(review_id);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+			return -4;
 		}
-
-		return review;
 	}
 
 	@DeleteMapping("/DeleteReview/{reviewId}")
