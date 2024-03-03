@@ -67,6 +67,23 @@ public class User implements DataTransferObject{
             if (this.karma > 100) {this.karma = 100;}
             else if (this.karma < 0) {this.karma = 0;}
         }
+
+
+        public void delete(Review review, Connection connection)
+        {
+            CourseDao courseDao = new CourseDao(connection);
+
+            Course course = courseDao.findById(review.getCourseId());
+            course.updateRating(review.getCourseRating(), -1*review.getOldKarma());
+            
+            courseDao.update(course);
+            ProfessorDao profDao = new ProfessorDao(connection);
+
+            Professor professor = profDao.findById(review.getProfId());
+            professor.updateRating(review.getProfRating(), -1*review.getOldKarma());
+            
+            profDao.update(professor);
+        }
         public int like(int review_id, int react, Connection connection)
         {
             LikesDao likedao = new LikesDao(connection);
@@ -105,7 +122,7 @@ public class User implements DataTransferObject{
             if (reviewed) {return -1;}
 
             Review review = new Review(this.id, course_id, prof_id,
-                    course_rating, prof_rating, review_des, hyperlink);
+                    course_rating, prof_rating, this.karma, review_des, hyperlink);
 
             review = reviewDao.create(review);
 

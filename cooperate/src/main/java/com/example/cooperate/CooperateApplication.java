@@ -192,22 +192,26 @@ public class CooperateApplication {
 		return review;
 	}
 
-	@DeleteMapping("/Review/{reviewId}")
-    public String deleteReview(@PathVariable("reviewId") int reviewId) {
-        System.out.println("Deleting user with ID: " + reviewId);
+	@DeleteMapping("/DeleteReview/{reviewId}")
+    public int deleteReview(@PathVariable("reviewId") int reviewId) {
+        System.out.println("Deleting review with ID: " + reviewId);
         DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
         try {
             Connection connection = dcm.getConnection();
             ReviewDao reviewDao = new ReviewDao(connection);
-            boolean isDeleted = reviewDao.deleteById(reviewId);
-            if (isDeleted) {
-                return "User with ID " + reviewId + " was successfully deleted.";
-            } else {
-                return "User with ID " + reviewId + " could not be found or deleted.";
-            }
+			Review review = reviewDao.findById(reviewId);
+
+			boolean isDeleted = reviewDao.deleteById(reviewId);
+
+			User user = new User();
+			user.setId(review.getUserId());
+			user.delete(review, connection);
+			if (isDeleted){return 0;}
+			else {return -1;}
+            
         } catch (SQLException e) {
             e.printStackTrace();
-            return "An error occurred while trying to delete user with ID " + reviewId + ".";
+            return -2;
         }
     }
 

@@ -12,8 +12,8 @@ public class ReviewDao extends DataAccessObject<Review> {
     private static final String GET_ONE = "SELECT * " +
             "FROM Reviews WHERE review_id=?";
 
-    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, review, course_rating, prof_rating)" +
-            " VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, review, course_rating, prof_rating, orig_karma, hyperlink)" +
+            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Reviews SET net_likes = ? WHERE review_id=?";
 
@@ -56,6 +56,7 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setCourseId(rs.getInt("course_id"));
                 review.setProfId(rs.getInt("prof_id"));
                 review.setReview(rs.getString("review"));
+                review.setOldKarma(rs.getFloat("orig_karma"));
                 review.setCourseRating(rs.getFloat("course_rating"));
                 review.setProfRating(rs.getFloat("prof_rating"));
                 review.setNetLikes(rs.getInt("net_likes"));
@@ -79,6 +80,8 @@ public class ReviewDao extends DataAccessObject<Review> {
             statement.setString(4, dto.getReview());
             statement.setFloat(5, dto.getCourseRating());
             statement.setFloat(6, dto.getProfRating());
+            statement.setFloat(7, dto.getOldKarma());
+            statement.setString(8, dto.getHyperLink());
             statement.execute();
 
             int nextID = -1;
@@ -146,6 +149,7 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setCourseRating(rs.getFloat("course_rating"));
                 review.setProfRating(rs.getFloat("prof_rating"));
                 review.setNetLikes(rs.getInt("net_likes"));
+                review.setOldKarma(rs.getFloat("orig_karma"));
                 review.setTimestamp(rs.getTimestamp("created_at"));
                 review.setHyperLink(rs.getString("hyperlink"));
                 reviews.addLast(review);
