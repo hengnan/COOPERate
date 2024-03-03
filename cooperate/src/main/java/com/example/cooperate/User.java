@@ -99,7 +99,6 @@ public class User implements DataTransferObject{
                                int course_rating, int prof_rating, String hyperlink, Connection connection)
         {
             ReviewDao reviewDao = new ReviewDao(connection);
-            System.out.println(this.id);
             boolean reviewed = reviewDao.exists(this.id, course_id, prof_id);
 
             if (reviewed) {return -1;}
@@ -113,6 +112,8 @@ public class User implements DataTransferObject{
 
             Course course = courseDao.findById(course_id);
 
+            if (course.getId() == 0) {return -2;}
+
             course.updateRating(course_rating, this.karma);
 
             courseDao.update(course);
@@ -120,7 +121,8 @@ public class User implements DataTransferObject{
             ProfessorDao profDao = new ProfessorDao(connection);
 
             Professor prof = profDao.findById(prof_id);
-
+            
+            if (prof.getId() == 0) {return -3;}
             prof.updateRating(prof_rating, this.karma);
 
             profDao.update(prof);
