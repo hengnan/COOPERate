@@ -166,22 +166,38 @@ public class CooperateApplication {
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
-			int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
-					Integer.parseInt(inputMap.get("prof_id")),
-					inputMap.get("review"),
-					Integer.parseInt(inputMap.get("course_rating")),
-					Integer.parseInt(inputMap.get("prof_rating")),
-					inputMap.get("hyperlink"), connection);
+			String reviewDescription = inputMap.get("review");
 
-			if(review_id == -1) {{System.out.println("User # " + inputMap.get("reviewer_id") + " already made review "+
-					"for course " + inputMap.get("course_id") + " and professor "
-					+ inputMap.get("prof_id") + "!");}}
+			// Define the maximum allowed length for the review description
+			int maxDescriptionLength = 1000;
 
-			else { {System.out.println("User # " + user.getId() + " successfully made review "+
-					"for course " + inputMap.get("course_id") + " and professor "
-					+ inputMap.get("prof_id") + "!");}}
+			if (reviewDescription.length() > maxDescriptionLength) {
+				System.out.println("Review description is too long. Maximum length allowed is " + maxDescriptionLength);
+				return review;
+			} else {
+				int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
+						Integer.parseInt(inputMap.get("prof_id")),
+						inputMap.get("review"),
+						Integer.parseInt(inputMap.get("course_rating")),
+						Integer.parseInt(inputMap.get("prof_rating")),
+						inputMap.get("hyperlink"), connection);
 
-			review  = reviewDao.findById(review_id);
+				if (review_id == -1) {
+					{
+						System.out.println("User # " + inputMap.get("reviewer_id") + " already made review " +
+								"for course " + inputMap.get("course_id") + " and professor "
+								+ inputMap.get("prof_id") + "!");
+					}
+				} else {
+					{
+						System.out.println("User # " + user.getId() + " successfully made review " +
+								"for course " + inputMap.get("course_id") + " and professor "
+								+ inputMap.get("prof_id") + "!");
+					}
+				}
+
+				review = reviewDao.findById(review_id);
+			}
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
