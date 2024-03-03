@@ -15,10 +15,11 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 
+	String hostname = "db";
+
 	@GetMapping("/Users/{userId}")
 	public User getUser(@PathVariable("userId") int userId)
 	{
-		System.out.println(userId);
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		User user = new User();
 		try {
@@ -38,7 +39,7 @@ public class CooperateApplication {
 										@PathVariable("orderedBy") String orderBy,
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
-		
+
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		ArrayList<Review> reviews = new ArrayList<Review>();
 
@@ -58,6 +59,7 @@ public class CooperateApplication {
 	@GetMapping("/Courses/{courseId}")
 	public Course getByCourseId(@PathVariable("courseId") int courseId) {
 		System.out.println(courseId);
+
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Course course = new Course();
 		try {
@@ -121,6 +123,7 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		try {
 			Connection connection = dcm.getConnection();
@@ -150,6 +153,7 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 
 		try {
@@ -179,7 +183,28 @@ public class CooperateApplication {
 		}
 	}
 
+	@DeleteMapping("/DeleteReview/{reviewId}")
+    public int deleteReview(@PathVariable("reviewId") int reviewId) {
+        System.out.println("Deleting review with ID: " + reviewId);
+        DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+        try {
+            Connection connection = dcm.getConnection();
+            ReviewDao reviewDao = new ReviewDao(connection);
+			Review review = reviewDao.findById(reviewId);
 
+			boolean isDeleted = reviewDao.deleteById(reviewId);
+
+			User user = new User();
+			user.setId(review.getUserId());
+			user.delete(review, connection);
+			if (isDeleted){return 0;}
+			else {return -1;}
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -2;
+        }
+    }
 
 	public static void main(String[] args) {
 		SpringApplication.run(CooperateApplication.class, args);

@@ -13,18 +13,20 @@ public class Review implements DataTransferObject{
     private float course_rating;
     private float prof_rating;
     private int net_likes;
+    private float old_karma;
     private String hyperlink;
     private Timestamp timestamp;
 
     public Review() { super();}
     public Review(int user_id, int course_id, int prof_id,
-                  float course_rating, float prof_rating, String review, String hyperlink)
+                  float course_rating, float prof_rating, float old_karma, String review, String hyperlink)
     {
         this.user_id = user_id;
         this.course_id = course_id;
         this.prof_id = prof_id;
         this.course_rating = course_rating;
         this.prof_rating = prof_rating;
+        this.old_karma = old_karma;
         this.review = review;
         this.hyperlink = hyperlink;
     }
@@ -108,6 +110,15 @@ public class Review implements DataTransferObject{
     {
         this.net_likes += react;
     }
+
+    public void setOldKarma(float oldKarma){
+        this.old_karma = oldKarma;
+    }
+
+    public float getOldKarma()
+    {
+        return old_karma;
+    }
     @Override
     public String toString() {
         return "Review{" +
@@ -118,6 +129,7 @@ public class Review implements DataTransferObject{
                 ",profRating= '" + prof_rating + '\'' +
                 ",courseRating= '" + course_rating + '\'' +
                 "net_likes= '" + net_likes + '\'' +
+                "orig_karma= '" + old_karma + '\'' + 
                 "\n\ndescription '" + review + '\'' +
                 '}';
     }
