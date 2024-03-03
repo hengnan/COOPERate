@@ -158,6 +158,11 @@ public class CooperateApplication {
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
+      // Define the maximum allowed length for the review description
+			int maxDescriptionLength = 1000;
+      
+      if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
+      
 			int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("review"),
