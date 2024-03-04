@@ -151,8 +151,9 @@ def makeReview():
             "hyperlink": hyperlink
             }
     response = requests.post(url, json = json).text
+
     
-    if not response.isdigit():
+    if not response.replace("-", "").isdigit():
         print("Uh-oh an error has occurred. Please review the logs")
         input("To return to the main page, please press enter")
         return
@@ -218,7 +219,7 @@ def likeReview():
     
     response = requests.post(url, json = json).text
     
-    if not response.isdigit():
+    if not response.replace("-", "").isdigit():
         print("Uh-oh an error has occurred. Please review the logs")
         input("To return to the main page, please press enter")
         return
@@ -245,8 +246,10 @@ def deleteReview():
 
     response = requests.delete(url).text
 
-    if not response.isdigit():
+    if not response.replace("-", "").isdigit():
         print("Uh oh- an unexpected error has occurred. Please consult the logs.")
+        input("To return to the main page, please press enter")
+        return
     match int(response):
         case -1:
             print("This review does not exist!")

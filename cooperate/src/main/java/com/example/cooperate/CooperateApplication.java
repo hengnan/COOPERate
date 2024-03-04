@@ -188,11 +188,11 @@ public class CooperateApplication {
             Connection connection = dcm.getConnection();
             ReviewDao reviewDao = new ReviewDao(connection);
 			Review review = reviewDao.findById(reviewId);
-
+			
+			if (userId != review.getUserId()) {return -3;}
 			boolean isDeleted = reviewDao.deleteById(reviewId);
 
 			User user = new User();
-			if (userId != review.getUserId()) {return -3;}
 
 			user.setId(review.getUserId());
 			user.delete(review, connection);
