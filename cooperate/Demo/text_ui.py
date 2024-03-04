@@ -312,7 +312,7 @@ if __name__ == "__main__":
         print("\t8.Search for a professor")
         print("\t9.Exit")
 
-        action = input("\nPlease enter a number from 1-8 corresponding to the action you would like to perform: ")
+        action = input("\nPlease enter a number from 1-9 corresponding to the action you would like to perform: ")
 
         printLines = 11
         match action:
