@@ -168,6 +168,8 @@ def makeReview():
             print("Uh-oh an error has occurred. Please review the logs")
         case -5:
             print("Oh no! This review triggered our profanity filter!")
+        case -6:
+            print("This review exceeds the character limit. Please restrict your review to at most 1000 characters")
         case _:
             print("Review successfully made!")
     
@@ -232,6 +234,30 @@ def likeReview():
     input("To return to the main page, please press enter")
     
 
+def deleteReview():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    print(text + "\n\n")
+
+    reviewID = input("Please enter the review id of the review that you would like to delete: ")
+    userID = input("Please enter the user id of the user attempting to delete the review ")
+
+    url = "http://localhost:8080/DeleteReview/" + reviewID + "/" + userID
+
+    response = requests.delete(url).text
+
+    if not response.isdigit():
+        print("Uh oh- an unexpected error has occurred. Please consult the logs.")
+    match int(response):
+        case -1:
+            print("This review does not exist!")
+        case -2:
+            print("Uh-oh. An unexpected error has occurred. Please consult the logs")
+        case -3:
+            print("User delete attempt unsuccessful! User is not the author of review.")
+        case _:
+            print("Successfully deleted review!")
+    input("To return to the main page, please press enter")
+
 def makeAccount():
         os.system('cls' if os.name == 'nt' else 'clear')
         print(text + "\n\n")
@@ -280,10 +306,11 @@ if __name__ == "__main__":
         print("\t2.Look at reviews")
         print("\t3.Like a review")
         print("\t4.Make a review")
-        print("\t5.Search for a course")
-        print("\t6.Search for a user")
-        print("\t7.Search for a professor")
-        print("\t8.Exit")
+        print("\t5.Delete a review")
+        print("\t6.Search for a course")
+        print("\t7.Search for a user")
+        print("\t8.Search for a professor")
+        print("\t9.Exit")
 
         action = input("\nPlease enter a number from 1-8 corresponding to the action you would like to perform: ")
 
@@ -298,12 +325,14 @@ if __name__ == "__main__":
             case "4":
                 makeReview()
             case "5":
-                getInfo("Courses")
+                deleteReview()
             case "6":
-                getInfo("Users")
+                getInfo("Courses")
             case "7":
-                getInfo("Professors")
+                getInfo("Users")
             case "8":
+                getInfo("Professors")                
+            case "9":
                 print("\nGoodbye!")
                 break
             case _:

@@ -42,7 +42,7 @@ public class CooperateApplication {
 
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		ArrayList<Review> reviews = new ArrayList<Review>();
-
+											
 		try {
 			Connection connection = dcm.getConnection();
 			ReviewPage page = new ReviewPage(id, source, orderBy, order,
@@ -58,7 +58,6 @@ public class CooperateApplication {
 
 	@GetMapping("/Courses/{courseId}")
 	public Course getByCourseId(@PathVariable("courseId") int courseId) {
-		System.out.println(courseId);
 
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Course course = new Course();
@@ -76,7 +75,6 @@ public class CooperateApplication {
 	@GetMapping("/Professors/{profId}")
 	public Professor getByProfessorId(@PathVariable("profId") int profId)
 	{
-		System.out.println(profId);
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Professor prof = new Professor();
 		try {
@@ -156,16 +154,15 @@ public class CooperateApplication {
 
 		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 
+		int maxDescriptionLength =  1000;
+		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
+
 		try {
 			Connection connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
-      // Define the maximum allowed length for the review description
-			int maxDescriptionLength = 1000;
-      
-      if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
       
 			int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
@@ -183,10 +180,10 @@ public class CooperateApplication {
 		}
 	}
 
-	@DeleteMapping("/DeleteReview/{reviewId}")
-    public int deleteReview(@PathVariable("reviewId") int reviewId) {
-        System.out.println("Deleting review with ID: " + reviewId);
-        DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
+	@DeleteMapping("/DeleteReview/{reviewId}/{userId}")
+    public int deleteReview(@PathVariable("reviewId") int reviewId, @PathVariable("userId") int userId) {
+
+		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
         try {
             Connection connection = dcm.getConnection();
             ReviewDao reviewDao = new ReviewDao(connection);
@@ -195,6 +192,8 @@ public class CooperateApplication {
 			boolean isDeleted = reviewDao.deleteById(reviewId);
 
 			User user = new User();
+			if (userId != review.getUserId()) {return -3;}
+
 			user.setId(review.getUserId());
 			user.delete(review, connection);
 			if (isDeleted){return 0;}
