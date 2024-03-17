@@ -58,6 +58,37 @@ body {
   align-items: left;
 }
 
+.search-container {
+  position: relative;
+}
+
+.ui-autocomplete {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  display: none;
+  min-width: 160px;
+  padding: 4px 0;
+  margin: 2px 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+  font-size: 14px;
+  color: #333333;
+}
+
+.ui-autocomplete > li {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.ui-autocomplete > li:hover {
+  background-color: #f0f0f0;
+}
 .search-section {
   margin-bottom: 20px;
   background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */

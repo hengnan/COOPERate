@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Reviews.css'; // Import CSS file for styling
 import moment from 'moment';
+import $ from 'jquery'; // Import jQuery
+import 'jquery-ui/ui/widgets/autocomplete';
 
 const ReviewsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -13,6 +15,7 @@ const ReviewsPage = () => {
   const [overallRating, setRating] = useState(0);
   const endOfPageRef = useRef(null);
   const [searching, setSearching] = useState(false);
+  const [validSearch, setValidSearch] = useState(true);
   const handleSearchTypeChange = (event) => {
     setSearchType(event.target.value);
   };
@@ -27,6 +30,29 @@ const ReviewsPage = () => {
   
     return date.format('MMMM Do, YYYY'); // Format the date
   }
+  useEffect(() => {
+    // Define array of course and professor names
+    const courseNames = ['Software Engineering', 'Integrated Circuits Engineering', 'Digital Signal Processing'];
+    const professorNames = ['Christopher Hong', 'Jabeom Koo', 'Fred Fontaine'];
+    var names = []
+    if(searchType == "Professors"){names = professorNames;}
+    else {names = courseNames;}
+    // Initialize autocomplete for search input
+    $('#searchInput').autocomplete({
+      
+      source: [...names],
+      select: function(event, ui) {
+        setSearchQuery(ui.item.value); // Update searchQuery state with selected suggestion
+        return false; // Prevent default action of selecting the item
+      },
+    });
+  }, []);
+
+
+
+  const handleChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   const fetchReviews = async () => {
     
@@ -84,6 +110,10 @@ const ReviewsPage = () => {
   
       if (response.ok) {
         const data = await response.json();
+        if (data.id === 0) {
+          setRating("N/A");
+          return;
+        }
         setRating(data.rating);
       } else {
         console.error('Failed to fetch overall rating:', response.statusText);
@@ -199,11 +229,15 @@ const ReviewsPage = () => {
       <div className="search-section">
         <input
           type="text"
+          id = "searchInput"
           placeholder="Search..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-input"
+          onChange={handleChange}
+          /*onChange={(e) => setSearchQuery(e.target.value)}*/
+          className={`search-input ${!validSearch ? 'invalid-search' : ''}`} 
         />
+
+        
         <select value={searchType} onChange={handleSearchTypeChange} className="select">
           <option value="Professors">Professor</option>
           <option value="Courses">Course</option>
