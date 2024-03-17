@@ -25,6 +25,28 @@ const App = () => {
   
     return date.format('MMMM Do, YYYY'); // Format the date
   }
+  document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('scroll', function() {
+      const banner = document.getElementById('stickyBanner');
+      const bannerOffsetTop = getOffsetTop(banner);
+  
+      if (window.scrollY > bannerOffsetTop) {
+        banner.classList.add('sticky');
+      } else {
+        banner.classList.remove('sticky');
+      }
+    });
+  
+    // Function to calculate the correct offsetTop relative to the document
+    function getOffsetTop(element) {
+      let offsetTop = 0;
+      while (element) {
+        offsetTop += element.offsetTop;
+        element = element.offsetParent;
+      }
+      return offsetTop;
+    }
+  });
 
   const fetchReviews = async () => {
     
@@ -131,6 +153,13 @@ const App = () => {
 
   return (
     <div className="container">
+      <div class="banner" id="stickyBanner">
+        <h1 class="banner-title">COOPERATE</h1>
+        <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
+        <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
+        <button class="button"><i class="fas fa-sign-in-alt"></i> Login</button>
+        <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+      </div>
       <div className="search-section">
         <input
           type="text"
@@ -153,7 +182,7 @@ const App = () => {
         <button onClick={handleSearch} className="search-button">Search</button>
       </div>
       <div className="reviews-section">
-        <h2>Reviews</h2>
+        <h2 class="banner-title">Reviews</h2>
         {reviews.map((review, index) => (
           <div key={index} className="review-container">
             <div className="user-course-prof-container">
