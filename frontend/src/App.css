@@ -150,11 +150,11 @@ body {
 }
 
 .high-rating {
-  background-color: #d7f1e8; /* Light green for high rating */
+  background-color: #a5f1d6; /* Light green for high rating */
 }
 
 .low-rating {
-  background-color: #f7d4d6; /* Light red for low rating */
+  background-color: #eb646b; /* Light red for low rating */
 }
 
 .rating-box h2 {
@@ -207,17 +207,10 @@ body {
 .prof-rating, .course-rating {
   padding: 5px 10px;
   border-radius: 5px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   text-align: center;
   font-weight: bold;
-}
-
-.prof-rating {
-  background-color: lightblue;
-}
-
-.course-rating {
-  background-color: lightgreen;
 }
 
 

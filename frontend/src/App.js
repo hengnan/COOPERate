@@ -78,44 +78,45 @@ const App = () => {
 
   const fetchOverallRating = async () => {
     var endpoint = 'http://localhost:8080/' + searchType + "/" + searchQuery.toString();
-
-    try
-    {
+  
+    try {
       const response = await fetch(endpoint);
-
-      if(response.ok){
+  
+      if (response.ok) {
         const data = await response.json();
         setRating(data.rating);
-        const ratingBox = document.getElementById('ratingBox');
-        if (overallRating > 3) {
-          ratingBox.classList.remove('low-rating');
-          ratingBox.classList.add('high-rating');
-        }
-        else{
-          ratingBox.classList.remove('high-rating');
-          ratingBox.classList.add('low-rating');
-        }
       } else {
         console.error('Failed to fetch overall rating:', response.statusText);
       }
-    }
-    catch (error){
+    } catch (error) {
       console.error('Error fetching overall rating:', error);
     }
-    
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     
     setSearching(true);
     setFeed(false);
     setPage(0); // Reset page number on new search
     setReviews([]); // Clear existing reviews on new search
-    fetchOverallRating();
-    fetchReviews();
+
+    await Promise.all([
+      fetchReviews(),
+      fetchOverallRating()
+    ]);
+
   };
 
-
+  useEffect(() => {
+    const ratingBox = document.getElementById('ratingBox');
+    if (overallRating > 3) {
+      ratingBox.classList.remove('low-rating');
+      ratingBox.classList.add('high-rating');
+    } else {
+      ratingBox.classList.remove('high-rating');
+      ratingBox.classList.add('low-rating');
+    }
+  }, [overallRating]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -219,20 +220,21 @@ const App = () => {
         {reviews.map((review, index) => (
           <div key={index} className="review-container">
             <div className="user-course-prof-container">
-              <p>User ID: {review.userId}</p>
-              <p> Course ID: {review.courseId}, Prof ID: {review.profId}</p>
+
+              <p>User ID: <a href={`/user/${review.userId}`}>{review.userId}</a></p>
+              <p> Course ID: <a href={`/course/${review.courseId}`}>{review.courseId}</a>, Prof ID: <a href={`/prof/${review.profId}`}>{review.profId}</a></p>
             </div>
             <div className="review-content">
               <div className = "review-text">
                 <p>{review.review}</p>
               </div>
               <div className="ratings-container">
-                <div className="prof-rating">
-                <p>Professor</p>
+                <div className={`prof-rating ${review.profRating < 3 ? 'low-rating' : review.profRating >= 3 ? 'high-rating' : ''}`}>
+                  <p>Professor</p>
                   <StarRating rating={review.profRating} />
                 </div>
-                <div className="course-rating">
-                <p>Course</p>
+                <div className={`course-rating ${review.courseRating < 3 ? 'low-rating' : review.courseRating >= 3 ? 'high-rating' : ''}`}>
+                  <p>Course</p>
                   <StarRating rating={review.courseRating} />
                 </div>
               </div>
