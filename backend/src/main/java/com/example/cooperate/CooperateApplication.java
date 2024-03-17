@@ -18,14 +18,14 @@ public class CooperateApplication {
 	DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
 
 	@CrossOrigin
-	@GetMapping("/Users/{userId}")
-	public User getUser(@PathVariable("userId") int userId)
+	@GetMapping("/Users/{username}")
+	public User getUser(@PathVariable("username") String username)
 	{
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
-			user = userDao.findById(userId);
+			user = userDao.findByName(username);
 			System.out.println(user);
 		}
 		catch (SQLException var8) {
@@ -34,9 +34,9 @@ public class CooperateApplication {
 		return user;
 	}
 	@CrossOrigin
-	@GetMapping("/{source}/{id}/Reviews/{orderedBy}/{order}/{pageNum}")
+	@GetMapping("/{source}/{name}/Reviews/{orderedBy}/{order}/{pageNum}")
 	public ArrayList<Review> getReviews(@PathVariable("source") String source,
-										@PathVariable("id") int id,
+										@PathVariable("name") String name,
 										@PathVariable("orderedBy") String orderBy,
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
@@ -45,7 +45,7 @@ public class CooperateApplication {
 											
 		try {
 			Connection connection = dcm.getConnection();
-			ReviewPage page = new ReviewPage(id, source, orderBy, order,
+			ReviewPage page = new ReviewPage(name, source, orderBy, order,
 					2, pageNum*2);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			reviews = reviewDao.getReviews(page);
@@ -56,14 +56,14 @@ public class CooperateApplication {
 		return reviews;
 	}
 	@CrossOrigin
-	@GetMapping("/Courses/{courseId}")
-	public Course getByCourseId(@PathVariable("courseId") int courseId) {
+	@GetMapping("/Courses/{courseName}")
+	public Course getByCourseName(@PathVariable("courseName") String courseName) {
 
 		Course course = new Course();
 		try {
 			Connection connection = dcm.getConnection();
 			CourseDao courseDao = new CourseDao(connection);
-			course = courseDao.findById(courseId);
+			course = courseDao.findByName(courseName);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -71,14 +71,15 @@ public class CooperateApplication {
 		return course;
 	}
 	@CrossOrigin
-	@GetMapping("/Professors/{profId}")
-	public Professor getByProfessorId(@PathVariable("profId") int profId)
+	@GetMapping("/Professors/{profName}")
+	public Professor getByProfessorId(@PathVariable("profName") String profName)
 	{
+		System.out.println(profName);
 		Professor prof = new Professor();
 		try {
 			Connection connection = dcm.getConnection();
 			ProfessorDao professorDao = new ProfessorDao(connection);
-			prof = professorDao.findById(profId);
+			prof = professorDao.findByName(profName);
 			System.out.println(prof);
 		}
 		catch (SQLException var8) {
@@ -159,15 +160,14 @@ public class CooperateApplication {
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
       
-			int review_id = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
+			return user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
+					inputMap.get("course_name"),
+					inputMap.get("prof_name"),
 					inputMap.get("review"),
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
 					inputMap.get("hyperlink"), connection);
-			
-			return review_id;
-
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();

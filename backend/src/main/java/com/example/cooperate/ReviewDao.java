@@ -12,8 +12,8 @@ public class ReviewDao extends DataAccessObject<Review> {
     private static final String GET_ONE = "SELECT * " +
             "FROM Reviews WHERE review_id=?";
 
-    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, review, course_rating, prof_rating, orig_karma, hyperlink)" +
-            " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, username, course_name, prof_name, review, course_rating, prof_rating, orig_karma, hyperlink)" +
+            " VALUES (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Reviews SET net_likes = ? WHERE review_id=?";
 
@@ -21,7 +21,7 @@ public class ReviewDao extends DataAccessObject<Review> {
             "FROM Reviews WHERE user_id =? AND course_id = ? AND prof_id = ?";
 
     private static final String REVIEWS = "SELECT * FROM Reviews " +
-            "WHERE source = ? ORDER BY order_by direction " +
+            "WHERE source LIKE '%' || ? || '%' ORDER BY order_by direction " +
             "LIMIT ? OFFSET ?";
     private static final String LASTVAL = "SELECT last_value FROM review_counter";
 
@@ -56,6 +56,9 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setCourseId(rs.getInt("course_id"));
                 review.setProfId(rs.getInt("prof_id"));
                 review.setReview(rs.getString("review"));
+                review.setCourse_name(rs.getString("course_name"));
+                review.setUsername(rs.getString("username"));
+                review.setProf_name(rs.getString("prof_name"));
                 review.setOldKarma(rs.getFloat("orig_karma"));
                 review.setCourseRating(rs.getFloat("course_rating"));
                 review.setProfRating(rs.getFloat("prof_rating"));
@@ -73,15 +76,17 @@ public class ReviewDao extends DataAccessObject<Review> {
     @Override
     public Review create(Review dto) {
         try (PreparedStatement statement = this.connection.prepareStatement(INSERT);) {
-
             statement.setInt(1, dto.getUserId());
             statement.setInt(2, dto.getCourseId());
             statement.setInt(3, dto.getProfId());
-            statement.setString(4, dto.getReview());
-            statement.setFloat(5, dto.getCourseRating());
-            statement.setFloat(6, dto.getProfRating());
-            statement.setFloat(7, dto.getOldKarma());
-            statement.setString(8, dto.getHyperLink());
+            statement.setString(4, dto.getUsername());
+            statement.setString(5, dto.getCourse_name());
+            statement.setString(6, dto.getProf_name());
+            statement.setString(7, dto.getReview());
+            statement.setFloat(8, dto.getCourseRating());
+            statement.setFloat(9, dto.getProfRating());
+            statement.setFloat(10, dto.getOldKarma());
+            statement.setString(11, dto.getHyperLink());
             statement.execute();
 
             int nextID = -1;
@@ -132,7 +137,7 @@ public class ReviewDao extends DataAccessObject<Review> {
         try (PreparedStatement statement = this.connection.prepareStatement(command);) {
 
 
-            statement.setInt(1, page.getId());
+            statement.setString(1, page.getId());
             statement.setInt(2, page.getNumPerPage());
             statement.setInt(3, page.getOffset());
             System.out.println(statement);
@@ -145,6 +150,9 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setUserId(rs.getInt("user_id"));
                 review.setCourseId(rs.getInt("course_id"));
                 review.setProfId(rs.getInt("prof_id"));
+                review.setUsername(rs.getString("username"));
+                review.setCourse_name(rs.getString("course_name"));
+                review.setProf_name(rs.getString("prof_name"));
                 review.setReview(rs.getString("review"));
                 review.setCourseRating(rs.getFloat("course_rating"));
                 review.setProfRating(rs.getFloat("prof_rating"));

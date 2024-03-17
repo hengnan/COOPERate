@@ -8,6 +8,9 @@ public class ProfessorDao extends DataAccessObject<Professor>{
     private static final String GET_ONE = "SELECT * " +
             "FROM Professor WHERE id=?";
 
+    private static final String GET_BY_NAME = "SELECT * " +
+            "FROM Professor WHERE prof_name=?";
+
     private static final String INSERT = "INSERT INTO Professor (prof_name, rating, descrip)" +
             " VALUES (?, ?, ?)";
 
@@ -40,6 +43,30 @@ public class ProfessorDao extends DataAccessObject<Professor>{
         }
         return professor;
     }
+
+    public Professor findByName(String name){
+        Professor professor = new Professor();
+
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_BY_NAME);) {
+            statement.setString(1, name);
+            System.out.println(statement);
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()) {
+                professor.setID(rs.getInt("id"));
+                professor.setName(rs.getString("prof_name"));
+                professor.setRating(rs.getFloat("rating"));
+                professor.setTotalRating(rs.getFloat("total_rating"));
+                professor.setDescription(rs.getString("descrip"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return professor;
+    }
+
+
     @Override
     public Professor create(Professor dto) {
         try(PreparedStatement statement = this.connection.prepareStatement(INSERT);) {

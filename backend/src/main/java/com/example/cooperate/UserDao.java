@@ -9,6 +9,9 @@ public class UserDao extends DataAccessObject<User> {
     private static final String GET_ONE = "SELECT * " +
             "FROM Users WHERE id=?";
 
+    private static final String GET_BY_NAME = "SELECT * " +
+            "FROM Users WHERE username=?";
+
     private static final String INSERT = "INSERT INTO users (username, hashed_password, email_address)" +
             " VALUES (?, ?, ?)";
 
@@ -25,6 +28,27 @@ public class UserDao extends DataAccessObject<User> {
 
         try (PreparedStatement statement = this.connection.prepareStatement(GET_ONE);) {
             statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                user.setId(rs.getInt("id"));
+                user.setUserName(rs.getString("username"));
+                user.setPassword(rs.getString("hashed_password"));
+                user.setEmail(rs.getString("email_address"));
+                user.setKarma(rs.getFloat("karma"));
+                user.setTimestamp(rs.getTimestamp("created_at"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return user;
+    }
+    public User findByName(String name) {
+        User user = new User();
+
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_ONE);) {
+            statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {

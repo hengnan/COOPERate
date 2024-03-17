@@ -1,17 +1,17 @@
 package com.example.cooperate;
 
 public class ReviewPage {
-    private int id;
+    private String name;
     private String source;
     private String order_by;
     private String order;
     private int numPerPage;
     private int offset;
 
-    public ReviewPage(int id, String source, String order_by,
+    public ReviewPage(String name, String source, String order_by,
                       String order, int numPerPage, int offset)
     {
-        this.id = id;
+        this.name = name;
         this.source = source;
         this.order = order;
         this.order_by = order_by;
@@ -19,9 +19,9 @@ public class ReviewPage {
         this.offset = offset;
     }
 
-    public void setId(int id) {this.id = id;}
+    public void setId(String name) {this.name = name;}
 
-    public int getId() {return this.id;}
+    public String getId() {return this.name;}
     public void setSource(String source){this.source = source;}
     public String getSource(){return this.source;}
 

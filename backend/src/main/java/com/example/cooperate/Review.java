@@ -9,6 +9,10 @@ public class Review implements DataTransferObject{
     private int user_id;
     private int course_id;
     private int prof_id;
+
+    private String username;
+    private String course_name;
+    private String prof_name;
     private String review;
     private float course_rating;
     private float prof_rating;
@@ -18,12 +22,15 @@ public class Review implements DataTransferObject{
     private Timestamp timestamp;
 
     public Review() { super();}
-    public Review(int user_id, int course_id, int prof_id,
+    public Review(int user_id, int course_id, int prof_id, String username, String course_name, String prof_name,
                   float course_rating, float prof_rating, float old_karma, String review, String hyperlink)
     {
         this.user_id = user_id;
         this.course_id = course_id;
         this.prof_id = prof_id;
+        this.username = username;
+        this.course_name = course_name;
+        this.prof_name = prof_name;
         this.course_rating = course_rating;
         this.prof_rating = prof_rating;
         this.old_karma = old_karma;
@@ -61,6 +68,15 @@ public class Review implements DataTransferObject{
     public void setProfId(int prof_id) {
         this.prof_id = prof_id;
     }
+
+    public String getUsername(){return username;}
+    public void setUsername(String username){this.username = username;}
+
+    public String getCourse_name(){return course_name;}
+    public void setCourse_name(String course_name){this.course_name = course_name;}
+
+    public String getProf_name() {return prof_name;}
+    public void setProf_name(String prof_name){this.prof_name = prof_name;}
 
     public String getReview(){
         return review;
@@ -126,6 +142,9 @@ public class Review implements DataTransferObject{
                 ",userID='" + user_id + '\'' +
                 ",courseID= '" + course_id + '\'' +
                 ",profID= '" + prof_id + '\'' +
+                ",username= '" + username + '\'' +
+                ",course_name= '" + course_name + '\'' +
+                ",prof_name ='" + prof_name + '\'' +
                 ",profRating= '" + prof_rating + '\'' +
                 ",courseRating= '" + course_rating + '\'' +
                 "net_likes= '" + net_likes + '\'' +

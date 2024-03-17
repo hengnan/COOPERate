@@ -34,9 +34,9 @@ const ReviewsPage = () => {
     var endpoint = 'http://localhost:8080';
 
 
-    if(searchType === 'Professors') {endpoint += '/prof_id/' + searchQuery;}
+    if(searchType === 'Professors') {endpoint += '/prof_name/' + searchQuery;}
 
-    else {endpoint += '/course_id/' + searchQuery;}
+    else {endpoint += '/course_name/' + searchQuery;}
 
     endpoint += '/Reviews';
     if (sortOption === 'time-ascending')
@@ -222,8 +222,8 @@ const ReviewsPage = () => {
           <div key={index} className="review-container">
             <div className="user-course-prof-container">
 
-              <p>User ID: <a href={`/user/${review.userId}`}>{review.userId}</a></p>
-              <p> Course ID: <a href={`/course/${review.courseId}`}>{review.courseId}</a>, Prof ID: <a href={`/prof/${review.profId}`}>{review.profId}</a></p>
+              <p>Posted By <a href={`/user/${review.username}`}>{review.username}</a></p>
+              <p> Course: <a href={`/course/${review.course_name}`}>{review.course_name}</a> &emsp; Professor: <a href={`/prof/${review.prof_name}}`}>{review.prof_name}</a></p>
             </div>
             <div className="review-content">
               <div className = "review-text">

@@ -10,6 +10,9 @@ public class CourseDao extends DataAccessObject<Course>{
     private static final String GET_ONE = "SELECT * " +
             "FROM Course WHERE id=?";
 
+    private static final String GET_BY_NAME = "SELECT * " +
+            "FROM Course WHERE course_name=?";
+
     private static final String INSERT = "INSERT INTO Course (name, rating, descrip)" +
             " VALUES (?, ?, ?, ?)";
 
@@ -27,6 +30,28 @@ public class CourseDao extends DataAccessObject<Course>{
 
         try(PreparedStatement statement = this.connection.prepareStatement(GET_ONE);) {
             statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next()) {
+                course.setId(rs.getInt("id"));
+                course.setRating(rs.getFloat("rating"));
+                course.setTotalRating(rs.getFloat("total_rating"));
+                course.setName(rs.getString("course_name"));
+                course.setDescription(rs.getString("descrip"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return course;
+    }
+
+    public Course findByName(String name)
+    {
+        Course course = new Course();
+
+        try(PreparedStatement statement = this.connection.prepareStatement(GET_BY_NAME);) {
+            statement.setString(1, name);
             ResultSet rs = statement.executeQuery();
 
             while(rs.next()) {
@@ -74,4 +99,5 @@ public class CourseDao extends DataAccessObject<Course>{
             throw new RuntimeException(e);
         }
     }
+
 }

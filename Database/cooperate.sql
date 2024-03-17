@@ -49,6 +49,9 @@ CREATE TABLE Reviews (
   course_id int NOT NULL, --primary key for course being reviewed
   prof_id int NOT NULL, --primary key for professor being reviewed
   user_id int NOT NULL, -- primary key of user posting review
+  course_name varchar NOT NULL,
+  prof_name varchar NOT NULL,
+  username varchar NOT NULL,
   orig_karma float NOT NULL, --karma of user when review was created
   review text NOT NULL, --the review of the course
   course_rating float NOT NULL, --course rating 0 to 1 in increments of .2

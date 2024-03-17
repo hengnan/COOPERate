@@ -115,6 +115,16 @@ body {
   color: #fff; /* Text color */
 }
 
+.review-container a {
+  color: #6e98ec; /* Change color to your desired color */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease; /* Smooth color transition on hover */
+}
+
+.review-container a:hover {
+  color: #0056b3; /* Change color on hover */
+}
+
 .user-course-prof-container {
   position: absolute;
   top: 10px;
