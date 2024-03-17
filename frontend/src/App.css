@@ -1,0 +1,158 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+body {
+  margin: 0;
+  padding: 0;
+  background-color: darkgrey;
+  background-size: cover;
+  background-position: center;
+  font-family: Arial, sans-serif; /* Add a fallback font */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+}
+
+.search-section {
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle box shadow */
+}
+
+.search-input {
+  flex: 1; /* Take up remaining space */
+  border: none;
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 16px;
+  outline: none;
+}
+
+.select {
+  padding: 8px;
+  border-radius: 5px;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.search-button {
+  background-color: #007bff; /* Blue button color */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+
+
+.review-container {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 50px;
+  margin-bottom: 20px;
+  width: 90%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-course-prof-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  margin-bottom: 100px;
+  /*display: flex;*/
+}
+
+.ratings-container {
+  /*display: flex;*/
+  margin-top: 50px;
+  margin-bottom: 10px;
+  width: 100px;
+}
+
+.like-dislike {
+  position: absolute;
+  top: 50px; /* Adjust as needed */
+  right: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.timestamp {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.review-content {
+  text-align: left;
+  margin-right: 10px;
+  justify-content: space-between;
+
+}
+
+/* Additional styling for ratings */
+.prof-rating, .course-rating {
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.prof-rating {
+  background-color: lightblue;
+}
+
+.course-rating {
+  background-color: lightgreen;
+}
+
+.like-dislike {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.like-button, .dislike-button {
+  border: none;
+  background: none;
+  font-size: 24px;
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+.like-icon, .dislike-icon {
+  transition: color 0.2s; /* Add transition effect */
+}
+
+
+.like-icon:hover, .dislike-icon:hover {
+  color: #007bff; /* Darker color on hover */
+}
+.highlighted {
+  color: #007bff; /* Darker color */
+}
+.net-likes {
+  font-size: 18px;
+  margin: 0 10px;
+}
+
+.review-text {
+  position: absolute;
+  text-align:left;
+  margin-right:10px;
+  top: 100px;
+  left: 180px;
+}
