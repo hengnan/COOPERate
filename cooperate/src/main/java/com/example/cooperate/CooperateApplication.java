@@ -15,12 +15,12 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 
-	String hostname = "db";
+	DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
 
+	@CrossOrigin
 	@GetMapping("/Users/{userId}")
 	public User getUser(@PathVariable("userId") int userId)
 	{
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -33,6 +33,7 @@ public class CooperateApplication {
 		}
 		return user;
 	}
+	@CrossOrigin
 	@GetMapping("/{source}/{id}/Reviews/{orderedBy}/{order}/{pageNum}")
 	public ArrayList<Review> getReviews(@PathVariable("source") String source,
 										@PathVariable("id") int id,
@@ -40,7 +41,6 @@ public class CooperateApplication {
 										@PathVariable("order") String order,
 										@PathVariable("pageNum") int pageNum ) {
 
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		ArrayList<Review> reviews = new ArrayList<Review>();
 											
 		try {
@@ -55,11 +55,10 @@ public class CooperateApplication {
 		}
 		return reviews;
 	}
-
+	@CrossOrigin
 	@GetMapping("/Courses/{courseId}")
 	public Course getByCourseId(@PathVariable("courseId") int courseId) {
 
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Course course = new Course();
 		try {
 			Connection connection = dcm.getConnection();
@@ -71,11 +70,10 @@ public class CooperateApplication {
 		}
 		return course;
 	}
-
+	@CrossOrigin
 	@GetMapping("/Professors/{profId}")
 	public Professor getByProfessorId(@PathVariable("profId") int profId)
 	{
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		Professor prof = new Professor();
 		try {
 			Connection connection = dcm.getConnection();
@@ -89,12 +87,11 @@ public class CooperateApplication {
 		return prof;
 	}
 
-
+	@CrossOrigin
 	@PostMapping("/createUser")
 	public boolean createNewUser(@RequestBody String json) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		User user = new User();
 		try {
 			Connection connection = dcm.getConnection();
@@ -115,14 +112,13 @@ public class CooperateApplication {
 		}
 		return true;
 	}
-
+	@CrossOrigin
 	@PostMapping("/likeReview")
 	public int likeReview(@RequestBody String json) throws JsonProcessingException {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 		try {
 			Connection connection = dcm.getConnection();
 			ReviewDao reviewDao = new ReviewDao(connection);
@@ -145,14 +141,13 @@ public class CooperateApplication {
 			return -3;
 		}
 	}
-
+	@CrossOrigin
 	@PostMapping("/makeReview")
 	public int makeReview(@RequestBody String json) throws JsonProcessingException {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 
 		int maxDescriptionLength =  1000;
 		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
@@ -179,11 +174,10 @@ public class CooperateApplication {
 			return -4;
 		}
 	}
-
+	@CrossOrigin
 	@DeleteMapping("/DeleteReview/{reviewId}/{userId}")
     public int deleteReview(@PathVariable("reviewId") int reviewId, @PathVariable("userId") int userId) {
 
-		DatabaseConnectionManager dcm = new DatabaseConnectionManager(hostname, "cooperate", "postgres", "password");
         try {
             Connection connection = dcm.getConnection();
             ReviewDao reviewDao = new ReviewDao(connection);

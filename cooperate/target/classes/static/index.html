@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+
+    .like-btn.clicked, .dislike-btn.clicked {
+        color: darkgray; /* Change the color to darker */
+        pointer-events: none; /* Disable further clicks */
+    }
+    .review-container {
+        position: relative;
+    }
+    .like-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    .dislike-btn {
+        position: absolute;
+        top: 50px;
+        right: 10px;
+    }
+    .like-count {
+        position: absolute;
+        top: 10px;
+        right: 35px; /* Adjusted the right position to center the like count */
+    }
+</style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 50px auto;
+            width: 80%;
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #reviews {
+            text-align: left;
+            margin-top: 20px;
+        }
+        .review-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .review-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .review-text {
+            margin-bottom: 10px;
+        }
+        .review-meta {
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Search</h2>
+    <input type="text" id="searchInput" placeholder="Search...">
+    <select id="searchType">
+        <option value="user">User</option>
+        <option value="professor">Professor</option>
+        <option value="course">Course</option>
+    </select>
+    <button onclick="search()">Search</button>
+
+    <label for="sortSelect">Sort by:</label>
+    <select id="sortSelect">
+        <option value="timestamp_asc">Timestamp (Oldest First)</option>
+        <option value="timestamp_desc">Timestamp (Newest First)</option>
+        <option value="likes_asc">Number of Likes (Lowest First)</option>
+        <option value="likes_desc">Number of Likes (Highest First)</option>
+    </select>
+
+    <div id="reviews"></div>
+
+    <div style="height: 500px;"></div>
+</div>
+
+<script>
+    let currentPage = 0; // Current page number
+    let loadingReviews = false; // Flag to prevent multiple simultaneous requests
+
+    // Listen for scroll event
+    window.addEventListener('scroll', function() {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            // User has scrolled to the bottom
+            if (!loadingReviews) {
+                // Avoid multiple simultaneous requests
+                loadingReviews = true;
+                console.log("Loading Reviews");
+                currentPage += 1
+                search(clear = false);
+            }
+        }
+    });
+
+
+    function search(clear = true) {
+
+        if (clear){
+            currentPage = 0;
+            loadingReviews = false;
+            document.getElementById('reviews').innerHTML = '';
+        }
+        var searchInput = document.getElementById('searchInput').value;
+        var searchType = document.getElementById('searchType').value;
+        var sortBy = document.getElementById('sortSelect').value;
+        var endpoint = 'http://localhost:8080'; // Set your endpoint URL here
+
+        if (searchType === 'user') {
+            endpoint += '/user_id/' + searchInput;
+        } else if (searchType === 'professor') {
+            endpoint += '/prof_id/' + searchInput;
+        } else if (searchType === 'course') {
+            endpoint += '/course_id/' + searchInput;
+        }
+        endpoint += '/Reviews';
+
+        if (sortBy === 'timestamp_asc'){
+            endpoint += '/created_at/ASC/';
+        }
+        else if (sortBy === 'timestamp_desc')
+        {
+            endpoint += '/created_at/DESC/';
+        }
+        else if (sortBy === 'likes_asc/')
+        {
+            endpoint += 'net_likes/ASC/';
+        }
+        else
+        {
+            endpoint += 'net_likes/DESC/';
+        }
+
+        endpoint += currentPage.toString();
+
+
+        // Fetch reviews from the endpoint
+        fetch(endpoint)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    // Display reviews
+                    displayReviews(data);
+                } else {
+                    // No reviews found
+                    document.getElementById('reviews').innerHTML = 'No reviews found.';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching reviews:', error);
+                document.getElementById('reviews').innerHTML = 'Error fetching reviews. Please try again later.';
+            });
+    }
+
+    function displayReviews(reviews) {
+        var reviewsContainer = document.getElementById('reviews');
+        //reviewsContainer.innerHTML = ''; // Clear previous reviews
+
+        if (reviews.length === 0) {
+            loadingReviews = true;
+            return;
+        }
+        reviews.forEach(review => {
+            var reviewContainer = document.createElement('div');
+            reviewContainer.classList.add('review-container');
+
+            var reviewHeader = document.createElement('div');
+            reviewHeader.classList.add('review-header');
+            reviewHeader.textContent = `User ID: ${review.userId}, Professor ID: ${review.profId}, Course ID: ${review.courseId}`;
+            reviewContainer.appendChild(reviewHeader);
+
+            var reviewText = document.createElement('div');
+            reviewText.classList.add('review-text');
+            reviewText.textContent = review.review;
+            reviewContainer.appendChild(reviewText);
+
+            var reviewMeta = document.createElement('div');
+            reviewMeta.classList.add('review-meta');
+            reviewMeta.textContent = `Timestamp: ${review.timestamp}, Number of Likes: ${review.netLikes}`;
+            reviewContainer.appendChild(reviewMeta);
+
+            var likeCount = review.netLikes; // Assuming netLikes is available in the review object
+
+            // Append thumbs up and thumbs down icons to the review container
+            var likeButton = document.createElement('button');
+            likeButton.innerHTML = '<i class="fas fa-arrow-up"></i>';
+            likeButton.classList.add('like-btn'); // Add class for styling
+            likeButton.onclick = function() {
+                // Call the endpoint to like the review
+                likeButton.classList.add('clicked'); // Add class to indicate click
+                likeCount++; // Increment like count
+                likeCountDisplay.textContent = likeCount; // Update like count display
+            };
+            reviewContainer.appendChild(likeButton);
+
+            var dislikeButton = document.createElement('button');
+            dislikeButton.innerHTML = '<i class="fas fa-arrow-down"></i>';
+            dislikeButton.classList.add('dislike-btn'); // Add class for styling
+            dislikeButton.onclick = function() {
+                // Call the endpoint to dislike the review
+                dislikeButton.classList.add('clicked'); // Add class to indicate click
+                likeCount--;
+                likeCountDisplay.textContent = likeCount; // Update like count display
+            };
+            reviewContainer.appendChild(dislikeButton);
+
+            // Element to display like count
+            var likeCountDisplay = document.createElement('span');
+            likeCountDisplay.textContent = likeCount;
+            reviewContainer.appendChild(likeCountDisplay);
+
+            reviewsContainer.appendChild(reviewContainer);
+        });
+        loadingReviews = false;
+    }
+</script>
+</body>
+</html>
