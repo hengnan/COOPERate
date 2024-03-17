@@ -15,11 +15,6 @@
   margin-right: auto; /* Push the title to the left */
 }
 
-.sticky {
-  position: fixed; /* Set position to fixed */
-  top: 0; /* Stick to the top */
-  width: 100%; /* Take full width */
-}
 
 .button, .profile-button {
   background-color: transparent;
@@ -30,6 +25,13 @@
   cursor: pointer;
 }
 
+.button:hover {
+  background-color: lightblue;
+}
+
+.profile-button:hover{
+  background-color: lightgreen;
+}
 .profile-button {
   background-color: #4cd137; /* Green color for profile button */
 }
@@ -127,6 +129,59 @@ body {
   width: 100px;
 }
 
+.rating-box {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: fixed;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  transition: background-color 0.3s ease;
+}
+
+.divider {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-top: 3px solid #000000; /* Divider color */
+}
+
+.high-rating {
+  background-color: #d7f1e8; /* Light green for high rating */
+}
+
+.low-rating {
+  background-color: #f7d4d6; /* Light red for low rating */
+}
+
+.rating-box h2 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+
+
+.rating-item {
+  text-align: center;
+}
+
+.rating-item h3 {
+  color: #666;
+  font-size: 16px;
+  text-align: center;
+}
+
+.rating-item p {
+  color: #333;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .like-dislike {
   position: absolute;
   top: 50px; /* Adjust as needed */
@@ -152,6 +207,9 @@ body {
 .prof-rating, .course-rating {
   padding: 5px 10px;
   border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
 }
 
 .prof-rating {
@@ -161,6 +219,7 @@ body {
 .course-rating {
   background-color: lightgreen;
 }
+
 
 .like-dislike {
   display: flex;
@@ -199,3 +258,4 @@ body {
   top: 100px;
   left: 180px;
 }
+
