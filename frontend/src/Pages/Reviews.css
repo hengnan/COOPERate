@@ -17,6 +17,7 @@
 }
 
 
+
 .button, .profile-button {
   background-color: transparent;
   color: #fff;
@@ -24,8 +25,13 @@
   padding: 10px;
   margin-left: 10px;
   cursor: pointer;
+  margin-top: 20px;
 }
 
+.button-link {
+  display: inline-block;
+  text-decoration: none;
+}
 .button:hover {
   background-color: lightblue;
 }
