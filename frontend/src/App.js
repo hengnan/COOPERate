@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ReviewsPage from './Pages/Reviews.js';
 import LoginPage from './Pages/Login.js';
+import MakeUserPage from './Pages/CreateUser.js'
 import useUser from "./hooks/useUser";
 
 
@@ -33,9 +34,11 @@ const App = () => {
     //const [data, setData] = useState(null);
 
     const {user, isLoading} = useUser();
-    if(user != null)
+    console.log(user);
+    if(user != null && user.emailVerified)
     {
         console.log(user);
+        console.log(user.emailVerified);
         return (
             <Router>
                 <Routes>
@@ -50,6 +53,7 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<LoginPage/>} />
+                    <Route path="/create-account" element={<MakeUserPage/>} />
                 </Routes>
             </Router>
         );
