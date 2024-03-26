@@ -34,7 +34,7 @@ const App = () => {
     //const [data, setData] = useState(null);
 
     const {user, isLoading} = useUser();
-    console.log(user);
+    
     if(user != null && user.emailVerified)
     {
         console.log(user);

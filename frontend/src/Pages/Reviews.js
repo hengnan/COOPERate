@@ -221,9 +221,6 @@ const ReviewsPage = () => {
         <a href = "/" class="button-link">
           <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
         </a>
-        <a href = "/login" class="button-link">
-          <button class="button"><i class="fas fa-sign-in-alt"></i> Login</button>
-        </a>
         <a href = "/" class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
         </a>

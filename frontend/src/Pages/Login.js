@@ -1,11 +1,13 @@
 import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import './Login.css';
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [username, setUser] = useState("");
 
     const navigate = useNavigate();
 
@@ -18,25 +20,33 @@ const LoginPage = () => {
         }
     };
 
+
+
     return (
-        <>
-            <h1>Log In</h1>
-            {error && <p className="error">{error}</p>}
-            <input
-                placeholder="Your email address"
-                value={email}
-                onChange={e=>setEmail(e.target.value)}
-            />
-            <input
-                type="password"
-                placeholder="Your password"
-                value={password}
-                onChange={e=>setPassword(e.target.value)}
-            />
-            <button onClick={logIn}>Log In</button>
-            <Link to="/create-account">Don't have an account? Create one here</Link>
-        </>
-    );
+    <div className="App">
+    {error && <p className="error">{error}</p>}
+      <nav className="container-fluid">
+        <ul><li><strong>COOPERATE</strong></li></ul>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="/create-account" className="make-account-btn" role="button">Make an Account</a></li> {/* New Make an Account button */}
+        </ul>
+      </nav>
+      <main className="container">
+        <form className="login-form">
+          <h2>Login</h2>
+          <input type="text" id="username" name="username" placeholder="Username" value = {username} onChange={e=>setUser(e.target.value)} required />
+          <input type="text" id="email" name="email" placeholder="email@cooper.edu" value = {email} onChange={e=>setEmail(e.target.value)} required />
+          <input type="password" id="password" name="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} required />
+          <button type="submit" onClick={logIn}>Log In</button>
+        </form>
+      </main>
+      <footer className="container">
+        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
+      </footer>
+    </div>
+  );
 }
 
 export default LoginPage;
