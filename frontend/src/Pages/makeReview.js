@@ -10,6 +10,7 @@ const ReviewForm = () => {
         reviewDescription: '',
         documentUpload: null
     });
+    const [error, setError] = useState("");
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -19,11 +20,70 @@ const ReviewForm = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle the submission here (e.g., send to backend)
-        console.log(formData);
-        // Reset the form if needed
+        //try{
+            const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
+            
+            
+            const courseInfo = await courseDetails.json()
+            
+            const courseID = courseInfo.id;
+
+
+            //console.log(formData);
+
+            if (courseID < 0) {
+                setError("Course Not Found!");
+                return;
+            }
+            const profDetails = await fetch("http://localhost:8080/Professors/" + formData.professorName);
+
+            const profInfo = await profDetails.json();
+
+            const profID = profInfo.id;
+
+            if (profID < 0){
+                setError("Professor Not Found!");
+                return;
+            }
+
+            const uid = localStorage.getItem("user_id");
+            
+            
+            
+
+
+            const err_code = await fetch("http://localhost:8080/makeReview", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body : JSON.stringify({
+                    reviewer_id: uid,
+                    course_id: courseID.toString(),
+                    prof_id: profID.toString(),
+                    course_name: formData.courseName,
+                    prof_name: formData.professorName,
+                    course_rating: formData.courseRating.toString(),
+                    prof_rating: formData.professorRating.toString(),
+                    review: formData.reviewDescription,
+                    hyperlink: null
+                })
+            });
+
+            if (err_code === -1)
+            {
+                setError("You already made a review for this course and professor!");
+                return;
+            }
+
+        //}
+        /*
+        catch (e) {
+            setError(e.message);
+            return;
+        }*/
+
+        console.log("Successfully made review!");
         setFormData({
             courseName: '',
             professorName: '',
