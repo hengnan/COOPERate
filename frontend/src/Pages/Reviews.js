@@ -218,7 +218,7 @@ const ReviewsPage = () => {
         <a href = "/" class="button-link">
           <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
         </a>
-        <a href = "/" class="button-link">
+        <a href = "/makeReview" class="button-link">
           <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
         </a>
         <a href = "/" class="button-link">

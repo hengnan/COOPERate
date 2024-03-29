@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged } from "firebase/auth";
+
 
 const CreateAccountPage = () => {
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
-
     const navigate = useNavigate();
 
     const createAccount = async () => {
@@ -21,11 +22,69 @@ const CreateAccountPage = () => {
                 return;
             }
 
+            
+            const userDetails = await fetch("http://localhost:8080/Users/username/" + username)
+
+            const userExists = await userDetails.json()
+
+            if (userExists.id > 0)
+            {
+                setError("Username is already taken!");
+                return;
+            }
+
+            
             const auth = getAuth();
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential =  await createUserWithEmailAndPassword(auth, email, password);
             await sendEmailVerification(auth.currentUser);
 
-            // navigate("/");
+            await new Promise( (resolve) => {
+                
+                
+                const interval = setInterval( () => {
+                    const currentUser = auth.currentUser;
+                    console.log(currentUser);
+                    if (currentUser && currentUser.emailVerified){
+                        clearInterval(interval);
+                        resolve();
+                    }
+                    else {
+                        currentUser.reload();
+                    }
+                }, 1000);
+
+            /*
+                setTimeout( () => {
+                    clearInterval(interval);
+                    reject(new Error("Email verification timeout"));
+                }, 5 * 60 * 1000); // Timeout after 5 minutes
+                */
+            });
+
+
+
+            await fetch("http://localhost:8080/createUser", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: username,
+                    email_address: email,
+                    hashed_password: password
+                })
+            });
+            
+            console.log("Hi");
+            const userInfo = await fetch("http://localhost:8080/Users/email/" + email);
+            const user = await userInfo.json();
+
+
+            localStorage.setItem("username", user.userName);
+            localStorage.setItem("user_id", Number(user.id));
+            localStorage.setItem("karma", parseFloat(user.karma));
+            
+            navigate("/");
+            window.location.reload();
+
         } catch (e) {
             setError(e.message);
         }
@@ -73,6 +132,14 @@ const CreateAccountPage = () => {
         <div style={pageStyle}>
             <h1>Create Account</h1>
             {error && <p style={errorStyle}>{error}</p>}
+
+            <input
+                style={inputStyle}
+                placeholder="Your username"
+                value={username}
+                onChange={e => setUsername(e.target.value)}
+            />
+
             <input
                 style={inputStyle}
                 placeholder="Your email address"

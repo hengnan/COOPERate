@@ -106,10 +106,11 @@ body {
 }
 
 .search-input {
-  flex: 1; /* Take up remaining space */
+  /*flex: 1; /* Take up remaining space */
   border: none;
   padding: 8px;
   border-radius: 5px;
+  margin-top: 15px;
   font-size: 16px;
   outline: none;
 }
@@ -122,6 +123,7 @@ body {
 }
 
 .search-button {
+  flex: 1;
   background-color: #007bff; /* Blue button color */
   color: white;
   border: none;
@@ -300,4 +302,3 @@ body {
   top: 100px;
   left: 180px;
 }
-

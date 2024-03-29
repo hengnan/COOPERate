@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import ReviewsPage from './Pages/Reviews.js';
 import LoginPage from './Pages/Login.js';
 import MakeUserPage from './Pages/CreateUser.js'
+import makeReviewPage from './Pages/makeReview.js'
 import useUser from "./hooks/useUser";
 
 
@@ -34,7 +35,7 @@ const App = () => {
     //const [data, setData] = useState(null);
 
     const {user, isLoading} = useUser();
-    
+    console.log(user);
     if(user != null && user.emailVerified)
     {
         console.log(user);
@@ -43,7 +44,7 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<ReviewsPage/>} />
-                    <Route path="/login" element={<LoginPage/>} />
+                    <Route path="/makeReview" element={<makeReviewPage/>}/>
                 
                 </Routes>
             </Router>
