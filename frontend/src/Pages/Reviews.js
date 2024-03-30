@@ -172,6 +172,7 @@ const ReviewsPage = () => {
       if (review.id === reviewId) {
         const isLiked = !review.isLiked;
         const netLikes = isLiked ? review.netLikes + 1 : review.netLikes - 1;
+
         return { ...review, netLikes, isLiked };
       }
       return review;

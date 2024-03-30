@@ -1,5 +1,61 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './makeReview.css';
+import { gapi } from 'gapi-script';
+
+
+const authToken = "ya29.a0Ad52N39VERWZ-f2gZgTqrrE78li68O7NEgcv0bzzJvwk-NYq_U1jmfXOfaWR-G5Fd7VSNSr8CxCfdD7C2NT3N_dtOkZKGdacGU1M_TRJAHee_CkiWKiInjjr3df_vO9Ohq4E-VvjboDOQckaGvXlbcLXTe-6RH45TtkNaCgYKASISARISFQHGX2MikCWbj5Gv3KRT5mGvTz9E3w0171";
+
+function uploadFile(file) {
+
+    if (!file){
+        console.error('No file to upload.');
+        return;
+    }
+    const boundary = '-------314159265358979323846';
+    const delimiter = "\r\n--" + boundary + "\r\n";
+    const close_delim = "\r\n--" + boundary + "--";
+
+    console.log(file);
+    var reader = new FileReader();
+    reader.readAsBinaryString(file);
+    reader.onload = function (e) {
+        var contentType = file.type || 'application/octet-stream';
+        var metadata = {
+            'name': file.name,
+            'mimeType': contentType
+        };
+
+        var base64Data = btoa(reader.result);
+        var multipartRequestBody =
+            delimiter +
+            'Content-Type: application/json\r\n\r\n' +
+            JSON.stringify(metadata) +
+            delimiter +
+            'Content-Type: ' + contentType + '\r\n' +
+            'Content-Transfer-Encoding: base64\r\n' +
+            '\r\n' +
+            base64Data +
+            close_delim;
+
+        var request = gapi.client.request({
+            'path': '/upload/drive/v3/files',
+            'method': 'POST',
+            'params': { 'uploadType': 'multipart' },
+            'headers': {
+                'Authorization': 'Bearer ' + authToken,
+                'Content-Type': 'multipart/related; boundary="' + boundary + '"'
+            },
+            'body': multipartRequestBody
+        });
+
+        request.execute(function (file) {
+            console.log(file);
+        });
+    };
+}
+
+    
+
 
 const ReviewForm = () => {
     const [formData, setFormData] = useState({
@@ -10,8 +66,27 @@ const ReviewForm = () => {
         reviewDescription: '',
         documentUpload: null
     });
+
+    
     const [error, setError] = useState("");
 
+    
+    useEffect(() => {
+        function start() {
+            gapi.client.init({
+                // Assuming you have already configured OAuth2 credentials
+                apiKey: 'AIzaSyB741SY92gk5TMU9M5nKzIk7vPoDq-P0NQ',
+                clientId: '475017443270-lvbqsd7r9imro4orfjs1uef68blknej4.apps.googleusercontent.com',
+                scope: 'https://www.googleapis.com/auth/drive.file',
+                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
+            }).then(() => {
+                console.log('GAPI client initialized.');
+            });
+        }
+
+        gapi.load('client:auth2', start);
+    }, []);
+    
     const handleChange = (e) => {
         const { name, value, files } = e.target;
         setFormData(prevState => ({
@@ -22,7 +97,12 @@ const ReviewForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        //try{
+        try{
+            if(formData.courseName === "")
+            {
+                setError("Course name field cannot be empty!");
+                return;
+            }
             const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
             
             
@@ -31,10 +111,15 @@ const ReviewForm = () => {
             const courseID = courseInfo.id;
 
 
-            //console.log(formData);
 
             if (courseID < 0) {
                 setError("Course Not Found!");
+                return;
+            }
+
+            if(formData.professorName === "")
+            {
+                setError("Professor name field cannot be empty!");
                 return;
             }
             const profDetails = await fetch("http://localhost:8080/Professors/" + formData.professorName);
@@ -75,13 +160,14 @@ const ReviewForm = () => {
                 setError("You already made a review for this course and professor!");
                 return;
             }
+            //console.log(formData.documentUpload);
+            //uploadFile(formData.documentUpload);
 
-        //}
-        /*
+        }
+        
         catch (e) {
             setError(e.message);
-            return;
-        }*/
+        }
 
         console.log("Successfully made review!");
         setFormData({
