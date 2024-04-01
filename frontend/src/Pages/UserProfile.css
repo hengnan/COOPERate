@@ -1,0 +1,15 @@
+.user-profile {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.user-profile h2 {
+  margin-top: 0;
+}
+
+.user-profile p {
+  color: #666;
+}

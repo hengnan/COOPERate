@@ -5,17 +5,14 @@ import ReviewsPage from './Pages/Reviews.js';
 import LoginPage from './Pages/Login.js';
 import MakeUserPage from './Pages/CreateUser.js'
 import MakeReviewPage from './Pages/makeReview.js'
+import UserPage from './Pages/UserProfile.js'
 import useUser from "./hooks/useUser";
 
 
-// Import the functions you need from the SDKs you need
 
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyA18mDmNzVbx_1qqkTV0KSvP-a7LUo9A4c",
   authDomain: "cooperate-4d913.firebaseapp.com",
@@ -32,7 +29,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 
   
 const App = () => {
-    //const [data, setData] = useState(null);
 
     const {user, isLoading} = useUser();
     if(user != null && user.emailVerified)
@@ -42,6 +38,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<ReviewsPage/>} />
                     <Route path="/makeReview" element={<MakeReviewPage/>}/>
+                    <Route path="/Users" element={<UserPage/>}/>
                 
                 </Routes>
             </Router>

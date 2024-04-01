@@ -73,6 +73,7 @@ CREATE TABLE Likes (
   user_id int NOT NULL,
   review_id int NOT NULL,
   react int NOT NULL, --either -1 or 1 for dislike or like
+  orig_karma float NOT NULL, --karma of user when like was made
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES Users,
   FOREIGN KEY (review_id) REFERENCES Reviews ON DELETE CASCADE

@@ -19,6 +19,12 @@ const ReviewsPage = () => {
     setSearchType(event.target.value);
   };
 
+  const saveUsername = (username, event) => {
+    event.preventDefault();
+    localStorage.setItem('view-user', username);
+    window.location.href = '/Users';
+  }
+
   const handleSortOptionChange = (event) => {
     setSortOption(event.target.value);
   };
@@ -29,24 +35,47 @@ const ReviewsPage = () => {
   
     return date.format('MMMM Do, YYYY'); // Format the date
   }
-  useEffect(() => {
-    // Define array of course and professor names
-    const courseNames = ['Software Engineering', 'Integrated Circuits Engineering', 'Digital Signal Processing'];
-    const professorNames = ['Christopher Hong', 'Jabeom Koo', 'Fred Fontaine'];
-    var names = []
-    if(searchType == "Professors"){names = professorNames;}
-    else {names = courseNames;}
-    // Initialize autocomplete for search input
-    $('#searchInput').autocomplete({
-      
-      source: [...names],
-      select: function(event, ui) {
-        setSearchQuery(ui.item.value); // Update searchQuery state with selected suggestion
-        return false; // Prevent default action of selecting the item
-      },
-    });
-  }, []);
 
+  useEffect(() => {
+    const updateAutocompleteSource = () => {
+      // Define array of course and professor names
+      const courseNames = ['Software Engineering', 'Integrated Circuits Engineering', 'Digital Signal Processing'];
+      const professorNames = ['Christopher Hong', 'Jabeom Koo', 'Fred Fontaine'];
+      
+      // Determine the source based on the selected search type
+      const names = searchType === "Professors" ? professorNames : courseNames;
+      
+      // Check if autocomplete is already initialized and destroy it
+      if ($("#searchInput").autocomplete("instance")) {
+        $("#searchInput").autocomplete("destroy");
+      }
+      
+      // Re-initialize autocomplete with the new source
+      $("#searchInput").autocomplete({
+        source: names,
+        select: function(event, ui) {
+          setSearchQuery(ui.item.value); // Update searchQuery state with selected suggestion
+          return false; // Prevent default action of selecting the item
+        },
+      });
+    };
+
+    updateAutocompleteSource();
+
+  // Attach change event listener to the searchType dropdown
+  const searchTypeSelect = document.getElementById('searchTypeSelect');
+  searchTypeSelect.addEventListener('change', updateAutocompleteSource);
+
+  // Cleanup function to remove event listener and destroy autocomplete widget
+  return () => {
+    if (searchTypeSelect) {
+      searchTypeSelect.removeEventListener('change', updateAutocompleteSource);
+    }
+    if ($("#searchInput").autocomplete("instance")) {
+      $("#searchInput").autocomplete("destroy");
+    }
+  };
+}, [searchType]); // Run this effect when searchType changes
 
 
   const handleChange = (event) => {
@@ -88,6 +117,7 @@ const ReviewsPage = () => {
         const data = await response.json();
         if (data.length === 0) {setFeed(true);}
         setReviews((prevReviews) => [...prevReviews, ...data]); // Append new reviews to existing reviews
+
         setPage((page) => page + 1);
       } else {
         console.error('Failed to fetch reviews:', response.statusText);
@@ -102,8 +132,9 @@ const ReviewsPage = () => {
   };
 
   const fetchOverallRating = async () => {
+
     var endpoint = 'http://localhost:8080/' + searchType + "/" + searchQuery.toString();
-  
+    
     try {
       const response = await fetch(endpoint);
   
@@ -120,7 +151,7 @@ const ReviewsPage = () => {
     } catch (error) {
       console.error('Error fetching overall rating:', error);
     }
-  };
+  };  
 
   const handleSearch = async () => {
     
@@ -167,31 +198,58 @@ const ReviewsPage = () => {
   }, [endOfPageRef, loading]);
 
   const handleLike = (reviewId) => {
-    // Update the UI with the new net likes count
     const updatedReviews = reviews.map((review) => {
       if (review.id === reviewId) {
+        // Determine if the review is currently liked or not
         const isLiked = !review.isLiked;
-        const netLikes = isLiked ? review.netLikes + 1 : review.netLikes - 1;
-
-        return { ...review, netLikes, isLiked };
+        // Adjust the netLikes based on the new like status and previous dislike status
+        let netLikes = review.netLikes;
+        if (isLiked) {
+          netLikes += 1; // Increase for the like
+          if (review.isDisliked) {
+            netLikes += 1; // Increase again if it was previously disliked
+          }
+        } else {
+          netLikes -= 1; // Decrease if unliking
+        }
+  
+        // Ensure isDisliked is turned off if the review is now liked
+        const isDisliked = isLiked ? false : review.isDisliked;
+  
+        return { ...review, netLikes, isLiked, isDisliked };
       }
       return review;
     });
     setReviews(updatedReviews);
   };
-
+  
   const handleDislike = (reviewId) => {
-    // Update the UI with the new net likes count
     const updatedReviews = reviews.map((review) => {
       if (review.id === reviewId) {
+        // Determine if the review is currently disliked or not
         const isDisliked = !review.isDisliked;
-        const netLikes = isDisliked ? review.netLikes - 1 : review.netLikes + 1;
-        return { ...review, netLikes, isDisliked };
+        // Adjust the netLikes based on the new dislike status and previous like status
+        let netLikes = review.netLikes;
+        if (isDisliked) {
+          netLikes -= 1; // Decrease for the dislike
+          if (review.isLiked) {
+            netLikes -= 1; // Decrease again if it was previously liked
+          }
+        } else {
+          netLikes += 1; // Increase if undislking
+        }
+  
+        // Ensure isLiked is turned off if the review is now disliked
+        const isLiked = isDisliked ? false : review.isLiked;
+  
+        return { ...review, netLikes, isLiked, isDisliked };
       }
       return review;
     });
     setReviews(updatedReviews);
   };
+  
+
 
 
   const StarRating = ({ rating }) => {
@@ -208,7 +266,6 @@ const ReviewsPage = () => {
 
 
 
-
   return (
     <div className="container">
       <div class="banner">
@@ -216,13 +273,13 @@ const ReviewsPage = () => {
         <a href = "/" class="button-link">
           <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
         </a>
-        <a href = "/" class="button-link">
+        <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
           <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
         </a>
         <a href = "/makeReview" class="button-link">
           <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
         </a>
-        <a href = "/" class="button-link">
+        <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
         </a>
       </div>
@@ -240,12 +297,11 @@ const ReviewsPage = () => {
           placeholder="Search..."
           value={searchQuery}
           onChange={handleChange}
-          //onChange={(e) => setSearchQuery(e.target.value)}
           className={`search-input`}
         />
 
         
-        <select value={searchType} onChange={handleSearchTypeChange} className="select">
+        <select id="searchTypeSelect" value={searchType} onChange={handleSearchTypeChange} className="select">
           <option value="Professors">Professor</option>
           <option value="Courses">Course</option>
         </select>
@@ -263,8 +319,8 @@ const ReviewsPage = () => {
           <div key={index} className="review-container">
             <div className="user-course-prof-container">
 
-              <p>Posted By <a href={`/user/${review.username}`}>{review.username}</a></p>
-              <p> Course: <a href={`/course/${review.course_name}`}>{review.course_name}</a> &emsp; Professor: <a href={`/prof/${review.prof_name}}`}>{review.prof_name}</a></p>
+              <p>Posted By <a href={'/Users'} onClick= {(e) => saveUsername(review.username, e)}> {review.username}</a></p>
+              <p> Course: <a href={`/course/${review.course_name}`}> {review.course_name}</a> &emsp; Professor: <a href={`/prof/${review.prof_name}}`}>{review.prof_name}</a></p>
             </div>
             <div className="review-content">
               <div className = "review-text">

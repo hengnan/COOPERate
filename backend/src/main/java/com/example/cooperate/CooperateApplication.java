@@ -157,6 +157,51 @@ public class CooperateApplication {
 			return -3;
 		}
 	}
+
+	@CrossOrigin
+	@PostMapping("/removeLike")
+	public void removeLike(@RequestBody String json) throws JsonProcessingException {
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+
+		try{
+			Connection connection = dcm.getConnection();
+			UserDao userDao = new UserDao(connection);
+			User user = userDao.findById(Integer.parseInt(inputMap.get("liker_id")));
+			user.deleteLike(Integer.parseInt(inputMap.get("review_id")), connection);
+		}
+		catch (SQLException var8) {
+			var8.printStackTrace();
+		}
+	}
+	@CrossOrigin
+	@GetMapping("/user-review")
+	public int isLiked(@RequestBody String json) throws JsonProcessingException
+	{
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		int exists = 0;
+
+		try {
+			Connection connection = dcm.getConnection();
+			LikesDao likedao = new LikesDao(connection);
+			int liker_id = Integer.parseInt(inputMap.get("liker_id"));
+			int review_id = Integer.parseInt(inputMap.get("review_id"));
+
+			if (!likedao.exists(liker_id, review_id)){return exists;}
+
+			Likes like = likedao.findByUserReview(Integer.parseInt(inputMap.get("liker_id")),
+					Integer.parseInt(inputMap.get("review_id")));
+
+			exists = like.getReact();
+
+		}
+		catch (SQLException var8) {
+			var8.printStackTrace();
+		}
+		return exists;
+	}
 	@CrossOrigin
 	@PostMapping("/makeReview")
 	public int makeReview(@RequestBody String json) throws JsonProcessingException {
