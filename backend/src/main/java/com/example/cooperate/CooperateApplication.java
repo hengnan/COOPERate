@@ -174,7 +174,8 @@ public class CooperateApplication {
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
-      
+
+      		System.out.println(inputMap);
 			return user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("course_name"),
