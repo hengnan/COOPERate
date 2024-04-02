@@ -11,7 +11,7 @@ public class ProfessorDao extends DataAccessObject<Professor>{
     private static final String GET_BY_NAME = "SELECT * " +
             "FROM Professor WHERE prof_name=?";
 
-    private static final String INSERT = "INSERT INTO Professor (prof_name, rating, descrip)" +
+    private static final String  INSERT = "INSERT INTO Professor (prof_name, rating, descrip)" +
             " VALUES (?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Professor SET rating = ?, total_rating = ? WHERE id=?";

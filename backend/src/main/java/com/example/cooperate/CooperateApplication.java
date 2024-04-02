@@ -18,7 +18,7 @@ public class CooperateApplication {
 	DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
 
 	@CrossOrigin
-	@GetMapping("/Users/{username}")
+	@GetMapping("/Users/username/{username}")
 	public User getUser(@PathVariable("username") String username)
 	{
 		User user = new User();
@@ -26,7 +26,22 @@ public class CooperateApplication {
 			Connection connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			user = userDao.findByName(username);
-			System.out.println(user);
+		}
+		catch (SQLException var8) {
+			var8.printStackTrace();
+		}
+		return user;
+	}
+
+	@CrossOrigin
+	@GetMapping("/Users/email/{email}")
+	public User getUserByEmail(@PathVariable("email") String email)
+	{
+		User user = new User();
+		try {
+			Connection connection = dcm.getConnection();
+			UserDao userDao = new UserDao(connection);
+			user = userDao.findByEmail(email);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();

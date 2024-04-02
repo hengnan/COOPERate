@@ -18,6 +18,8 @@ public class UserDao extends DataAccessObject<User> {
     private static final String UPDATE = "UPDATE users SET karma = ? WHERE id=?";
 
     private static final String LASTVAL = "SELECT last_value FROM user_counter";
+
+    private static final String GET_ONE_BY_EMAIL = "SELECT * FROM Users WHERE email_address = ?";
     public UserDao(Connection connection) {
         super(connection);
     }
@@ -47,8 +49,31 @@ public class UserDao extends DataAccessObject<User> {
     public User findByName(String name) {
         User user = new User();
 
-        try (PreparedStatement statement = this.connection.prepareStatement(GET_ONE);) {
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_BY_NAME);) {
             statement.setString(1, name);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()) {
+                user.setId(rs.getInt("id"));
+                user.setUserName(rs.getString("username"));
+                user.setPassword(rs.getString("hashed_password"));
+                user.setEmail(rs.getString("email_address"));
+                user.setKarma(rs.getFloat("karma"));
+                user.setTimestamp(rs.getTimestamp("created_at"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return user;
+    }
+
+    public User findByEmail(String email)
+    {
+        User user = new User();
+
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_ONE_BY_EMAIL);) {
+            statement.setString(1, email);
             ResultSet rs = statement.executeQuery();
 
             while (rs.next()) {

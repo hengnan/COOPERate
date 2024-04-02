@@ -15,7 +15,6 @@ const ReviewsPage = () => {
   const [overallRating, setRating] = useState(0);
   const endOfPageRef = useRef(null);
   const [searching, setSearching] = useState(false);
-  const [validSearch, setValidSearch] = useState(true);
   const handleSearchTypeChange = (event) => {
     setSearchType(event.target.value);
   };
@@ -213,11 +212,18 @@ const ReviewsPage = () => {
     <div className="container">
       <div class="banner">
         <h1 class="banner-title">COOPERATE</h1>
-        <button className="button"><i className="fas fa-info-circle"></i> About Us</button>
-        <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
-        <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
-        <button class="button"><i class="fas fa-sign-in-alt"></i> Login</button>
-        <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        <a href = "/" class="button-link">
+          <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
+        </a>
+        <a href = "/" class="button-link">
+          <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
+        </a>
+        <a href = "/makeReview" class="button-link">
+          <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
+        </a>
+        <a href = "/" class="button-link">
+          <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </a>
       </div>
       <div class="rating-box" id="ratingBox">
         <h2>Overall Rating</h2>
@@ -233,8 +239,8 @@ const ReviewsPage = () => {
           placeholder="Search..."
           value={searchQuery}
           onChange={handleChange}
-          /*onChange={(e) => setSearchQuery(e.target.value)}*/
-          className={`search-input ${!validSearch ? 'invalid-search' : ''}`} 
+          //onChange={(e) => setSearchQuery(e.target.value)}
+          className={`search-input`}
         />
 
         
