@@ -6,6 +6,8 @@ import LoginPage from './Pages/Login.js';
 import MakeUserPage from './Pages/CreateUser.js'
 import MakeReviewPage from './Pages/makeReview.js'
 import UserPage from './Pages/UserProfile.js'
+import CoursePage from './Pages/CourseProfile.js'
+import ProfessorPage from './Pages/ProfessorProfile.js'
 import useUser from "./hooks/useUser";
 
 
@@ -39,6 +41,8 @@ const App = () => {
                     <Route path="/" element={<ReviewsPage/>} />
                     <Route path="/makeReview" element={<MakeReviewPage/>}/>
                     <Route path="/Users" element={<UserPage/>}/>
+                    <Route path="/Courses" element = {<CoursePage/>}/>
+                    <Route path="/Professors" element = {<ProfessorPage/>}/>
                 
                 </Routes>
             </Router>
@@ -55,7 +59,7 @@ const App = () => {
 
   };
   
-  root.render(<App/>);
+ root.render(<App/>);
 
   
 export default App;

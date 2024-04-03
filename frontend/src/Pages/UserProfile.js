@@ -26,6 +26,7 @@ const UserProfilePage = () => {
     window.location.href = '/Users';
   }
 
+
   useEffect(() => {
     // Fetch user details
     const fetchUserDetails = async () => {

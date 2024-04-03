@@ -24,6 +24,17 @@ const ReviewsPage = () => {
     localStorage.setItem('view-user', username);
     window.location.href = '/Users';
   }
+  const saveCourse = (coursename, event) => {
+    event.preventDefault();
+    localStorage.setItem('view-course', coursename);
+    window.location.href = '/Courses';
+  }
+
+  const saveProfessor = (profname, event) => {
+    event.preventDefault();
+    localStorage.setItem('view-professor', profname);
+    window.location.href = '/Professors';
+  }
 
   const handleSortOptionChange = (event) => {
     setSortOption(event.target.value);
@@ -320,7 +331,7 @@ const ReviewsPage = () => {
             <div className="user-course-prof-container">
 
               <p>Posted By <a href={'/Users'} onClick= {(e) => saveUsername(review.username, e)}> {review.username}</a></p>
-              <p> Course: <a href={`/course/${review.course_name}`}> {review.course_name}</a> &emsp; Professor: <a href={`/prof/${review.prof_name}}`}>{review.prof_name}</a></p>
+              <p> Course: <a href={'/Courses'} onClick = {(e) => saveCourse(review.course_name, e)}> {review.course_name}</a> &emsp; Professor: <a href={`/Professors`} onClick = {(e) => saveProfessor(review.prof_name, e)}>{review.prof_name}</a></p>
             </div>
             <div className="review-content">
               <div className = "review-text">

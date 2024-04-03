@@ -1,0 +1,15 @@
+.professor-profile {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.professor-profile h2 {
+  margin-top: 30;
+}
+
+.professor-profile p {
+  color: #666;
+}
