@@ -74,7 +74,6 @@ const ReviewForm = () => {
     useEffect(() => {
         function start() {
             gapi.client.init({
-                // Assuming you have already configured OAuth2 credentials
                 apiKey: 'AIzaSyB741SY92gk5TMU9M5nKzIk7vPoDq-P0NQ',
                 clientId: '475017443270-lvbqsd7r9imro4orfjs1uef68blknej4.apps.googleusercontent.com',
                 scope: 'https://www.googleapis.com/auth/drive.file',
@@ -190,7 +189,7 @@ const ReviewForm = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="professorName">Professor Name</label>
-                    <input type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
+                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseRating">Course Rating</label>

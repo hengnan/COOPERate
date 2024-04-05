@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './Reviews.css'; // Import CSS file for styling
+import './Reviews.css';
 import moment from 'moment';
-import $ from 'jquery'; // Import jQuery
+import $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
 
 const ReviewsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('Professors');
-  const [sortOption, setSortOption] = useState('time-ascending'); // Default sorting by time in ascending order
+  const [sortOption, setSortOption] = useState('time-ascending');
   const [reviews, setReviews] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -41,16 +41,15 @@ const ReviewsPage = () => {
   };
 
   function formatDate(timestamp) {
-    const [month, day, year] = timestamp.split('/'); // Split the timestamp into parts
-    const date = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD'); // Create a Moment.js object
+    const [month, day, year] = timestamp.split('/');
+    const date = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
   
-    return date.format('MMMM Do, YYYY'); // Format the date
+    return date.format('MMMM Do, YYYY');
   }
 
   useEffect(() => {
     const updateAutocompleteSource = () => {
-      // Define array of course and professor names
-      const courseNames = ['Software Engineering', 'Integrated Circuits Engineering', 'Digital Signal Processing'];
+      const courseNames = ['Software Engineering', 'Integrated Circuit Engineering', 'Digital Signals Processing'];
       const professorNames = ['Christopher Hong', 'Jabeom Koo', 'Fred Fontaine'];
       
       // Determine the source based on the selected search type
@@ -86,7 +85,7 @@ const ReviewsPage = () => {
       $("#searchInput").autocomplete("destroy");
     }
   };
-}, [searchType]); // Run this effect when searchType changes
+}, [searchType]); 
 
 
   const handleChange = (event) => {
@@ -120,7 +119,6 @@ const ReviewsPage = () => {
 
     
     
-    // Simulating fetching data from an endpoint
     try {
       setLoading(true);
       const response = await fetch(endpoint);

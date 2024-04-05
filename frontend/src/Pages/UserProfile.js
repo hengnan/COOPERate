@@ -11,13 +11,13 @@ const UserProfilePage = () => {
   const [loading, setLoading] = useState(false);
   const [endFeed, setFeed] = useState(false);
   const endOfPageRef = useRef(null);
-  const username = localStorage.getItem('view-user'); // or any other logic you use to determine the user
+  const username = localStorage.getItem('view-user');
 
   function formatDate(timestamp) {
-    const [month, day, year] = timestamp.split('/'); // Split the timestamp into parts
-    const date = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD'); // Create a Moment.js object
+    const [month, day, year] = timestamp.split('/');
+    const date = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
   
-    return date.format('MMMM Do, YYYY'); // Format the date
+    return date.format('MMMM Do, YYYY');
   }
 
   const saveUsername = (username, event) => {
@@ -26,6 +26,19 @@ const UserProfilePage = () => {
     window.location.href = '/Users';
   }
 
+  const saveCourse = (coursename, event) => {
+    event.preventDefault();
+    localStorage.setItem('view-course', coursename);
+    window.location.href = '/Courses';
+  }
+
+  const saveProfessor = (profname, event) => {
+    event.preventDefault();
+    localStorage.setItem('view-professor', profname);
+    window.location.href = '/Professors';
+  }
+
+  
 
   useEffect(() => {
     // Fetch user details
@@ -200,7 +213,7 @@ const UserProfilePage = () => {
           <div className="user-course-prof-container">
 
             <p>Posted By <a href={'/Users'} onClick= {(e) => saveUsername(review.username, e)}> {review.username}</a></p>
-            <p> Course: <a href={`/course/${review.course_name}`}> {review.course_name}</a> &emsp; Professor: <a href={`/prof/${review.prof_name}}`}>{review.prof_name}</a></p>
+            <p> Course: <a href={'/Courses'} onClick = {(e) => saveCourse(review.course_name, e)}> {review.course_name}</a> &emsp; Professor: <a href={`/Professors`} onClick = {(e) => saveProfessor(review.prof_name, e)}>{review.prof_name}</a></p>
           </div>
           <div className="review-content">
             <div className = "review-text">

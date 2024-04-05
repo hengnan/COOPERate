@@ -10,7 +10,6 @@ const CourseProfile = () => {
   });
   const [isLoading, setIsLoading] = useState(true);
 
-  // Function to fetch course data
   const fetchCourseData = async () => {
     setIsLoading(true);
     try {

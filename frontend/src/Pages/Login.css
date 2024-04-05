@@ -1,8 +1,8 @@
 body, html {
     height: 100%;
     margin: 0;
-    background-color: #1a2a33; /* Dark blue background */
-    color: #ffffff; /* Light text color for better contrast */
+    background-color: #1a2a33; 
+    color: #ffffff;
 }
 
 .App nav.container-fluid {
@@ -15,8 +15,8 @@ body, html {
     list-style: none;
     padding: 0;
     display: flex;
-    gap: 1rem; /* Adds space between the navigation items */
-    align-items: center; /* Aligns items vertically */
+    gap: 1rem;
+    align-items: center;
 }
 
 .App nav ul li a {
@@ -24,12 +24,12 @@ body, html {
     text-decoration: none;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+    transition: background-color 0.3s ease;
 }
 
 .App nav ul li a:hover {
-    background-color: #007bff; /* Bootstrap blue background on hover */
-    color: #ffffff; /* Keeps text color white for contrast */
+    background-color: #007bff;
+    color: #ffffff;
 }
 
 .App .container {
@@ -40,8 +40,8 @@ body, html {
 }
 
 .login-form {
-    background-color: #ffffff; /* Light background for the form */
-    color: #333333; /* Dark text color for readability */
+    background-color: #ffffff;
+    color: #333333;
     width: 100%;
     max-width: 400px;
     padding: 2rem;
@@ -53,20 +53,20 @@ input[type="text"], input[type="password"] {
     margin-bottom: 1rem;
     padding: 0.5rem;
     border-radius: 0.25rem;
-    border: 1px solid #cccccc; /* Light border for inputs */
-    width: calc(100% - 1rem); /* Adjusts input width to fit container */
+    border: 1px solid #cccccc;
+    width: calc(100% - 1rem);
 }
 
 button {
     padding: 0.75rem;
     border-radius: 0.25rem;
     border: none;
-    color: #ffffff; /* White text */
-    background-color: #007bff; /* Bootstrap blue for the button */
-    cursor: pointer; /* Changes the cursor to indicate it's clickable */
-    width: 100%; /* Ensures button width matches inputs */
+    color: #ffffff;
+    background-color: #007bff;
+    cursor: pointer;
+    width: 100%;
 }
 
 button[type="submit"]:hover {
-    background-color: #0056b3; /* Darker blue on hover for visual feedback */
+    background-color: #0056b3;
 }
