@@ -3,6 +3,7 @@ import './makeReview.css';
 import { gapi } from 'gapi-script';
 
 
+
 const authToken = "ya29.a0Ad52N39VERWZ-f2gZgTqrrE78li68O7NEgcv0bzzJvwk-NYq_U1jmfXOfaWR-G5Fd7VSNSr8CxCfdD7C2NT3N_dtOkZKGdacGU1M_TRJAHee_CkiWKiInjjr3df_vO9Ohq4E-VvjboDOQckaGvXlbcLXTe-6RH45TtkNaCgYKASISARISFQHGX2MikCWbj5Gv3KRT5mGvTz9E3w0171";
 
 function uploadFile(file) {
@@ -67,6 +68,12 @@ const ReviewForm = () => {
         documentUpload: null
     });
 
+    const saveUsername = (username, event) => {
+        event.preventDefault();
+        localStorage.setItem('view-user', username);
+        window.location.href = '/Users';
+      }
+
     
     const [error, setError] = useState("");
 
@@ -74,7 +81,6 @@ const ReviewForm = () => {
     useEffect(() => {
         function start() {
             gapi.client.init({
-                // Assuming you have already configured OAuth2 credentials
                 apiKey: 'AIzaSyB741SY92gk5TMU9M5nKzIk7vPoDq-P0NQ',
                 clientId: '475017443270-lvbqsd7r9imro4orfjs1uef68blknej4.apps.googleusercontent.com',
                 scope: 'https://www.googleapis.com/auth/drive.file',
@@ -111,8 +117,8 @@ const ReviewForm = () => {
             const courseID = courseInfo.id;
 
 
-
-            if (courseID < 0) {
+            console.log(courseID);
+            if (courseID <= 0) {
                 setError("Course Not Found!");
                 return;
             }
@@ -128,7 +134,9 @@ const ReviewForm = () => {
 
             const profID = profInfo.id;
 
-            if (profID < 0){
+            console.log(profID);
+
+            if (profID <= 0){
                 setError("Professor Not Found!");
                 return;
             }
@@ -139,7 +147,7 @@ const ReviewForm = () => {
             
 
 
-            const err_code = await fetch("http://localhost:8080/makeReview", {
+            const pckg = await fetch("http://localhost:8080/makeReview", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body : JSON.stringify({
@@ -154,6 +162,9 @@ const ReviewForm = () => {
                     hyperlink: null
                 })
             });
+
+            const err_code = await pckg.json();
+            console.log(err_code);
 
             if (err_code === -1)
             {
@@ -181,7 +192,27 @@ const ReviewForm = () => {
     };
 
     return (
+        <div>
+            <div class="banner">
+                <h1 class="banner-title">COOPERATE</h1>
+                <a href = "/" class="button-link">
+                <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
+                 </a>
+            <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
+            <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
+            </a>
+            <a href = "/" class = "button-link">
+                <button class="button"><i class="fas fa-search"></i> Search Reviews</button>
+            </a>
+            <a href = "/makeReview" class="button-link">
+                <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
+            </a>
+            <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
+            <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+            </a>
+        </div>
         <div className="review-form-container">
+            {error && <div className="error-message">{error}</div>}
             <h2>Make A Review</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -190,7 +221,7 @@ const ReviewForm = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="professorName">Professor Name</label>
-                    <input type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
+                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseRating">Course Rating</label>
@@ -209,7 +240,9 @@ const ReviewForm = () => {
                     <input type="file" id="documentUpload" name="documentUpload" onChange={handleChange} />
                 </div>
                 <button type="submit">Submit Review</button>
+                
             </form>
+        </div>
         </div>
     );
 };

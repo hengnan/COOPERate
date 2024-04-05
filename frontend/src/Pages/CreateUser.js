@@ -9,6 +9,7 @@ const CreateAccountPage = () => {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
+    const [verifSent, setVerifSent] = useState("");
     const navigate = useNavigate();
 
     const createAccount = async () => {
@@ -36,6 +37,8 @@ const CreateAccountPage = () => {
             
             const auth = getAuth();
             const userCredential =  await createUserWithEmailAndPassword(auth, email, password);
+
+            setVerifSent(" ");
             await sendEmailVerification(auth.currentUser);
 
             await new Promise( (resolve) => {
@@ -73,7 +76,6 @@ const CreateAccountPage = () => {
                 })
             });
             
-            console.log("Hi");
             const userInfo = await fetch("http://localhost:8080/Users/email/" + email);
             const user = await userInfo.json();
 
@@ -97,6 +99,11 @@ const CreateAccountPage = () => {
         justifyContent: 'center',
         height: '100vh',
         background: '#1a2a33',
+    };
+
+    const verif_message = {
+        color: 'green',
+        margin: '10px',
     };
 
     const inputStyle = {
@@ -131,7 +138,8 @@ const CreateAccountPage = () => {
     return (
         <div style={pageStyle}>
             <h1>Create Account</h1>
-            {error && <p style={errorStyle}>{error}</p>}
+            {error && !verifSent && <p style={errorStyle}>{error}</p>}
+            {verifSent && <p style = {verif_message}>{<strong>Verification Email Sent!</strong>} </p>}
 
             <input
                 style={inputStyle}

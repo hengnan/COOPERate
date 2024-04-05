@@ -8,6 +8,8 @@ public class Likes implements DataTransferObject{
     private int review_id;
     private int react;
 
+    private float orig_karma;
+
     public int getId() {
         return id;
     }
@@ -34,11 +36,17 @@ public class Likes implements DataTransferObject{
         return react;
     }
     public void setReact(int react){this.react= react;}
+
+    public float getKarma() {return orig_karma;}
+
+    public void setKarma(float karma){this.orig_karma = karma;}
+
     @Override
     public String toString() {
         return "User{" +
                 ", likeID='" + id + '\'' +
                 ",userID='" + user_id + '\'' +
+                "karma='" + orig_karma + '\'' +
                 "\n,reviewID= '" + review_id +
                 '}';
     }
