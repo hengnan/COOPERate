@@ -117,8 +117,8 @@ const ReviewForm = () => {
             const courseID = courseInfo.id;
 
 
-
-            if (courseID < 0) {
+            console.log(courseID);
+            if (courseID <= 0) {
                 setError("Course Not Found!");
                 return;
             }
@@ -134,7 +134,9 @@ const ReviewForm = () => {
 
             const profID = profInfo.id;
 
-            if (profID < 0){
+            console.log(profID);
+
+            if (profID <= 0){
                 setError("Professor Not Found!");
                 return;
             }
@@ -145,7 +147,7 @@ const ReviewForm = () => {
             
 
 
-            const err_code = await fetch("http://localhost:8080/makeReview", {
+            const pckg = await fetch("http://localhost:8080/makeReview", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body : JSON.stringify({
@@ -160,6 +162,9 @@ const ReviewForm = () => {
                     hyperlink: null
                 })
             });
+
+            const err_code = await pckg.json();
+            console.log(err_code);
 
             if (err_code === -1)
             {
@@ -207,6 +212,7 @@ const ReviewForm = () => {
             </a>
         </div>
         <div className="review-form-container">
+            {error && <div className="error-message">{error}</div>}
             <h2>Make A Review</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -234,6 +240,7 @@ const ReviewForm = () => {
                     <input type="file" id="documentUpload" name="documentUpload" onChange={handleChange} />
                 </div>
                 <button type="submit">Submit Review</button>
+                
             </form>
         </div>
         </div>
