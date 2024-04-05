@@ -28,7 +28,7 @@ const LoginPage = () => {
             
             window.location.reload();
         } catch (e) {
-            setError(e.message);
+            setError("Invalid Email Address and/or Password!");
         }
     };
 
@@ -36,7 +36,6 @@ const LoginPage = () => {
 
     return (
     <div className="Login">
-    {error && <p className="error">{error}</p>}
       <nav className="container-fluid">
         <ul><li><strong>COOPERATE</strong></li></ul>
         <ul>
@@ -52,6 +51,7 @@ const LoginPage = () => {
           <input type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
           <button onClick={logIn}>Log In</button>
         </main>
+        {error && <p className="error-message">{error}</p>}
       </div>
     </div>
   );
