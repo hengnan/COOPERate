@@ -35,7 +35,7 @@ const LoginPage = () => {
 
 
     return (
-    <div className="App">
+    <div className="Login">
     {error && <p className="error">{error}</p>}
       <nav className="container-fluid">
         <ul><li><strong>COOPERATE</strong></li></ul>
@@ -53,9 +53,6 @@ const LoginPage = () => {
           <button onClick={logIn}>Log In</button>
         </main>
       </div>
-      <footer className="container">
-        <small><a href="#">Privacy Policy</a> • <a href="#">Terms of Service</a></small>
-      </footer>
     </div>
   );
 }

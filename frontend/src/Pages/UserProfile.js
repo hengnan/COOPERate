@@ -187,6 +187,9 @@ const UserProfilePage = () => {
         <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
           <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
         </a>
+        <a href = "/" class = "button-link">
+          <button class="button"><i class="fas fa-search"></i> Search Reviews</button>
+        </a>
         <a href = "/makeReview" class="button-link">
           <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
         </a>

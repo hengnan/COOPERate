@@ -5,13 +5,13 @@ body, html {
     color: #ffffff;
 }
 
-.App nav.container-fluid {
+.Login nav.container-fluid {
     display: flex;
     justify-content: space-between;
     padding: 1rem;
 }
 
-.App nav ul {
+.Login nav ul {
     list-style: none;
     padding: 0;
     display: flex;
@@ -19,7 +19,7 @@ body, html {
     align-items: center;
 }
 
-.App nav ul li a {
+.Login nav ul li a {
     color: #ffffff;
     text-decoration: none;
     padding: 0.5rem 1rem;
@@ -27,12 +27,12 @@ body, html {
     transition: background-color 0.3s ease;
 }
 
-.App nav ul li a:hover {
+.Login nav ul li a:hover {
     background-color: #007bff;
     color: #ffffff;
 }
 
-.App .container {
+.Login .container {
     display: flex;
     justify-content: center;
     align-items: center;
