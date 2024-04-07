@@ -235,7 +235,7 @@ const ReviewsPage = () => {
       if (entries[0].isIntersecting && !loading && searching) {
         fetchReviews();
       }
-    }, { threshold: 0.5 });
+    }, { threshold: 0.8 });
 
     if (endOfPageRef.current) {
       observer.observe(endOfPageRef.current);
@@ -289,10 +289,9 @@ const handleLikeDislikeRequest = async (reviewId, action) => {
       },
       body: body
     });
-    if (!response.ok) throw new Error('Network response was not ok.');
-    const data = await response.json();
 
-    console.log(data);
+    if (!response.ok) throw new Error('Network response was not ok.');
+
   } catch (error) {
     console.error('Error performing like/dislike action:', error);
   }
