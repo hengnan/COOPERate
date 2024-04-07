@@ -176,7 +176,7 @@ public class CooperateApplication {
 		}
 	}
 	@CrossOrigin
-	@GetMapping("/user-review")
+	@PostMapping("/user-review")
 	public int isLiked(@RequestBody String json) throws JsonProcessingException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();

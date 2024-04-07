@@ -20,7 +20,7 @@ public class LikesDao extends DataAccessObject<Likes>{
 
     private static final String LASTVAL = "SELECT last_value FROM likes_counter";
 
-    private static final String REMOVE = "DELETE FROM Likes WHERE user_id=? AND review_id=?";
+    private static final String REMOVE = "DELETE FROM Likes WHERE id=?";
     public LikesDao(Connection connection) {
         super(connection);
     }
@@ -70,11 +70,10 @@ public class LikesDao extends DataAccessObject<Likes>{
         }
         return like;
     }
-    public void remove(int user_id, int review_id) {
+    public void remove(int like_id) {
         try (PreparedStatement statement = this.connection.prepareStatement(REMOVE);) {
-            statement.setInt(1, user_id);
-            statement.setInt(2, review_id);
-            statement.executeQuery();
+            statement.setInt(1, like_id);
+            statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
