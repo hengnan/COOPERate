@@ -21,14 +21,24 @@ public class CooperateApplication {
 	@GetMapping("/Users/username/{username}")
 	public User getUser(@PathVariable("username") String username)
 	{
+		Connection connection = null;
 		User user = new User();
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			user = userDao.findByName(username);
+			connection.close();
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return user;
 	}
@@ -37,14 +47,23 @@ public class CooperateApplication {
 	@GetMapping("/Users/email/{email}")
 	public User getUserByEmail(@PathVariable("email") String email)
 	{
+		Connection connection = null;
 		User user = new User();
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			user = userDao.findByEmail(email);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return user;
 	}
@@ -57,16 +76,28 @@ public class CooperateApplication {
 										@PathVariable("pageNum") int pageNum ) {
 
 		ArrayList<Review> reviews = new ArrayList<Review>();
-											
+
+		Connection connection = null;
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			ReviewPage page = new ReviewPage(name, source, orderBy, order,
 					2, pageNum*2);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			reviews = reviewDao.getReviews(page);
+
+			System.out.println(reviews);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+		}
+
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return reviews;
 	}
@@ -75,13 +106,23 @@ public class CooperateApplication {
 	public Course getByCourseName(@PathVariable("courseName") String courseName) {
 
 		Course course = new Course();
+		Connection connection = null;
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			CourseDao courseDao = new CourseDao(connection);
 			course = courseDao.findByName(courseName);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+		}
+
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return course;
 	}
@@ -90,15 +131,24 @@ public class CooperateApplication {
 	public Professor getByProfessorId(@PathVariable("profName") String profName)
 	{
 		System.out.println(profName);
+		Connection connection = null;
 		Professor prof = new Professor();
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			ProfessorDao professorDao = new ProfessorDao(connection);
 			prof = professorDao.findByName(profName);
 			System.out.println(prof);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return prof;
 	}
@@ -109,8 +159,10 @@ public class CooperateApplication {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 		User user = new User();
+
+		Connection connection = null;
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 
 
@@ -119,12 +171,21 @@ public class CooperateApplication {
 			user.setEmail(inputMap.get("email_address"));
 			System.out.println(user);
 
-			user = userDao.create(user);
+			userDao.create(user);
 
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
 			return false;
+		}
+
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
 		}
 		return true;
 	}
@@ -134,10 +195,10 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-
+		Connection connection = null;
+		int err_code = 0;
 		try {
-			Connection connection = dcm.getConnection();
-			ReviewDao reviewDao = new ReviewDao(connection);
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 
 			User user = userDao.findById(Integer.parseInt(inputMap.get("liker_id")));
@@ -147,15 +208,21 @@ public class CooperateApplication {
 
 			int review_id = Integer.parseInt(inputMap.get("review_id"));
 
-			int success = user.like(review_id, react, connection);
-
-			return success;
-
+			err_code = user.like(review_id, react, connection);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
-			return -3;
+			err_code = -3;
 		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+		return err_code;
 	}
 
 	@CrossOrigin
@@ -164,9 +231,10 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		Connection connection = null;
 
 		try{
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("liker_id")));
 			user.deleteLike(Integer.parseInt(inputMap.get("review_id")), connection);
@@ -174,17 +242,26 @@ public class CooperateApplication {
 		catch (SQLException var8) {
 			var8.printStackTrace();
 		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
 	}
 	@CrossOrigin
-	@GetMapping("/user-review")
+	@PostMapping("/user-review")
 	public int isLiked(@RequestBody String json) throws JsonProcessingException
 	{
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 		int exists = 0;
+		Connection connection = null;
 
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			LikesDao likedao = new LikesDao(connection);
 			int liker_id = Integer.parseInt(inputMap.get("liker_id"));
 			int review_id = Integer.parseInt(inputMap.get("review_id"));
@@ -200,6 +277,15 @@ public class CooperateApplication {
 		catch (SQLException var8) {
 			var8.printStackTrace();
 		}
+
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
 		return exists;
 	}
 	@CrossOrigin
@@ -213,15 +299,17 @@ public class CooperateApplication {
 		int maxDescriptionLength =  1000;
 		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
 
+		Connection connection = null;
+		int err_code = 0;
 		try {
-			Connection connection = dcm.getConnection();
+			connection = dcm.getConnection();
 			UserDao userDao = new UserDao(connection);
 			ReviewDao reviewDao = new ReviewDao(connection);
 			User user = userDao.findById(Integer.parseInt(inputMap.get("reviewer_id")));
 
 
-      		System.out.println(inputMap);
-			return user.makeReview(Integer.parseInt(inputMap.get("course_id")),
+			System.out.println(inputMap);
+			err_code = user.makeReview(Integer.parseInt(inputMap.get("course_id")),
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("course_name"),
 					inputMap.get("prof_name"),
@@ -232,18 +320,29 @@ public class CooperateApplication {
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
-			return -4;
+			err_code = -4;
 		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+		return err_code;
 	}
 	@CrossOrigin
 	@DeleteMapping("/DeleteReview/{reviewId}/{userId}")
-    public int deleteReview(@PathVariable("reviewId") int reviewId, @PathVariable("userId") int userId) {
+	public int deleteReview(@PathVariable("reviewId") int reviewId, @PathVariable("userId") int userId) {
 
-        try {
-            Connection connection = dcm.getConnection();
-            ReviewDao reviewDao = new ReviewDao(connection);
+		Connection connection = null;
+		int err_code = -3;
+		try {
+			connection = dcm.getConnection();
+			ReviewDao reviewDao = new ReviewDao(connection);
 			Review review = reviewDao.findById(reviewId);
-			
+
 			if (userId != review.getUserId()) {return -3;}
 			boolean isDeleted = reviewDao.deleteById(reviewId);
 
@@ -251,14 +350,23 @@ public class CooperateApplication {
 
 			user.setId(review.getUserId());
 			user.delete(review, connection);
-			if (isDeleted){return 0;}
-			else {return -1;}
-            
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return -2;
-        }
-    }
+			if (isDeleted){err_code = 0;}
+			else {err_code = -1;}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			err_code = -2;
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+		return err_code;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(CooperateApplication.class, args);

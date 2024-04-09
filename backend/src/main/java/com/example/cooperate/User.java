@@ -104,6 +104,9 @@ public class User implements DataTransferObject{
         review.updateNetLikes(react);
 
         reviewDao.update(review);
+
+        System.out.println("\nliking\n");
+        System.out.println(review);
         UserDao userDao = new UserDao(connection);
         User liked_user = userDao.findById(review.getUserId());
 
@@ -116,13 +119,25 @@ public class User implements DataTransferObject{
     {
         LikesDao likedao = new LikesDao(connection);
         Likes like = likedao.findByUserReview(this.id, review_id);
+
+        System.out.println(like);
+        System.out.println(this.id);
+        System.out.println(review_id);
+        System.out.println(like.getId());
+        likedao.remove(like.getId());
+
         ReviewDao reviewDao = new ReviewDao(connection);
         Review review = reviewDao.findById(review_id);
         UserDao userDao = new UserDao(connection);
         User liked_user = userDao.findById(review.getUserId());
 
+
+
         liked_user.updateKarma(like.getReact(), -1*like.getKarma());
         review.updateNetLikes(-1*like.getReact());
+
+        System.out.println("\nunliking\n");
+        System.out.println(review);
         reviewDao.update(review);
 
         userDao.update(liked_user);

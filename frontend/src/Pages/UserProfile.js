@@ -38,6 +38,13 @@ const UserProfilePage = () => {
     window.location.href = '/Professors';
   }
 
+  const handleSortOptionChange = event => {
+    setSortOption(event.target.value);
+    setPage(0);
+    setReviews([]);
+    setFeed(false);
+  };
+
   
 
   useEffect(() => {
@@ -46,7 +53,9 @@ const UserProfilePage = () => {
       try {
         const userDetailsResponse = await fetch(`http://localhost:8080/Users/username/${username}`);
         if (!userDetailsResponse.ok) throw new Error('Failed to fetch user details');
+
         const userDetailsData = await userDetailsResponse.json();
+
         setUserDetails({
           username: userDetailsData.userName,
           karma: userDetailsData.karma,
@@ -58,111 +67,228 @@ const UserProfilePage = () => {
     };
 
     fetchUserDetails();
-    fetchReviews(); // Initial fetch for reviews
+  }, [username]);
 
+  useEffect(() => {    
     // Setup intersection observer for infinite scrolling
-    const observer = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && !loading && !endFeed) {
+    const observer = new IntersectionObserver( (entries) => {
+      if (entries[0].isIntersecting && !loading) {
         fetchReviews();
       }
-    }, { threshold: 0.5 });
+    }, { threshold:  0.5});
 
     if (endOfPageRef.current) observer.observe(endOfPageRef.current);
 
-    return () => observer.disconnect();
-  }, [username, sortOption, page]);
+    return () => {
+      if (endOfPageRef.current) {
+        observer.unobserve(endOfPageRef.current);
+      }
+    };
+  }, [endOfPageRef, loading]);
 
   const fetchReviews = async () => {
     if (endFeed) return;
-    setLoading(true);
-
-    var endpoint = 'http://localhost:8080/userName/' + username + '/Reviews'
-
-    if (sortOption === 'time-ascending') {endpoint += '/created_at/ASC/';}
-
-    else if (sortOption === 'time-descending') {endpoint += '/created_at/DESC/';}
-
-    else if (sortOption === 'likes-ascending') {endpoint += '/net_likes/ASC/';}
-
-    else {endpoint += '/net_likes/DESC/';}
-
+    let endpoint = 'http://localhost:8080/userName/' + username + '/Reviews';
+  
+    switch (sortOption) {
+      case 'time-ascending':
+        endpoint += '/created_at/ASC/';
+        break;
+      case 'time-descending':
+        endpoint += '/created_at/DESC/';
+        break;
+      case 'likes-ascending':
+        endpoint += '/net_likes/ASC/';
+        break;
+      case 'likes-descending':
+        endpoint += '/net_likes/DESC/';
+        break;
+      default:
+        break;
+    }
+  
     endpoint += page.toString();
-
+  
     console.log(endpoint);
-    
+  
     try {
+      setLoading(true);
       const response = await fetch(endpoint);
-      const data = await response.json();
-      if (data.length === 0) setFeed(true);
-      else {
-        setReviews(prev => [...prev, ...data]);
-        setPage(prevPage => prevPage + 1);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.length === 0) {
+          setFeed(true);
+        } else {
+          // Check like/dislike status for each review
+          const reviewIds = data.map(review => review.id);
+          const likeDislikeStatus = await fetchLikeDislikeStatus(reviewIds);
+          const updatedReviews = data.map(review => ({
+            ...review,
+            isLiked: likeDislikeStatus[review.id]?.isLiked || false,
+            isDisliked: likeDislikeStatus[review.id]?.isDisliked || false,
+          }));
+          setReviews((prevReviews) => [...prevReviews, ...updatedReviews]);
+          setPage((prevPage) => prevPage + 1);
+        }
+      } else {
+        console.error('Failed to fetch reviews:', response.statusText);
       }
     } catch (error) {
-      console.error("Failed to fetch reviews:", error);
+      console.error('Error fetching reviews:', error);
     } finally {
       setLoading(false);
     }
+
   };
 
-  const handleSortOptionChange = event => {
-    setSortOption(event.target.value);
-    setPage(0);
-    setReviews([]);
-    setFeed(false);
-  };
 
-  const handleLike = (reviewId) => {
-    const updatedReviews = reviews.map((review) => {
-      if (review.id === reviewId) {
-        // Determine if the review is currently liked or not
-        const isLiked = !review.isLiked;
-        // Adjust the netLikes based on the new like status and previous dislike status
-        let netLikes = review.netLikes;
-        if (isLiked) {
-          netLikes += 1; // Increase for the like
-          if (review.isDisliked) {
-            netLikes += 1; // Increase again if it was previously disliked
-          }
-        } else {
-          netLikes -= 1; // Decrease if unliking
-        }
-  
-        // Ensure isDisliked is turned off if the review is now liked
-        const isDisliked = isLiked ? false : review.isDisliked;
-  
-        return { ...review, netLikes, isLiked, isDisliked };
+  const fetchLikeDislikeStatus = async (reviewIds) => {
+    const endpoint = 'http://localhost:8080/user-review';
+
+    var reviewLookup = new Map();
+    for (let i = 0; i < reviewIds.length; i++){
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ liker_id: localStorage.getItem("user_id"), review_id: '' + reviewIds[i]}),
+        });
+        if (!response.ok) throw new Error('Network response was not ok.');
+        const reaction = await response.json();
+
+        reviewLookup[reviewIds[i]] = {isLiked: reaction == 1, isDisliked : reaction == -1};
+
       }
-      return review;
-    });
+      catch (error) {
+        console.error('Error fetching like/dislike status:', error);
+        return {};
+      }        
+      return reviewLookup;
+    }
+  };
+
+  const handleLikeDislikeRequest = async (reviewId, action) => {
+
+
+    if (action.slice(0, 2) == "un") {
+      var endpoint = 'http://localhost:8080/removeLike';
+      var body = JSON.stringify({ liker_id: localStorage.getItem("user_id"), review_id: '' + reviewId});
+    }
+    else {
+      var endpoint = 'http://localhost:8080/likeReview';
+  
+      
+      if (action == 'like'){ var react = '1';}
+  
+      else{var react = '-1';}
+      var body = JSON.stringify({ liker_id: localStorage.getItem("user_id"), review_id: '' + reviewId, reaction: react })
+    }
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: body
+      });
+  
+      if (!response.ok) throw new Error('Network response was not ok.');
+  
+    } catch (error) {
+      console.error('Error performing like/dislike action:', error);
+    }
+  };
+
+  const handleLike = async (reviewId) => {
+    const reviewIndex = reviews.findIndex(r => r.id === reviewId);
+    if (reviewIndex === -1) return;
+  
+    const review = reviews[reviewIndex];
+    const isLiked = !review.isLiked;
+    const isDisliked = review.isDisliked;
+    const action = isLiked ? 'like' : 'unlike';
+  
+    if (isDisliked) {
+      await handleLikeDislikeRequest(reviewId, "undislike");
+    }
+    await handleLikeDislikeRequest(reviewId, action);
+  
+    // Update netLikes based on the new like status and previous dislike status
+    let netLikes = review.netLikes;
+    if (isLiked) {
+      netLikes += 1; // Increase for the like
+      if (isDisliked) {
+        netLikes += 1; // Correct for previously disliked now being liked
+      }
+    } else {
+      netLikes -= 1; // Decrease for the unlike
+    }
+  
+    // Ensure isDisliked is turned off if the review is now liked
+    const updatedReview = {
+      ...review,
+      netLikes,
+      isLiked,
+      isDisliked: isLiked ? false : review.isDisliked,
+    };
+  
+    // Update reviews array with the updated review
+    const updatedReviews = [...reviews.slice(0, reviewIndex), updatedReview, ...reviews.slice(reviewIndex + 1)];
+    setReviews(updatedReviews);
+  };
+
+  const handleDislike = async (reviewId) => {
+    const reviewIndex = reviews.findIndex(r => r.id === reviewId);
+    if (reviewIndex === -1) return;
+  
+    const review = reviews[reviewIndex];
+    const isDisliked = !review.isDisliked;
+    const isLiked = review.isLiked;
+    const action = isDisliked ? 'dislike' : 'undislike';
+  
+    if (isLiked)
+    {
+      await handleLikeDislikeRequest(reviewId, "unlike");
+    }
+  
+    await handleLikeDislikeRequest(reviewId, action);
+  
+    // Update netLikes based on the new dislike status and previous like status
+    let netLikes = review.netLikes;
+    if (isDisliked) {
+      netLikes -= 1; // Decrease for the dislike
+      if (isLiked) {
+        netLikes -= 1; // Correct for previously liked now being disliked
+      }
+    } else {
+      netLikes += 1; // Increase for the undislike
+    }
+  
+    // Ensure isLiked is turned off if the review is now disliked
+    const updatedReview = {
+      ...review,
+      netLikes,
+      isLiked: isDisliked ? false : review.isLiked,
+      isDisliked,
+    };
+  
+    // Update reviews array with the updated review
+    const updatedReviews = [...reviews.slice(0, reviewIndex), updatedReview, ...reviews.slice(reviewIndex + 1)];
     setReviews(updatedReviews);
   };
   
-  const handleDislike = (reviewId) => {
-    const updatedReviews = reviews.map((review) => {
-      if (review.id === reviewId) {
-        // Determine if the review is currently disliked or not
-        const isDisliked = !review.isDisliked;
-        // Adjust the netLikes based on the new dislike status and previous like status
-        let netLikes = review.netLikes;
-        if (isDisliked) {
-          netLikes -= 1; // Decrease for the dislike
-          if (review.isLiked) {
-            netLikes -= 1; // Decrease again if it was previously liked
-          }
-        } else {
-          netLikes += 1; // Increase if undislking
-        }
+
+
+
+
+
+
   
-        // Ensure isLiked is turned off if the review is now disliked
-        const isLiked = isDisliked ? false : review.isLiked;
+
   
-        return { ...review, netLikes, isLiked, isDisliked };
-      }
-      return review;
-    });
-    setReviews(updatedReviews);
-  };
 
   const StarRating = ({ rating }) => {
     const stars = [];
@@ -178,7 +304,8 @@ const UserProfilePage = () => {
 
   return (
     
-    <div className="user-profile-page">
+    <div className="container">
+      <div className = "userProfile">
       <div class="banner">
         <h1 class="banner-title">COOPERATE</h1>
         <a href = "/" class="button-link">
@@ -247,8 +374,9 @@ const UserProfilePage = () => {
           </div>
         </div>
       ))}
-        <div ref={endOfPageRef}></div>
+        <div ref={endOfPageRef} className="loading-sentinel"></div>
       </div>
+    </div>
     </div>
   );
 };

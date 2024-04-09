@@ -172,7 +172,7 @@ const ReviewForm = () => {
                 return;
             }
             //console.log(formData.documentUpload);
-            //uploadFile(formData.documentUpload);
+            uploadFile(formData.documentUpload);
 
         }
         
