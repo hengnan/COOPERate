@@ -206,10 +206,10 @@ const ReviewsPage = () => {
 
   const handleSearch = async () => {
     
-    setSearching(true);
     setFeed(false);
     setPage(0); // Reset page number on new search
     setReviews([]); // Clear existing reviews on new search
+    setSearching(true);
 
     await Promise.all([
       fetchReviews(),
