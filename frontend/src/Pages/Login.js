@@ -46,8 +46,8 @@ const LoginPage = () => {
       <div className = "container">
         <main className="login-form">
 
-          <h2>Login</h2>
-          <input  type = "text" placeholder="email@cooper.edu" value = {email} onChange={e=>setEmail(e.target.value)} />
+          <h2>Sign In</h2>
+          <input  type = "text" placeholder="Email Address" value = {email} onChange={e=>setEmail(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
           <button onClick={logIn}>Log In</button>
         </main>

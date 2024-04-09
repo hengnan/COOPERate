@@ -178,8 +178,8 @@ const ReviewsPage = () => {
         console.error('Error fetching like/dislike status:', error);
         return {};
       }        
-      return reviewLookup;
     }
+    return reviewLookup;
   };
   
   const fetchOverallRating = async () => {
@@ -384,7 +384,7 @@ const handleDislike = async (reviewId) => {
     <div className="container">
       <div class="banner">
         <h1 class="banner-title">COOPERATE</h1>
-        <a href = "/" class="button-link">
+        <a href = "/AboutUs" class="button-link">
           <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
         </a>
         <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
