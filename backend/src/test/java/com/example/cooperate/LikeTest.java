@@ -14,7 +14,7 @@ public class LikeTest {
          Object[] obj = new Object[]{null, null};
          try {
 
-             TestCase testCase = new TestCase(old_karma_1, old_karma_2, old_net_likes, 5, 5, 5, 5);
+             TestCase testCase = new TestCase(old_karma_1, old_karma_2, old_net_likes, 5, 5, 5, 5,5, 5);
 
              Connection connection = dcm.getConnection();
 

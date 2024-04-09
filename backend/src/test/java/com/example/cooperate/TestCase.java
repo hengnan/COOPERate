@@ -10,7 +10,8 @@ public class TestCase {
     public Course course;
     public Professor professor;
 
-    public TestCase(float karma1, float karma2, int net_likes, float course_rating, float prof_rating, int user_course_rating, int user_prof_rating)
+    public TestCase(float karma1, float karma2, int net_likes, float course_rating, float course_total_rating, float prof_rating, float prof_total_rating,
+                    int user_course_rating, int user_prof_rating)
     {
         DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
         try {
@@ -48,6 +49,9 @@ public class TestCase {
             course.setRating(course_rating);
 
             course = courseDao.create(course);
+            course.setTotalRating(course_total_rating);
+
+            courseDao.update(course);
 
             professor = new Professor();
             professor.setName("Course_Test_0");
@@ -55,6 +59,9 @@ public class TestCase {
             professor.setRating(prof_rating);
 
             professor = profDao.create(professor);
+            professor.setTotalRating(prof_total_rating);
+
+            profDao.update(professor);
 
             String review_des = "testing";
             int review_id = user1.makeReview(course.getId(), professor.getId(), course.getName(), professor.getName(),
