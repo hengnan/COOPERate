@@ -23,6 +23,7 @@ public class ReviewDao extends DataAccessObject<Review> {
     private static final String REVIEWS = "SELECT * FROM Reviews " +
             "WHERE source LIKE '%' || ? || '%' ORDER BY order_by direction " +
             "LIMIT ? OFFSET ?";
+
     private static final String LASTVAL = "SELECT last_value FROM review_counter";
 
     public static final String DELETE = "DELETE FROM Reviews WHERE review_id = ?";
