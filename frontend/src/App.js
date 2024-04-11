@@ -8,7 +8,6 @@ import MakeReviewPage from './Pages/makeReview.js';
 import UserPage from './Pages/UserProfile.js';
 import CoursePage from './Pages/CourseProfile.js';
 import ProfessorPage from './Pages/ProfessorProfile.js';
-import AboutUsPage from './Pages/AboutUs.js';
 import useUser from "./hooks/useUser";
 
 
@@ -44,7 +43,6 @@ const App = () => {
                     <Route path="/Users" element={<UserPage/>}/>
                     <Route path="/Courses" element = {<CoursePage/>}/>
                     <Route path="/Professors" element = {<ProfessorPage/>}/>
-                    <Route path="/AboutUs" element = {<AboutUsPage/>}/>
                 
                 </Routes>
             </Router>

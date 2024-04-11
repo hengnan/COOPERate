@@ -83,6 +83,9 @@ public class User implements DataTransferObject{
         professor.updateRating(review.getProfRating(), -1*review.getOldKarma());
 
         profDao.update(professor);
+
+        ReviewDao reviewDao = new ReviewDao(connection);
+        reviewDao.deleteById(review.getId());
     }
     public int like(int review_id, int react, Connection connection)
     {
