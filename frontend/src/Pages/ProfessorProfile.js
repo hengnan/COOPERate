@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './CourseProfile.css';
 // Assuming Reviews component is responsible for rendering individual review
 import moment from 'moment';
+import {getAuth, signOut} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 const ProfessorProfile = () => {
 
@@ -138,6 +140,19 @@ const fetchProfessorData = async () => {
     }
   };
 
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleLogout = () => {               
+      signOut(auth).then(() => {
+      // Sign-out successful.
+          navigate("/");
+          console.log("Signed out successfully")
+      }).catch((error) => {
+      // An error happened.
+      });
+    };
+
   
   
   const handleLike = async (reviewId) => {
@@ -254,6 +269,9 @@ const fetchProfessorData = async () => {
           <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
             <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
           </a>
+          <a class="button-link">
+            <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
+            </a>
         </div>
         <div className="professor-profile">
       {isLoading ? (

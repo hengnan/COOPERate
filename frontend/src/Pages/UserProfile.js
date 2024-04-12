@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import './UserProfile.css'; 
 import './Reviews.css';
 import moment from 'moment';
+import {getAuth, signOut} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 const UserProfilePage = () => {
   const [userDetails, setUserDetails] = useState({ username: '', karma: '', dateJoined: '' });
@@ -12,12 +14,24 @@ const UserProfilePage = () => {
   const [endFeed, setFeed] = useState(false);
   const endOfPageRef = useRef(null);
   const username = localStorage.getItem('view-user');
+  const navigate = useNavigate();
+  const auth = getAuth();
 
   function formatDate(timestamp) {
     const [month, day, year] = timestamp.split('/');
     const date = moment(`${year}-${month}-${day}`, 'YYYY-MM-DD');
   
     return date.format('MMMM Do, YYYY');
+  }
+
+  const handleLogout = () => {               
+    signOut(auth).then(() => {
+    // Sign-out successful.
+        navigate("/");
+        console.log("Signed out successfully")
+    }).catch((error) => {
+    // An error happened.
+    });
   }
 
   const saveUsername = (username, event) => {
@@ -322,6 +336,9 @@ const UserProfilePage = () => {
         </a>
         <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </a>
+        <a class="button-link">
+          <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
         </a>
       </div>
       <div className="user-profile">
