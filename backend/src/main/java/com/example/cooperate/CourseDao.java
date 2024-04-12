@@ -13,8 +13,8 @@ public class CourseDao extends DataAccessObject<Course>{
     private static final String GET_BY_NAME = "SELECT * " +
             "FROM Course WHERE course_name=?";
 
-    private static final String INSERT = "INSERT INTO Course (name, rating, descrip)" +
-            " VALUES (?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Course (course_name, rating, descrip)" +
+            " VALUES (?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Course SET rating = ?, total_rating = ? WHERE id=?";
 
