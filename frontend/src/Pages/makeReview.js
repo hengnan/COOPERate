@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './makeReview.css';
 import { gapi } from 'gapi-script';
-
+import {getAuth, signOut} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 
 const authToken = "ya29.a0Ad52N39VERWZ-f2gZgTqrrE78li68O7NEgcv0bzzJvwk-NYq_U1jmfXOfaWR-G5Fd7VSNSr8CxCfdD7C2NT3N_dtOkZKGdacGU1M_TRJAHee_CkiWKiInjjr3df_vO9Ohq4E-VvjboDOQckaGvXlbcLXTe-6RH45TtkNaCgYKASISARISFQHGX2MikCWbj5Gv3KRT5mGvTz9E3w0171";
@@ -67,6 +68,19 @@ const ReviewForm = () => {
         reviewDescription: '',
         documentUpload: null
     });
+
+    const navigate = useNavigate();
+    const auth = getAuth();
+
+    const handleLogout = () => {               
+        signOut(auth).then(() => {
+        // Sign-out successful.
+            navigate("/");
+            console.log("Signed out successfully")
+        }).catch((error) => {
+        // An error happened.
+        });
+      }
 
     const saveUsername = (username, event) => {
         event.preventDefault();
@@ -209,6 +223,9 @@ const ReviewForm = () => {
             </a>
             <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
             <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+            </a>
+            <a class="button-link">
+            <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
             </a>
         </div>
         <div className="review-form-container">

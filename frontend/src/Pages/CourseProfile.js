@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './CourseProfile.css';
 // Assuming Reviews component is responsible for rendering individual review
 import moment from 'moment';
+import {getAuth, signOut} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 const CourseProfile = () => {
   const [courseData, setCourseData] = useState({
@@ -29,6 +31,19 @@ const CourseProfile = () => {
     localStorage.setItem('view-professor', profname);
     window.location.href = '/Professors';
   }
+
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleLogout = () => {               
+      signOut(auth).then(() => {
+      // Sign-out successful.
+          navigate("/");
+          console.log("Signed out successfully")
+      }).catch((error) => {
+      // An error happened.
+      });
+    }
 
   const fetchCourseData = async () => {
     setIsLoading(true);
@@ -238,7 +253,7 @@ const CourseProfile = () => {
     <div>
       <div class="banner">
           <h1 class="banner-title">COOPERATE</h1>
-          <a href = "/" class="button-link">
+          <a href = "/AboutUs" class="button-link">
             <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
           </a>
           <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
@@ -253,6 +268,9 @@ const CourseProfile = () => {
           <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
             <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
           </a>
+          <a class="button-link">
+            <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
+            </a>
         </div>
       <div className="course-profile">
       {isLoading ? (

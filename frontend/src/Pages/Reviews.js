@@ -3,6 +3,8 @@ import './Reviews.css';
 import moment from 'moment';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/autocomplete';
+import {getAuth, signOut} from "firebase/auth";
+import { useNavigate } from 'react-router-dom';
 
 const ReviewsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,9 +17,21 @@ const ReviewsPage = () => {
   const [overallRating, setRating] = useState(0);
   const endOfPageRef = useRef(null);
   const [searching, setSearching] = useState(false);
+  const navigate = useNavigate();
+  const auth = getAuth();
   const handleSearchTypeChange = (event) => {
     setSearchType(event.target.value);
   };
+
+  const handleLogout = () => {               
+    signOut(auth).then(() => {
+    // Sign-out successful.
+        navigate("/");
+        console.log("Signed out successfully")
+    }).catch((error) => {
+    // An error happened.
+    });
+}
 
   const saveUsername = (username, event) => {
     event.preventDefault();
@@ -398,6 +412,9 @@ const handleDislike = async (reviewId) => {
         </a>
         <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
+        </a>
+        <a class="button-link">
+          <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i> Logout</button>
         </a>
       </div>
       <div class="rating-box" id="ratingBox">
