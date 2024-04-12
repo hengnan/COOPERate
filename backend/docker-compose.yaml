@@ -1,0 +1,30 @@
+services:
+    db:
+        image: postgres
+        build:
+        context: db
+        environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_PASSWORD=password
+        expose:
+        - 5432:5432
+        ports:
+        - 5432:5432
+        restart: always
+    app:
+        build: server/rps
+        expose:
+        - 8080:8080
+        ports:
+        - 8080:8080
+        environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_PASSWORD=password
+        depends_on:
+        - db
+    ui: 
+        build: client
+        ports:
+        - 3000:3000
+        depends_on:
+        - app
