@@ -9,6 +9,7 @@ import UserPage from './Pages/UserProfile.js';
 import CoursePage from './Pages/CourseProfile.js';
 import ProfessorPage from './Pages/ProfessorProfile.js';
 import AboutUsPage from './Pages/AboutUs.js';
+import ForgotPasswordPage from './Pages/ForgotPassword.js';
 import useUser from "./hooks/useUser";
 
 
@@ -54,7 +55,9 @@ const App = () => {
             <Router>
                 <Routes>
                     <Route path="/" element={<LoginPage/>} />
+                    <Route path="/ForgotPassword" element = {<ForgotPasswordPage/>}/>
                     <Route path="/create-account" element={<MakeUserPage/>} />
+                    <Route path="/AboutUs" element = {<AboutUsPage/>}/>
                 </Routes>
             </Router>
         );
