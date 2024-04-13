@@ -296,8 +296,6 @@ public class CooperateApplication {
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
 		String csvFile = "COOPERate\\Database\\Word_Filter - Sheet1.csv";
-		String currentDirectory = System.getProperty("user.dir");
-		System.out.println("Current directory: " + currentDirectory);
 		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
 		String censoredReview = filter.filterProfanity(inputMap.get("review"));
 		int maxDescriptionLength =  1000;
