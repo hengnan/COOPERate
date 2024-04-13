@@ -12,7 +12,9 @@ services:
       - 5432:5432
     restart: always
   app:
-    build: .
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_PASSWORD=password
@@ -22,3 +24,11 @@ services:
       - 8080:8080
     depends_on:
       - db
+  ui: 
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    depends_on:
+      - app

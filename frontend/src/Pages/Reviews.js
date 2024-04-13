@@ -23,7 +23,9 @@ const ReviewsPage = () => {
     setSearchType(event.target.value);
   };
 
-  const handleLogout = () => {               
+  const handleLogout = (event) => {       
+    
+    event.preventDefault();
     signOut(auth).then(() => {
     // Sign-out successful.
         navigate("/");
@@ -390,105 +392,101 @@ const handleDislike = async (reviewId) => {
 };
 
 
-
-
-
-
-  return (
-    <div className="container">
-      <div class="banner">
-        <h1 class="banner-title">COOPERATE</h1>
-        <a href = "/AboutUs" class="button-link">
-          <button class="button"><i className="fas fa-info-circle"></i> About Us</button>
-        </a>
-        <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" class="button-link">
-          <button class="button"><i class="fas fa-archive"></i> Checkout Our Archive</button>
-        </a>
-        <a href = "/" class = "button-link">
-          <button class="button"><i class="fas fa-search"></i> Search Reviews</button>
-        </a>
-        <a href = "/makeReview" class="button-link">
-          <button class="button"><i class="fas fa-edit"></i> Make A Review</button>
-        </a>
-        <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
-          <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
-        </a>
-        <a class="button-link">
-          <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i> Logout</button>
-        </a>
-      </div>
-      <div class="rating-box" id="ratingBox">
-        <h2>Overall Rating</h2>
-        <hr class="divider"></hr>
-          <div class="rating-item">
-            <p> {overallRating}</p>
-          </div>
-      </div>
-      <div className="search-section">
-        <input
-          type="text"
-          id = "searchInput"
-          placeholder="Search..."
-          value={searchQuery}
-          onChange={handleChange}
-          className={`search-input`}
-        />
-
-        
-        <select id="searchTypeSelect" value={searchType} onChange={handleSearchTypeChange} className="select">
-          <option value="Professors">Professor</option>
-          <option value="Courses">Course</option>
-        </select>
-        <select value={sortOption} onChange={handleSortOptionChange} className="select">
-          <option value="time-ascending">Oldest</option>
-          <option value="time-descending">Newest</option>
-          <option value="likes-ascending">Most Liked</option>
-          <option value="likes-descending">Least Liked</option>
-        </select>
-        <button onClick={handleSearch} className="search-button">Search</button>
-      </div>
-      <div className="reviews-section">
-        <h2 class="banner-title">Reviews</h2>
-        {reviews.map((review, index) => (
-          <div key={index} className="review-container">
-            <div className="user-course-prof-container">
-
-              <p>Posted By <a href={'/Users'} onClick= {(e) => saveUsername(review.username, e)}> {review.username}</a></p>
-              <p> Course: <a href={'/Courses'} onClick = {(e) => saveCourse(review.course_name, e)}> {review.course_name}</a> &emsp; Professor: <a href={`/Professors`} onClick = {(e) => saveProfessor(review.prof_name, e)}>{review.prof_name}</a></p>
-            </div>
-            <div className="review-content">
-              <div className = "review-text">
-                <p>{review.review}</p>
-              </div>
-              <div className="ratings-container">
-                <div className={`prof-rating ${review.profRating < 3 ? 'low-rating' : review.profRating >= 3 ? 'high-rating' : ''}`}>
-                  <p>Professor</p>
-                  <StarRating rating={review.profRating} />
-                </div>
-                <div className={`course-rating ${review.courseRating < 3 ? 'low-rating' : review.courseRating >= 3 ? 'high-rating' : ''}`}>
-                  <p>Course</p>
-                  <StarRating rating={review.courseRating} />
-                </div>
-              </div>
-              <div className="timestamp">
-                <p>{formatDate(review.timestamp.toString().substring(0, 10))}</p>
-              </div>
-              <div className="like-dislike">
-                <button className="like-button" onClick = {() => handleLike(review.id)}>
-                  <span className={`like-icon ${review.isLiked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-up"></i></span>
-                </button>
-                <p className="net-likes">{review.netLikes}</p>
-                <button className="dislike-button" onClick = {() => handleDislike(review.id)}>
-                  <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
-                </button>
-                </div>
-            </div>
-          </div>
-        ))}
-        <div ref={endOfPageRef} />
-      </div>
+return (
+  <div className="container">
+    <div className="banner">
+      <h1 className="banner-title">COOPERATE</h1>
+      <a href = "/AboutUs" className="button-link">
+        <button className="button"><i className="fas fa-info-circle"></i> About Us</button>
+      </a>
+      <a href = "https://drive.google.com/drive/u/2/folders/1qej-Xkxx8fBXSTjRDwYHEwKpz5JJsphx" className="button-link">
+        <button className="button"><i className="fas fa-archive"></i> Checkout Our Archive</button>
+      </a>
+      <a href = "/" className = "button-link">
+        <button className="button"><i className="fas fa-search"></i> Search Reviews</button>
+      </a>
+      <a href = "/makeReview" className="button-link">
+        <button className="button"><i className="fas fa-edit"></i> Make A Review</button>
+      </a>
+      <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} className="button-link">
+        <button className="profile-button"><i className="fas fa-user-circle"></i> Profile</button>
+      </a>
+      <a href = "/" onClick = {(e) => handleLogout(e)} className="button-link">
+        <button className="button"><i className="fa fa-sign-out"></i> Logout</button>
+      </a>
     </div>
-  );
+    <div className="rating-box" id="ratingBox">
+      <h2>Overall Rating</h2>
+      <hr className="divider"></hr>
+        <div className="rating-item">
+          <p> {overallRating}</p>
+        </div>
+    </div>
+    <div className="search-section">
+      <input
+        type="text"
+        id = "searchInput"
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={handleChange}
+        className={`search-input`}
+      />
+
+      
+      <select id="searchTypeSelect" value={searchType} onChange={handleSearchTypeChange} className="select">
+        <option value="Professors">Professor</option>
+        <option value="Courses">Course</option>
+      </select>
+      <select value={sortOption} onChange={handleSortOptionChange} className="select">
+        <option value="time-ascending">Oldest</option>
+        <option value="time-descending">Newest</option>
+        <option value="likes-ascending">Most Liked</option>
+        <option value="likes-descending">Least Liked</option>
+      </select>
+      <button onClick={handleSearch} className="search-button">Search</button>
+    </div>
+    <div className="reviews-section">
+      <h2 className="banner-title">Reviews</h2>
+      {reviews.map((review, index) => (
+        <div key={index} className="review-container">
+          <div className="user-course-prof-container">
+
+            <p>Posted By <a href={'/Users'} onClick= {(e) => saveUsername(review.username, e)}> {review.username}</a></p>
+            <p> Course: <a href={'/Courses'} onClick = {(e) => saveCourse(review.course_name, e)}> {review.course_name}</a> &emsp; Professor: <a href={`/Professors`} onClick = {(e) => saveProfessor(review.prof_name, e)}>{review.prof_name}</a></p>
+          </div>
+          <div className="review-content">
+            <div className = "review-text">
+              <p>{review.review}</p>
+            </div>
+            <div className="ratings-container">
+              <div className={`prof-rating ${review.profRating < 3 ? 'low-rating' : review.profRating >= 3 ? 'high-rating' : ''}`}>
+                <p>Professor</p>
+                <StarRating rating={review.profRating} />
+              </div>
+              <div className={`course-rating ${review.courseRating < 3 ? 'low-rating' : review.courseRating >= 3 ? 'high-rating' : ''}`}>
+                <p>Course</p>
+                <StarRating rating={review.courseRating} />
+              </div>
+            </div>
+            <div className="timestamp">
+              <p>{formatDate(review.timestamp.toString().substring(0, 10))}</p>
+            </div>
+            <div className="like-dislike">
+              <button className="like-button" onClick = {() => handleLike(review.id)}>
+                <span className={`like-icon ${review.isLiked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-up"></i></span>
+              </button>
+              <p className="net-likes">{review.netLikes}</p>
+              <button className="dislike-button" onClick = {() => handleDislike(review.id)}>
+                <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
+              </button>
+              </div>
+          </div>
+        </div>
+      ))}
+      <div ref={endOfPageRef} />
+    </div>
+  </div>
+);
 };
 
 export default ReviewsPage;

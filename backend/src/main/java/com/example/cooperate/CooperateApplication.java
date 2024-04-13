@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 
-	DatabaseConnectionManager dcm = new DatabaseConnectionManager("localhost", "cooperate", "postgres", "password");
+	DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
 
 	@CrossOrigin
 	@GetMapping("/Users/username/{username}")
