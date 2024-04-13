@@ -244,7 +244,7 @@ const ReviewsPage = () => {
       ratingBox.classList.remove('high-rating');
       ratingBox.classList.add('low-rating');
     }
-  }, [overallRating]);
+  }, [overallRating, searching]);
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
