@@ -15,7 +15,7 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 
-	DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
+	DatabaseConnectionManager dcm = new DatabaseConnectionManager("host.docker.internal", "cooperate", "postgres", "password");
 
 	@CrossOrigin
 	@GetMapping("/Users/username/{username}")
@@ -295,7 +295,7 @@ public class CooperateApplication {
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
-		String csvFile = "COOPERate\\Database\\Word_Filter - Sheet1.csv";
+		String csvFile = "..\\Database\\Word_Filter - Sheet1.csv";
 		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
 		String censoredReview = filter.filterProfanity(inputMap.get("review"));
 		int maxDescriptionLength =  1000;
