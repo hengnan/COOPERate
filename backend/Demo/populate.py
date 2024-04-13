@@ -10,8 +10,8 @@ os.system("psql -h localhost -U postgres -a -f " + populate_script)
 
 url = "http://localhost:8080/makeReview"
 
-reviewBank = [("loved it!",4, 4), ("hated it!", 1, 2), ("awesome class", 4, 5), ("decent class", 3, 4),
-              ("best class ever", 5,5), ("worst class ever", 1, 1)]
+reviewBank = [("loved it!",4, 4), ("hated it!", 1, 2), ("awesome class", 4, 5), ("fuck motherfucker", 3, 4),
+              ("best class ever", 5,5), ("sex alot of random censored words", 1, 1)]
 
 courProf = [(10000, 10000), (10001, 10001), (10001, 10002), (10002, 10003), (10003, 10004)]
 
