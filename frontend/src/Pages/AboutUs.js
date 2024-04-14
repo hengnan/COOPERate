@@ -21,7 +21,7 @@ const AboutUsPage = () => {
             <h2 class="meetTeam">Meet The Team!</h2>
         </div>
 
-        <div class="container">
+        <div class="about_container">
             <div class="our-team" id = "nick">
                 <div class="pic" id = "nickpic">
                     <img src="https://i.ibb.co/n0GZSNq/nick.jpg"></img>

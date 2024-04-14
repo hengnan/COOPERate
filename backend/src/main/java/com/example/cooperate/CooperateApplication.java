@@ -293,11 +293,15 @@ public class CooperateApplication {
 	public int makeReview(@RequestBody String json) throws JsonProcessingException {
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		/*
 		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
 		String csvFile = "COOPERate\\Database\\Word_Filter - Sheet1.csv";
 		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
+		
 		String censoredReview = filter.filterProfanity(inputMap.get("review"));
+		*/
 		int maxDescriptionLength =  1000;
 		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
 
@@ -315,7 +319,8 @@ public class CooperateApplication {
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("course_name"),
 					inputMap.get("prof_name"),
-					censoredReview,
+					inputMap.get("review"),
+					//censoredReview,
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
 					inputMap.get("hyperlink"), connection);

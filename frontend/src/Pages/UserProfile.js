@@ -24,8 +24,9 @@ const UserProfilePage = () => {
     return date.format('MMMM Do, YYYY');
   }
 
-  const handleLogout = () => {               
+  const handleLogout = (event) => {               
     signOut(auth).then(() => {
+      event.preventDefault();
     // Sign-out successful.
         navigate("/");
         console.log("Signed out successfully")
@@ -337,8 +338,8 @@ const UserProfilePage = () => {
         <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
         </a>
-        <a class="button-link">
-          <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
+        <a href = "/" onClick = {(e) => handleLogout(e)} className="button-link">
+          <button className="button"><i className="fa fa-sign-out"></i> Logout</button>
         </a>
       </div>
       <div className="user-profile">

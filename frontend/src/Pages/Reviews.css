@@ -14,8 +14,12 @@
   /*font-family: 'Arial', sans-serif; /* Specify your preferred font family */
   font-size: 30px; /* Adjust the font size as needed */
   color: #fff; /* Set text color to white */
-  margin-left: auto; /* Push the title to the left */
+  margin-right: auto; /* Push the title to the left */
   
+}
+
+.reviews-section{
+  margin-right: auto;
 }
 
 

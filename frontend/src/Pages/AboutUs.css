@@ -37,9 +37,9 @@
     margin-block-end: .01em;
   }
 
-.container {
+.about_container {
     display: inline-flex;
-    flex-direction: row;
+    flex-direction: row !important;
     justify-content: center;
     align-items: center;
     width: 100%;
