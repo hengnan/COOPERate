@@ -392,8 +392,8 @@ const UserProfilePage = () => {
           </div>
         </div>
       ))}
-        <div ref={endOfPageRef} className="loading-sentinel"></div>
       </div>
+      <div ref={endOfPageRef} className="loading-sentinel"></div>
     </div>
     </div>
   );
