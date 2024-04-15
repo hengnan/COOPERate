@@ -30,5 +30,5 @@ To run this demo, please follow the instructions given below:
 - Run the populate.py file. This will create the tables for our database and populate our database (when it prompts you for the password, please enter in password)
 - Finally, once everything is running, you can open up a browser and go to localhost:3000 to start looking through our website
 
-<img width="1195" alt="image" src="https://github.com/fkhan000/COOPERate/assets/78983433/1a6cbfb9-d934-48af-87bc-23b8db510edd">
+<img width="773" alt="image" src="https://github.com/fkhan000/COOPERate/assets/78983433/1a6cbfb9-d934-48af-87bc-23b8db510edd">
 
