@@ -1,8 +1,9 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
-DROP DATABASE cooperate;
+-- DROP DATABASE cooperate;
 CREATE DATABASE cooperate;
+
 
 \c cooperate;
 --This table contains login info for user as well as their karma
@@ -78,3 +79,7 @@ CREATE TABLE Likes (
   FOREIGN KEY (user_id) REFERENCES Users,
   FOREIGN KEY (review_id) REFERENCES Reviews ON DELETE CASCADE
 );
+
+
+
+

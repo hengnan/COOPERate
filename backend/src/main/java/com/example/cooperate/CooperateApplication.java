@@ -18,7 +18,7 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 public class CooperateApplication {
-
+	// host.docker.internal
 	DatabaseConnectionManager dcm = new DatabaseConnectionManager("host.docker.internal", "cooperate", "postgres", "password");
 
 	@CrossOrigin
@@ -300,10 +300,7 @@ public class CooperateApplication {
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 		// Attempts without dockerization
 		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
-		// String csvFile = "..\\Database\\Word_Filter - Sheet1.csv";
-		//String currentDir = System.getProperty("user.dir");
-		//System.out.println("Current working directory is: " + currentDir);
-		//String csvFile = "src\\main\\resources\\Word_Filter - Sheet1.csv";
+
 		String csvFile = "/app1/Word_Filter.csv";
 		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
 		String censoredReview = filter.filterProfanity(inputMap.get("review"));
