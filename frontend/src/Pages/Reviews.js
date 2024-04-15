@@ -440,8 +440,8 @@ return (
       <select value={sortOption} onChange={handleSortOptionChange} className="select">
         <option value="time-ascending">Oldest</option>
         <option value="time-descending">Newest</option>
-        <option value="likes-ascending">Most Liked</option>
-        <option value="likes-descending">Least Liked</option>
+        <option value="likes-descending">Most Liked</option>
+        <option value="likes-ascending">Least Liked</option>
       </select>
       <button onClick={handleSearch} className="search-button">Search</button>
     </div>

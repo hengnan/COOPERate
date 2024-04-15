@@ -99,7 +99,7 @@ const UserProfilePage = () => {
         observer.unobserve(endOfPageRef.current);
       }
     };
-  }, [endOfPageRef, loading]);
+  }, [endOfPageRef, loading, sortOption]);
 
   const fetchReviews = async () => {
     if (endFeed) return;
@@ -351,8 +351,8 @@ const UserProfilePage = () => {
         <select value={sortOption} onChange={handleSortOptionChange} className="select">
           <option value="time-ascending">Oldest</option>
           <option value="time-descending">Newest</option>
-          <option value="likes-ascending">Most Liked</option>
-          <option value="likes-descending">Least Liked</option>
+          <option value="likes-descending">Most Liked</option>
+          <option value="likes-ascending">Least Liked</option>
         </select>
       </div>
       <div className="reviews-section">
