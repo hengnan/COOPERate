@@ -6,6 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -294,8 +298,13 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		// Attempts without dockerization
 		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
-		String csvFile = "..\\Database\\Word_Filter - Sheet1.csv";
+		// String csvFile = "..\\Database\\Word_Filter - Sheet1.csv";
+		//String currentDir = System.getProperty("user.dir");
+		//System.out.println("Current working directory is: " + currentDir);
+		//String csvFile = "src\\main\\resources\\Word_Filter - Sheet1.csv";
+		String csvFile = "/app1/Word_Filter.csv";
 		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
 		String censoredReview = filter.filterProfanity(inputMap.get("review"));
 		int maxDescriptionLength =  1000;
@@ -373,8 +382,8 @@ public class CooperateApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(CooperateApplication.class, args);
-		String currentDirectory = System.getProperty("user.dir");
-		System.out.println("Working directory: " + currentDirectory);
+
+
 	}
 
 }
