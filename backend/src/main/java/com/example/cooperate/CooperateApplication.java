@@ -298,12 +298,7 @@ public class CooperateApplication {
 
 		ObjectMapper objectMapper = new ObjectMapper();
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		// Attempts without dockerization
-		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
 
-		String csvFile = "/app1/Word_Filter.csv";
-		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
-		String censoredReview = filter.filterProfanity(inputMap.get("review"));
 		int maxDescriptionLength =  1000;
 		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
 
@@ -321,7 +316,7 @@ public class CooperateApplication {
 					Integer.parseInt(inputMap.get("prof_id")),
 					inputMap.get("course_name"),
 					inputMap.get("prof_name"),
-					censoredReview,
+					inputMap.get("review"),
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
 					inputMap.get("hyperlink"), connection);

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.cooperate.RandomNameGenerator.generateRandomUsername;
+
 
 public class ReviewDao extends DataAccessObject<Review> {
 
@@ -149,7 +149,6 @@ public class ReviewDao extends DataAccessObject<Review> {
             Review review;
             while (rs.next()) {
                 String csvFile = "/app1/Word_Filter.csv";
-                // String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
                 ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
                 String censoredReview = filter.filterProfanity(rs.getString("review"));
                 review = new Review();
@@ -157,7 +156,7 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setUserId(rs.getInt("user_id"));
                 review.setCourseId(rs.getInt("course_id"));
                 review.setProfId(rs.getInt("prof_id"));
-                review.setUsername(generateRandomUsername());
+                review.setUsername(rs.getString("username"));
                 review.setCourse_name(rs.getString("course_name"));
                 review.setProf_name(rs.getString("prof_name"));
                 review.setReview(censoredReview);

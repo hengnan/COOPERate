@@ -43,19 +43,33 @@ public class ProfanityFilter {
 
     // Method to filter out profane words from a given input string
     public String filterProfanity(String input) {
-        String[] words = WORD_SPLIT_PATTERN.split(input);
+        String[] words = input.split("\\s+");
         StringBuilder filteredText = new StringBuilder();
 
         for (String word : words) {
-            if (badWords.contains(word.toLowerCase())) {
-                filteredText.append(replaceChars(word)).append(" ");
-            } else {
-                filteredText.append(word).append(" ");
+            // Separate punctuation from the word
+            String[] separatedWords = word.split("(?<=\\p{Punct})|(?=\\p{Punct})");
+
+            for (String separatedWord : separatedWords) {
+                if (!separatedWord.matches("\\p{Punct}")) {
+                    // Filter out profane words
+                    if (badWords.contains(separatedWord.toLowerCase())) {
+                        filteredText.append(replaceChars(separatedWord));
+                    } else {
+                        filteredText.append(separatedWord);
+                    }
+                } else {
+                    // Preserve punctuation
+                    filteredText.append(separatedWord);
+                }
             }
+            // Add a space after each word
+            filteredText.append(" ");
         }
 
         return filteredText.toString().trim();
     }
+
 
     // Helper method to replace characters in a profane word with *
     private String replaceChars(String word) {
