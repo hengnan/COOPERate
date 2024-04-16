@@ -8,11 +8,15 @@ import './Login.css';
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const logIn = async () => {
         try {
+            if (!email.endsWith("@cooper.edu")) {
+                setError("Email needs to be a cooper.edu email!");
+                return;
+            }
             await signInWithEmailAndPassword(getAuth(), email, password);
             
             const userDetails = await fetch("http://localhost:8080/Users/email/" + email);
@@ -62,7 +66,7 @@ const LoginPage = () => {
           <input  type = "text" placeholder="Email Address" value = {email} onChange={e=>setEmail(e.target.value)} />
           <input type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
           <button onClick={logIn}>Log In</button>
-          <a href="/ForgotPassword">Forgot Password?</a>
+          <Link to="/ForgotPassword" className="forgot-password-link">Forgot Password?</Link>
         </main>
       </div>
       <ToastContainer />
