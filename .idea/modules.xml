@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/COOPERate.iml" filepath="$PROJECT_DIR$/COOPERate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cooperate/cooperate.iml" filepath="$PROJECT_DIR$/cooperate/cooperate.iml" />
     </modules>
   </component>
 </project>

@@ -19,7 +19,7 @@ import java.util.Map;
 @RestController
 public class CooperateApplication {
 	// host.docker.internal
-	DatabaseConnectionManager dcm = new DatabaseConnectionManager("host.docker.internal", "cooperate", "postgres", "password");
+	DatabaseConnectionManager dcm = new DatabaseConnectionManager("database", "cooperate", "postgres", "password");
 
 	@CrossOrigin
 	@GetMapping("/Users/username/{username}")
