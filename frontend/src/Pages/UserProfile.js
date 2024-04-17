@@ -335,8 +335,9 @@ const UserProfilePage = () => {
   };
 
 
-  console.log("localStorage user_id:", localStorage.getItem("user_id"));
-  console.log("userDetails user_id:", userDetails.user_id);
+  const localStorageUserId = parseInt(localStorage.getItem("user_id"));
+
+
   return (
     
     <div className="container">
@@ -408,9 +409,9 @@ const UserProfilePage = () => {
               <button className="dislike-button" onClick = {() => handleDislike(review.id)}>
                 <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
               </button>
-              {localStorage.getItem("user_id") === userDetails.user_id && (
-                <button className="delete-button" onClick={() => handleDeleteReview(review.id)}>Delete
-                </button>
+
+              {localStorageUserId && userDetails.user_id && localStorageUserId === userDetails.user_id && (
+                <button className="delete-button" onClick={() => handleDeleteReview(review.id)}>Delete</button>
               )}
               </div>
           </div>

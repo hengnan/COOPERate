@@ -307,3 +307,9 @@ body {
   top: 100px;
   left: 180px;
 }
+
+.success-message {
+    text-align: center;
+    color: green;
+    margin-top: 20px;
+}
