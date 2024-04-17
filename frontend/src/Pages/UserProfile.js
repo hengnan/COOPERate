@@ -6,7 +6,7 @@ import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 
 const UserProfilePage = () => {
-  const [userDetails, setUserDetails] = useState({ username: '', karma: '', dateJoined: '' });
+  const [userDetails, setUserDetails] = useState({ username: '', karma: '', dateJoined: '', user_id: ''});
   const [reviews, setReviews] = useState([]);
   const [sortOption, setSortOption] = useState('time-ascending');
   const [page, setPage] = useState(0);
@@ -73,7 +73,8 @@ const UserProfilePage = () => {
         setUserDetails({
           username: userDetailsData.userName,
           karma: userDetailsData.karma,
-          dateJoined: formatDate(userDetailsData.timestamp)
+          dateJoined: formatDate(userDetailsData.timestamp),
+          user_id: userDetailsData.id
         });
       } catch (error) {
         console.error("Error fetching user details:", error);
@@ -293,6 +294,23 @@ const UserProfilePage = () => {
     const updatedReviews = [...reviews.slice(0, reviewIndex), updatedReview, ...reviews.slice(reviewIndex + 1)];
     setReviews(updatedReviews);
   };
+
+  const handleDeleteReview = async (review_id) => {
+     const confirmed = window.confirm('Are you sure you want to delete this review?');
+        if (!confirmed) {
+          return; // Cancel deletion if user cancels the confirmation
+        }
+    var endpoint = 'http://localhost:8080/DeleteReview/' + review_id + '/' + localStorage.getItem("user_id");
+    try {
+      const response = await fetch(endpoint, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('Network response was not ok.');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error performing deletereview action:', error);
+    }
+    }
   
 
 
@@ -316,6 +334,9 @@ const UserProfilePage = () => {
     return <div>{stars}</div>;
   };
 
+
+  console.log("localStorage user_id:", localStorage.getItem("user_id"));
+  console.log("userDetails user_id:", userDetails.user_id);
   return (
     
     <div className="container">
@@ -387,6 +408,10 @@ const UserProfilePage = () => {
               <button className="dislike-button" onClick = {() => handleDislike(review.id)}>
                 <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
               </button>
+              {localStorage.getItem("user_id") === userDetails.user_id && (
+                <button className="delete-button" onClick={() => handleDeleteReview(review.id)}>Delete
+                </button>
+              )}
               </div>
           </div>
         </div>
