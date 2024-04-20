@@ -69,6 +69,7 @@ const ReviewForm = () => {
         documentUpload: null
     });
 
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const auth = getAuth();
 
@@ -187,6 +188,10 @@ const ReviewForm = () => {
             }
             //console.log(formData.documentUpload);
             uploadFile(formData.documentUpload);
+            setSuccessMessage("Review submitted successfully!");
+            setTimeout(() => {
+                setSuccessMessage('');
+            }, 3000);
 
         }
         
@@ -229,6 +234,7 @@ const ReviewForm = () => {
             </a>
         </div>
         <div className="review-form-container">
+            {successMessage && <div className="success-message">{successMessage}</div>}
             {error && <div className="error-message">{error}</div>}
             <h2>Make A Review</h2>
             <form onSubmit={handleSubmit}>

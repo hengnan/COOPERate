@@ -1,9 +1,12 @@
-FROM node:20
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
-COPY . ./
+FROM node:20 AS frontend-build
+WORKDIR /app/frontend
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build  # Build the frontend application
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the application
 CMD ["npm", "start"]
+
