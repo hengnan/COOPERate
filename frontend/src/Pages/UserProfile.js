@@ -306,12 +306,34 @@ const UserProfilePage = () => {
       const response = await fetch(endpoint, {
         method: 'DELETE',
       });
+
       if (!response.ok) throw new Error('Network response was not ok.');
-      window.location.reload();
+
     } catch (error) {
       console.error('Error performing deletereview action:', error);
+      return;
     }
+
+    const reviewIndex = reviews.findIndex(r => r.id === review_id);
+
+    const review = reviews[reviewIndex];
+    const file_id = review.hyperLink.split("/")[5];
+
+    endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+
+    try {
+      const response = await fetch(endpoint, 
+        {
+          method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Network response was not ok.');
     }
+
+    catch (error) {
+      console.error('Error performing deletereview action:', error);
+      return;
+    }
+  }
   
 
 

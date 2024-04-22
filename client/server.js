@@ -98,6 +98,25 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 });
 
 
+app.delete('/deleteFile/:fileId', async (req, res) => {
+    const fileId = req.params.fileId;  // Get the file ID from the request parameters
+
+    try {
+        const authClient = await auth.getClient();
+        const drive = google.drive({ version: 'v3', auth: authClient });
+
+        await drive.files.delete({
+            fileId: fileId
+        });
+
+        res.status(200).send({ message: "File deleted successfully" });
+    } catch (error) {
+        console.error('Failed to delete file:', error);
+        res.status(500).send('Failed to delete file.');
+    }
+});
+
+
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
