@@ -319,6 +319,12 @@ const CourseProfile = () => {
                 </button>
                 </div>
             </div>
+
+            {review.hyperLink &&
+                <div className="review-link">
+                  <a href={review.hyperLink} target="_blank" rel="noopener noreferrer">Course Document</a>
+                </div>
+              }
           </div>
         ))}
         </div>

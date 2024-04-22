@@ -415,6 +415,13 @@ const UserProfilePage = () => {
                 <button className="delete-button" onClick={() => handleDeleteReview(review.id)}>Delete</button>
               )}
               </div>
+
+              {review.hyperLink &&
+                <div className="review-link">
+                  <a href={review.hyperLink} target="_blank" rel="noopener noreferrer">Course Document</a>
+                </div>
+              }
+
           </div>
         </div>
       ))}
