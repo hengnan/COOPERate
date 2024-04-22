@@ -20,6 +20,8 @@ const ReviewForm = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const auth = getAuth();
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
+
 
     const handleLogout = () => {               
         signOut(auth).then(() => {
@@ -120,6 +122,7 @@ const ReviewForm = () => {
         formDataToSend.append('reviewData', JSON.stringify({
             username: localStorage.getItem("username"),
             course_id: formData.courseName,
+            year: selectedYear,
             type: "Syllabus"
         }));
         
@@ -212,11 +215,30 @@ const ReviewForm = () => {
                     <label htmlFor="reviewDescription">Review Description</label>
                     <textarea id="reviewDescription" name="reviewDescription" rows="4" value={formData.reviewDescription} onChange={handleChange}></textarea>
                 </div>
+
                 <div className="form-group">
                     <label htmlFor="syllabusUpload">Upload Syllabus</label>
-                    <input type="file" id="syllabusUpload" name="syllabusUpload" onChange={handleChange} />
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px' }}>
+                        <input type="file" id="syllabusUpload" name="syllabusUpload" onChange={handleChange} />
+                        <label style={{ marginLeft: '10px', marginRight: '5px', textAlign: 'center'}}>Year Class Taken</label>
+                        <select
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            style={{ marginLeft: '10px', width: 'auto' }}
+                            >
+                        {Array(new Date().getFullYear() - 1999).fill().map((_, index) => (
+                        <option key={index} value={2000 + index}>
+                            {2000 + index}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
                 </div>
+
+
                 <button type="submit">Submit Review</button>
+
+                
                 
             </form>
         </div>

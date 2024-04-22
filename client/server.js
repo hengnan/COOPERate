@@ -65,7 +65,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
         reviewData = JSON.parse(req.body.reviewData);
         const fileMetadata = {
-            name: reviewData.course_id + '_' + reviewData.type + '_' + reviewData.username,
+            name: reviewData.course_id + '_' + reviewData.type + '_' +reviewData.year + '_' + reviewData.username,
             mimeType: req.file.mimetype,
             parents: [getParent(reviewData.course_id, reviewData.type)]
         };
