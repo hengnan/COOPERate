@@ -319,9 +319,14 @@ const fetchProfessorData = async () => {
                   <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
                 </button>
                 </div>
-                {review.hyperLink &&
+                {review.syllabusLink &&
                 <div className="review-link">
-                  <a href={review.hyperLink} target="_blank" rel="noopener noreferrer">Course Document</a>
+                  <a href={review.syllabusLink} target="_blank" rel="noopener noreferrer">Syllabus</a>
+                </div>
+              }
+              {review.examLink &&
+                <div className="review-link">
+                  <a href={review.examLink} target="_blank" rel="noopener noreferrer">Past Exams</a>
                 </div>
               }
             </div>

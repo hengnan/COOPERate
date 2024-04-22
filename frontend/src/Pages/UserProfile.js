@@ -317,24 +317,48 @@ const UserProfilePage = () => {
     const reviewIndex = reviews.findIndex(r => r.id === review_id);
 
     const review = reviews[reviewIndex];
-    const file_id = review.hyperLink.split("/")[5];
 
-    endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+    if (review.syllabus_link) {
+      const file_id = review.syllabusLink.split("/")[5];
 
-    try {
-      const response = await fetch(endpoint, 
-        {
-          method: 'DELETE'
-        });
-        if (!response.ok) throw new Error('Network response was not ok.');
-
-        setReviews(reviews.filter(review => review.id !== review_id));
+      endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+  
+      try {
+        const response = await fetch(endpoint, 
+          {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error('Network response was not ok.');
+  
+      }
+  
+      catch (error) {
+        console.error('Error performing deletereview action:', error);
+        return;
+      }
     }
 
-    catch (error) {
-      console.error('Error performing deletereview action:', error);
-      return;
+      if (review.exam_link) {
+        const file_id = review.examLink.split("/")[5];
+  
+        endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+    
+        try {
+          const response = await fetch(endpoint, 
+            {
+              method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Network response was not ok.');
+    
+        }
+    
+        catch (error) {
+          console.error('Error performing deletereview action:', error);
+          return;
+        }
+
     }
+    setReviews(reviews.filter(review => review.id !== review_id));
   }
   
 
@@ -440,9 +464,14 @@ const UserProfilePage = () => {
               )}
               </div>
 
-              {review.hyperLink &&
+              {review.syllabusLink &&
                 <div className="review-link">
-                  <a href={review.hyperLink} target="_blank" rel="noopener noreferrer">Course Document</a>
+                  <a href={review.syllabusLink} target="_blank" rel="noopener noreferrer">Syllabus</a>
+                </div>
+              }
+              {review.examLink &&
+                <div className="review-link">
+                  <a href={review.examLink} target="_blank" rel="noopener noreferrer">Past Exams</a>
                 </div>
               }
 

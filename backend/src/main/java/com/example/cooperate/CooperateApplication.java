@@ -321,7 +321,8 @@ public class CooperateApplication {
 					//censoredReview,
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
-					inputMap.get("hyperlink"), connection);
+					inputMap.get("syllabus_link"),
+					inputMap.get("exam_link"), connection);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -386,7 +387,8 @@ public class CooperateApplication {
 			int review_id = Integer.parseInt(inputMap.get("review_id"));
 			ReviewDao reviewDao = new ReviewDao(connection);
 			Review review = reviewDao.findById(review_id);
-			review.setHyperLink(inputMap.get("hyperlink"));
+			review.setSyllabusLink(inputMap.get("syllabus_link"));
+			review.setExamLink(inputMap.get("exam_link"));
 
 			reviewDao.updateHyperlink(review);
 		}

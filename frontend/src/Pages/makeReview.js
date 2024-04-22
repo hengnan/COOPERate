@@ -117,39 +117,54 @@ const ReviewForm = () => {
             }
     
         // Assuming all validations pass, prepare data for submission
-        const formDataToSend = new FormData();
-        formDataToSend.append('file', formData.syllabusUpload);
-        formDataToSend.append('reviewData', JSON.stringify({
+        const SyllabusData = new FormData();
+        SyllabusData.append('file', formData.syllabusUpload);
+        SyllabusData.append('reviewData', JSON.stringify({
             username: localStorage.getItem("username"),
             course_id: formData.courseName,
             year: selectedYear,
-            type: "Syllabus"
+            type: "Syllabus",
+        }));
+
+        const ExamData = new FormData();
+        ExamData.append('file', formData.examUpload); // Handle the exam file
+        ExamData.append('reviewData', JSON.stringify({
+            username: localStorage.getItem("username"),
+            course_id: formData.courseName,
+            year: selectedYear,
+            type: "Exams" 
         }));
         
         try {
 
-            const response = await fetch("http://localhost:8000/upload", {
+            const Syresponse = await fetch("http://localhost:8000/upload", {
                 method: "POST",
-                body: formDataToSend
+                body: SyllabusData
+            });
+            
+
+            const syllabusResponse = await Syresponse.json();
+
+            const Exresponse = await fetch("http://localhost:8000/upload", {
+                method: "POST",
+                body: ExamData
             });
     
-            if (response.ok) {
+
+            const examResponse = await Exresponse.json();
+
+            if (Exresponse.ok && Syresponse.ok) {
                 setSuccessMessage("Review and file submitted successfully!");
                 setTimeout(() => {
                     setSuccessMessage('');
                 }, 5000);
-            } 
-            
-            /*else {
-                setError(uploadResponse.message || "An error occurred during file upload.");
-            }*/
-
-            const uploadResponse = await response.json();
+            }
 
             const updtReview = await fetch ("http://localhost:8080/updateReview", {
                 method : "POST",
                 body: JSON.stringify({
-                    hyperlink: uploadResponse.link,
+                    syllabus_link: syllabusResponse.link,
+                    exam_link: examResponse.link,
                     review_id: '' + err_code
                 })
             });
@@ -158,8 +173,8 @@ const ReviewForm = () => {
             setError("Failed to submit: " + error.message);
         }
 
-        localStorage.setItem('view-user', localStorage.getItem('username'));
-        window.location.href = '/Users';
+        //localStorage.setItem('view-user', localStorage.getItem('username'));
+        //window.location.href = '/Users';
     };
     
 
@@ -234,6 +249,12 @@ const ReviewForm = () => {
                         </select>
                     </div>
                 </div>
+
+                <div className="form-group">
+                    <label htmlFor="examUpload">Upload Past Exam</label>
+                    <input type="file" id="examUpload" name="examUpload" onChange={handleChange} />
+                </div>
+
 
 
                 <button type="submit">Submit Review</button>

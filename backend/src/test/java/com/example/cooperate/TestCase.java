@@ -65,7 +65,7 @@ public class TestCase {
 
             String review_des = "testing";
             int review_id = user1.makeReview(course.getId(), professor.getId(), course.getName(), professor.getName(),
-                    review_des, user_course_rating, user_prof_rating, "", connection);
+                    review_des, user_course_rating, user_prof_rating, "", "", connection);
             review = reviewDao.findById(review_id);
             review.setNetLikes(net_likes);
 
