@@ -44,6 +44,10 @@ const ReviewForm = () => {
     
     const handleChange = (e) => {
         const { name, value, files } = e.target;
+
+        if ((name === "courseRating" || name === "professorRating") && value.length > 1) {
+            return; // Stop processing if input length exceeds the maximum
+        }
         setFormData(prevState => ({
             ...prevState,
             [name]: files ? files[0] : value
@@ -58,6 +62,12 @@ const ReviewForm = () => {
             setError("Required fields cannot be empty!");
             return;
         }
+
+        const courseRating = parseInt(formData.courseRating, 10);
+        const profRating = parseInt(formData.professorRating, 10);
+
+        
+
         
         const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
             
@@ -137,23 +147,35 @@ const ReviewForm = () => {
         
         try {
 
-            const Syresponse = await fetch("http://localhost:8000/upload", {
-                method: "POST",
-                body: SyllabusData
-            });
+            var syllSuccess = true;
+            var examSuccess = true;
+            var syllabusLink = "";
+            var examLink=  "";
             
+            if(formData.syllabusUpload){
+                const Syresponse = await fetch("http://localhost:8000/upload", {
+                    method: "POST",
+                    body: SyllabusData
+                });
 
-            const syllabusResponse = await Syresponse.json();
+                const syllabusResponse = await Syresponse.json();
 
-            const Exresponse = await fetch("http://localhost:8000/upload", {
-                method: "POST",
-                body: ExamData
-            });
-    
+                syllSuccess = Syresponse.ok;
+                syllabusLink = syllabusResponse.link;
+            }
 
-            const examResponse = await Exresponse.json();
+            if(formData.examUpload){
+                const Exresponse = await fetch("http://localhost:8000/upload", {
+                    method: "POST",
+                    body: ExamData
+                });
 
-            if (Exresponse.ok && Syresponse.ok) {
+                const examResponse = await Exresponse.json();
+                examSuccess = examResponse.ok;
+                examLink = examResponse.link;
+            }
+
+            if (syllSuccess && examSuccess) {
                 setSuccessMessage("Review and file submitted successfully!");
                 setTimeout(() => {
                     setSuccessMessage('');
@@ -163,8 +185,8 @@ const ReviewForm = () => {
             const updtReview = await fetch ("http://localhost:8080/updateReview", {
                 method : "POST",
                 body: JSON.stringify({
-                    syllabus_link: syllabusResponse.link,
-                    exam_link: examResponse.link,
+                    syllabus_link: syllabusLink,
+                    exam_link: examLink,
                     review_id: '' + err_code
                 })
             });
@@ -228,7 +250,7 @@ const ReviewForm = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="reviewDescription">Review Description</label>
-                    <textarea id="reviewDescription" name="reviewDescription" rows="4" value={formData.reviewDescription} onChange={handleChange}></textarea>
+                    <textarea id="reviewDescription" name="reviewDescription" rows="4" maxLength="500" value={formData.reviewDescription} onChange={handleChange}></textarea>
                 </div>
 
                 <div className="form-group">

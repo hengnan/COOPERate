@@ -318,7 +318,7 @@ const UserProfilePage = () => {
 
     const review = reviews[reviewIndex];
 
-    if (review.syllabus_link) {
+    if (review.syllabusLink) {
       const file_id = review.syllabusLink.split("/")[5];
 
       endpoint = 'http://localhost:8000/deleteFile/' + file_id;
@@ -338,7 +338,7 @@ const UserProfilePage = () => {
       }
     }
 
-      if (review.exam_link) {
+      if (review.examLink) {
         const file_id = review.examLink.split("/")[5];
   
         endpoint = 'http://localhost:8000/deleteFile/' + file_id;
