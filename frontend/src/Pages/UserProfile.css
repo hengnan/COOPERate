@@ -13,3 +13,8 @@
 .user-profile p {
   color: #666;
 }
+
+.loading-sentinel {
+  height: 1px; /* Minimum height to make it detectable */
+  width: 100%;
+}

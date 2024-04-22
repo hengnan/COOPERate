@@ -16,3 +16,19 @@ To run our demo for the backend, please follow the instructions given below:
 - Finally, to run our text based demo, run the text_ui.py file and you're good to go!
 
 <img width="773" alt="UI_frontpage" src="https://github.com/fkhan000/COOPERate/assets/78983433/3d259d6c-558d-498d-8e00-cd83f0866099">
+
+
+## Local Working Project Demo 4/15/24
+
+To run this demo, please follow the instructions given below:
+
+- Install the latest version of docker desktop: https://docs.docker.com/desktop/install/windows-install/
+- From your terminal, cd into the cooperate directory where the dockerfile is located.
+- Open up docker desktop and enter in the following command into the terminal: docker compose build
+- Once the docker images have been built, enter in the following command: docker compose up
+- In a separate terminal, cd into the cooperate/backend/Demo directory
+- Run the populate.py file. This will create the tables for our database and populate our database (when it prompts you for the password, please enter in password)
+- Finally, once everything is running, you can open up a browser and go to localhost:3000 to start looking through our website
+
+<img width="773" alt="image" src="https://github.com/fkhan000/COOPERate/assets/78983433/1a6cbfb9-d934-48af-87bc-23b8db510edd">
+

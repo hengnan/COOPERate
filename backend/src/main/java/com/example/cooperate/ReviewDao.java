@@ -19,6 +19,7 @@ public class ReviewDao extends DataAccessObject<Review> {
 
     private static final String UPDATE = "UPDATE Reviews SET net_likes = ? WHERE review_id=?";
 
+    private static final String UPDATE_LINK = "UPDATE Reviews SET hyperlink = ? WHERE review_id=?";
     private static final String EXISTS = "SELECT *" +
             "FROM Reviews WHERE user_id =? AND course_id = ? AND prof_id = ?";
 
@@ -99,6 +100,18 @@ public class ReviewDao extends DataAccessObject<Review> {
             dto.setId(nextID);
             return dto;
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateHyperlink(Review dto)
+    {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_LINK);) {
+            statement.setString(1, dto.getHyperLink());
+            statement.setInt(2, dto.getId());
+            statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

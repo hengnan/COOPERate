@@ -297,6 +297,7 @@ public class CooperateApplication {
 	public int makeReview(@RequestBody String json) throws JsonProcessingException {
 
 		ObjectMapper objectMapper = new ObjectMapper();
+		
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
 
 		int maxDescriptionLength =  1000;
@@ -317,6 +318,7 @@ public class CooperateApplication {
 					inputMap.get("course_name"),
 					inputMap.get("prof_name"),
 					inputMap.get("review"),
+					//censoredReview,
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
 					inputMap.get("hyperlink"), connection);
@@ -369,6 +371,37 @@ public class CooperateApplication {
 			}
 		}
 		return err_code;
+	}
+
+	@CrossOrigin
+	@PostMapping("/updateReview")
+	public void updateReview(@RequestBody String json) throws JsonProcessingException
+	{
+		Connection connection = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		try {
+			connection = dcm.getConnection();
+
+			int review_id = Integer.parseInt(inputMap.get("review_id"));
+			ReviewDao reviewDao = new ReviewDao(connection);
+			Review review = reviewDao.findById(review_id);
+			review.setHyperLink(inputMap.get("hyperlink"));
+
+			reviewDao.updateHyperlink(review);
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
 	}
 
 	public static void main(String[] args) {

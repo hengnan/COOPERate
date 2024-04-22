@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './CourseProfile.css';
+import './ProfessorProfile.css';
 // Assuming Reviews component is responsible for rendering individual review
 import moment from 'moment';
 import {getAuth, signOut} from "firebase/auth";

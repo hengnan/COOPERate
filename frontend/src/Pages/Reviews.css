@@ -14,9 +14,11 @@
   /*font-family: 'Arial', sans-serif; /* Specify your preferred font family */
   font-size: 30px; /* Adjust the font size as needed */
   color: #fff; /* Set text color to white */
-  margin-left: auto; /* Push the title to the left */
+  margin-right: auto; /* Push the title to the left */
   
 }
+
+
 
 
 .button, .profile-button {
@@ -308,6 +310,20 @@ body {
   left: 180px;
 }
 
+.review-link {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.review-link a {
+  color: #0645AD;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.review-link a:hover {
+  text-decoration: underline;
+}
 .success-message {
     text-align: center;
     color: green;

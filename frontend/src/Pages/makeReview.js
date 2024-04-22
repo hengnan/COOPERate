@@ -1,62 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './makeReview.css';
-import { gapi } from 'gapi-script';
 import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
 
 
-const authToken = "ya29.a0Ad52N39VERWZ-f2gZgTqrrE78li68O7NEgcv0bzzJvwk-NYq_U1jmfXOfaWR-G5Fd7VSNSr8CxCfdD7C2NT3N_dtOkZKGdacGU1M_TRJAHee_CkiWKiInjjr3df_vO9Ohq4E-VvjboDOQckaGvXlbcLXTe-6RH45TtkNaCgYKASISARISFQHGX2MikCWbj5Gv3KRT5mGvTz9E3w0171";
-
-function uploadFile(file) {
-
-    if (!file){
-        console.error('No file to upload.');
-        return;
-    }
-    const boundary = '-------314159265358979323846';
-    const delimiter = "\r\n--" + boundary + "\r\n";
-    const close_delim = "\r\n--" + boundary + "--";
-
-    console.log(file);
-    var reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = function (e) {
-        var contentType = file.type || 'application/octet-stream';
-        var metadata = {
-            'name': file.name,
-            'mimeType': contentType
-        };
-
-        var base64Data = btoa(reader.result);
-        var multipartRequestBody =
-            delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            JSON.stringify(metadata) +
-            delimiter +
-            'Content-Type: ' + contentType + '\r\n' +
-            'Content-Transfer-Encoding: base64\r\n' +
-            '\r\n' +
-            base64Data +
-            close_delim;
-
-        var request = gapi.client.request({
-            'path': '/upload/drive/v3/files',
-            'method': 'POST',
-            'params': { 'uploadType': 'multipart' },
-            'headers': {
-                'Authorization': 'Bearer ' + authToken,
-                'Content-Type': 'multipart/related; boundary="' + boundary + '"'
-            },
-            'body': multipartRequestBody
-        });
-
-        request.execute(function (file) {
-            console.log(file);
-        });
-    };
-}
-
-    
 
 
 const ReviewForm = () => {
@@ -68,6 +15,7 @@ const ReviewForm = () => {
         reviewDescription: '',
         documentUpload: null
     });
+
 
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
@@ -91,22 +39,6 @@ const ReviewForm = () => {
 
     
     const [error, setError] = useState("");
-
-    
-    useEffect(() => {
-        function start() {
-            gapi.client.init({
-                apiKey: 'AIzaSyB741SY92gk5TMU9M5nKzIk7vPoDq-P0NQ',
-                clientId: '475017443270-lvbqsd7r9imro4orfjs1uef68blknej4.apps.googleusercontent.com',
-                scope: 'https://www.googleapis.com/auth/drive.file',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            }).then(() => {
-                console.log('GAPI client initialized.');
-            });
-        }
-
-        gapi.load('client:auth2', start);
-    }, []);
     
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -118,13 +50,14 @@ const ReviewForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            if(formData.courseName === "")
-            {
-                setError("Course name field cannot be empty!");
-                return;
-            }
-            const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
+        
+        // Check for necessary fields first
+        if(formData.courseName === "" || formData.professorName === "") {
+            setError("Required fields cannot be empty!");
+            return;
+        }
+        
+        const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
             
             
             const courseInfo = await courseDetails.json()
@@ -157,10 +90,6 @@ const ReviewForm = () => {
             }
 
             const uid = localStorage.getItem("user_id");
-            
-            
-            
-
 
             const pckg = await fetch("http://localhost:8080/makeReview", {
                 method: "POST",
@@ -186,29 +115,60 @@ const ReviewForm = () => {
                 setError("You already made a review for this course and professor!");
                 return;
             }
-            //console.log(formData.documentUpload);
-            uploadFile(formData.documentUpload);
-            setSuccessMessage("Review submitted successfully!");
-            setTimeout(() => {
-                setSuccessMessage('');
-            }, 3000);
+    
+        // Assuming all validations pass, prepare data for submission
+        const formDataToSend = new FormData();
+        formDataToSend.append('file', formData.documentUpload);
+        formDataToSend.append('reviewData', JSON.stringify({
+            reviewer_id: localStorage.getItem("user_id"),
+            course_id: formData.courseName,
+            prof_id: formData.professorName,
+            course_rating: formData.courseRating,
+            prof_rating: formData.professorRating,
+            review: formData.reviewDescription
+        }));
 
-        }
         
-        catch (e) {
-            setError(e.message);
+        try {
+
+            const response = await fetch("http://localhost:8000/upload", {
+                method: "POST",
+                body: formDataToSend
+            });
+    
+            if (response.ok) {
+                setSuccessMessage("Review and file submitted successfully!");
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 5000);
+            } 
+            
+            /*else {
+                setError(uploadResponse.message || "An error occurred during file upload.");
+            }*/
+
+            const uploadResponse = await response.json();
+
+            const updtReview = await fetch ("http://localhost:8080/updateReview", {
+                method : "POST",
+                body: JSON.stringify({
+                    hyperlink: uploadResponse.link,
+                    review_id: '' + err_code
+                })
+            });
+
+        } catch (error) {
+            setError("Failed to submit: " + error.message);
         }
 
-        console.log("Successfully made review!");
-        setFormData({
-            courseName: '',
-            professorName: '',
-            courseRating: '',
-            professorRating: '',
-            reviewDescription: '',
-            documentUpload: null
-        });
+       //localStorage.setItem('view-user', localStorage.getItem('username'));
+        //window.location.href = '/Users';
     };
+    
+
+
+
+
 
     return (
         <div>

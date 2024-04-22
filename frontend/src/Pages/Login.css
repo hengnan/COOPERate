@@ -71,6 +71,17 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+.forgot-password-link {
+    color: #007bff;
+    text-decoration: none;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+    display: block; /* Ensure it takes up the full width */
+    text-align: center; /* Center the text */
+    margin-top: 0.1rem;
+}
+
 .error-message {
     color: red;
     margin: 10px 0;

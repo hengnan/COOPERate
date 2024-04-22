@@ -24,8 +24,9 @@ const UserProfilePage = () => {
     return date.format('MMMM Do, YYYY');
   }
 
-  const handleLogout = () => {               
+  const handleLogout = (event) => {               
     signOut(auth).then(() => {
+      event.preventDefault();
     // Sign-out successful.
         navigate("/");
         console.log("Signed out successfully")
@@ -99,7 +100,7 @@ const UserProfilePage = () => {
         observer.unobserve(endOfPageRef.current);
       }
     };
-  }, [endOfPageRef, loading]);
+  }, [endOfPageRef, loading, sortOption]);
 
   const fetchReviews = async () => {
     if (endFeed) return;
@@ -359,8 +360,8 @@ const UserProfilePage = () => {
         <a href = "/Users" onClick= {(e) => saveUsername(localStorage.getItem("username"), e)} class="button-link">
           <button class="profile-button"><i class="fas fa-user-circle"></i> Profile</button>
         </a>
-        <a class="button-link">
-          <button onClick={handleLogout} class="button"><i class="fa fa-sign-out"></i>Logout</button>
+        <a href = "/" onClick = {(e) => handleLogout(e)} className="button-link">
+          <button className="button"><i className="fa fa-sign-out"></i> Logout</button>
         </a>
       </div>
       <div className="user-profile">
@@ -372,8 +373,8 @@ const UserProfilePage = () => {
         <select value={sortOption} onChange={handleSortOptionChange} className="select">
           <option value="time-ascending">Oldest</option>
           <option value="time-descending">Newest</option>
-          <option value="likes-ascending">Most Liked</option>
-          <option value="likes-descending">Least Liked</option>
+          <option value="likes-descending">Most Liked</option>
+          <option value="likes-ascending">Least Liked</option>
         </select>
       </div>
       <div className="reviews-section">
@@ -417,8 +418,8 @@ const UserProfilePage = () => {
           </div>
         </div>
       ))}
-        <div ref={endOfPageRef} className="loading-sentinel"></div>
       </div>
+      <div ref={endOfPageRef} className="loading-sentinel"></div>
     </div>
     </div>
   );
