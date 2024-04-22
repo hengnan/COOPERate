@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './makeReview.css';
 import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
-
+import $ from 'jquery';
+import 'jquery-ui-dist/jquery-ui';
+import 'jquery-ui-dist/jquery-ui.css';
 
 
 
@@ -16,6 +18,41 @@ const ReviewForm = () => {
         documentUpload: null
     });
 
+    useEffect(() => {
+        const courseNames = ["Software Engineering", "Integrated Circuit Engineering", "Digital Signal Processing"];
+        const professorNames = ["Christopher Hong", "Jabeom Koo", "Fred Fontaine"];
+    
+        $("#courseName").autocomplete({
+            source: courseNames,
+            select: function(event, ui) {
+                // Prevent the default behavior
+                event.preventDefault();
+                // Set the item as the value for the courseName input and update formData state
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    courseName: ui.item.value
+                }));
+                // Update the input field with selected value
+                $("#courseName").val(ui.item.value);
+            }
+        });
+    
+        $("#professorName").autocomplete({
+            source: professorNames,
+            select: function(event, ui) {
+                // Prevent the default behavior
+                event.preventDefault();
+                // Set the item as the value for the professorName input and update formData state
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    professorName: ui.item.value
+                }));
+                // Update the input field with selected value
+                $("#professorName").val(ui.item.value);
+            }
+        });
+    }, []);
+    
     const MAX_FILE_SIZE = 10;
 
 
@@ -245,12 +282,22 @@ const ReviewForm = () => {
             <h2>Make A Review</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="courseName">Course Name</label>
-                    <input type="text" id="courseName" name="courseName" value={formData.courseName} onChange={handleChange} />
+                    <label htmlFor="courserName">Course Name</label>
+                    <input  type="text" id="courseName" name="courseName" value={formData.courseName} onChange={e => 
+                    {
+                        setError("");
+                        setFormData({...formData, courseName: e.target.value})
+                    }}
+                />
                 </div>
                 <div className="form-group">
                     <label htmlFor="professorName">Professor Name</label>
-                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
+                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={e => 
+                    {
+                        setError("");
+                        setFormData({...formData, professorName: e.target.value})
+                    }}
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseRating">Course Rating</label>
@@ -263,6 +310,9 @@ const ReviewForm = () => {
                 <div className="form-group">
                     <label htmlFor="reviewDescription">Review Description</label>
                     <textarea id="reviewDescription" name="reviewDescription" rows="4" maxLength="500" value={formData.reviewDescription} onChange={handleChange}></textarea>
+                    <small style={{ fontSize: '0.75rem', textAlign: 'right', display: 'block', marginTop: '5px' }}>
+                        {500 - formData.reviewDescription.length} characters left
+                    </small>
                 </div>
 
                 <div className="form-group">
