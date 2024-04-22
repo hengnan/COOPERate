@@ -16,6 +16,8 @@ const ReviewForm = () => {
         documentUpload: null
     });
 
+    const MAX_FILE_SIZE = 10;
+
 
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
@@ -43,11 +45,21 @@ const ReviewForm = () => {
     const [error, setError] = useState("");
     
     const handleChange = (e) => {
+
+        setError("");
         const { name, value, files } = e.target;
 
         if ((name === "courseRating" || name === "professorRating") && value.length > 1) {
             return; // Stop processing if input length exceeds the maximum
         }
+
+        if (files && files[0]) {
+            if (files[0].size > MAX_FILE_SIZE) {
+                setError(`File size should not exceed ${MAX_FILE_SIZE / 1024 / 1024} MB`);
+                return; // Stop processing if the file is too large
+            }
+        }
+
         setFormData(prevState => ({
             ...prevState,
             [name]: files ? files[0] : value
@@ -195,8 +207,8 @@ const ReviewForm = () => {
             setError("Failed to submit: " + error.message);
         }
 
-        //localStorage.setItem('view-user', localStorage.getItem('username'));
-        //window.location.href = '/Users';
+        localStorage.setItem('view-user', localStorage.getItem('username'));
+        window.location.href = '/Users';
     };
     
 
