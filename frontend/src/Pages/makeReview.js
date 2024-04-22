@@ -158,8 +158,8 @@ const ReviewForm = () => {
             setError("Failed to submit: " + error.message);
         }
 
-       //localStorage.setItem('view-user', localStorage.getItem('username'));
-        //window.location.href = '/Users';
+        localStorage.setItem('view-user', localStorage.getItem('username'));
+        window.location.href = '/Users';
     };
     
 

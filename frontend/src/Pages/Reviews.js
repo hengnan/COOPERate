@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const ReviewsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('Professors');
-  const [sortOption, setSortOption] = useState('time-ascending');
+  const [sortOption, setSortOption] = useState('time-descending');
   const [reviews, setReviews] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);

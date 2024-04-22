@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const UserProfilePage = () => {
   const [userDetails, setUserDetails] = useState({ username: '', karma: '', dateJoined: '', user_id: ''});
   const [reviews, setReviews] = useState([]);
-  const [sortOption, setSortOption] = useState('time-ascending');
+  const [sortOption, setSortOption] = useState('time-descending');
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [endFeed, setFeed] = useState(false);
@@ -327,6 +327,8 @@ const UserProfilePage = () => {
           method: 'DELETE'
         });
         if (!response.ok) throw new Error('Network response was not ok.');
+
+        setReviews(reviews.filter(review => review.id !== review_id));
     }
 
     catch (error) {
