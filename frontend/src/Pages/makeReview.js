@@ -65,7 +65,6 @@ const ReviewForm = () => {
             const courseID = courseInfo.id;
 
 
-            console.log(courseID);
             if (courseID <= 0) {
                 setError("Course Not Found!");
                 return;
@@ -82,7 +81,6 @@ const ReviewForm = () => {
 
             const profID = profInfo.id;
 
-            console.log(profID);
 
             if (profID <= 0){
                 setError("Professor Not Found!");
@@ -118,16 +116,12 @@ const ReviewForm = () => {
     
         // Assuming all validations pass, prepare data for submission
         const formDataToSend = new FormData();
-        formDataToSend.append('file', formData.documentUpload);
+        formDataToSend.append('file', formData.syllabusUpload);
         formDataToSend.append('reviewData', JSON.stringify({
-            reviewer_id: localStorage.getItem("user_id"),
+            username: localStorage.getItem("username"),
             course_id: formData.courseName,
-            prof_id: formData.professorName,
-            course_rating: formData.courseRating,
-            prof_rating: formData.professorRating,
-            review: formData.reviewDescription
+            type: "Syllabus"
         }));
-
         
         try {
 
@@ -219,8 +213,8 @@ const ReviewForm = () => {
                     <textarea id="reviewDescription" name="reviewDescription" rows="4" value={formData.reviewDescription} onChange={handleChange}></textarea>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="documentUpload">Upload Document</label>
-                    <input type="file" id="documentUpload" name="documentUpload" onChange={handleChange} />
+                    <label htmlFor="syllabusUpload">Upload Syllabus</label>
+                    <input type="file" id="syllabusUpload" name="syllabusUpload" onChange={handleChange} />
                 </div>
                 <button type="submit">Submit Review</button>
                 

@@ -19,6 +19,13 @@ function bufferToStream(buffer) {
     return readable;
 }
 
+function getParent(course, type){
+    const directory_structure=  JSON.parse(fs.readFileSync('../frontend/GDrive/directories.json'));
+    console.log(directory_structure);
+    console.log(course);
+    console.log(type);
+    return directory_structure[course][type]
+}
 
 const corsOptions = {
   origin: 'http://localhost:3000',
@@ -52,11 +59,15 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     try {
         const authClient = await auth.getClient();
         const drive = google.drive({ version: 'v3', auth: authClient });
+        
+        console.log(req);
+        console.log(req.body);
 
+        reviewData = JSON.parse(req.body.reviewData);
         const fileMetadata = {
-            name: req.file.originalname,
+            name: reviewData.course_id + '_' + reviewData.type + '_' + reviewData.username,
             mimeType: req.file.mimetype,
-            parents: ['1JAkuKL6_80Mwt-ASLeodJAIPUqC88uWy']
+            parents: [getParent(reviewData.course_id, reviewData.type)]
         };
 
         const media = {
@@ -73,7 +84,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
         const webViewLink = `https://drive.google.com/file/d/${file.data.id}/view`;
         
         console.log(req.file);
-        console.log(req.body);
 
         res.status(200).json({
             message: "File uploaded successfully",
