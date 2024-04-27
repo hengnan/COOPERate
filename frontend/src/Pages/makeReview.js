@@ -185,12 +185,6 @@ const ReviewForm = () => {
             year: selectedYear,
             type: "Syllabus",
         }));
-            //console.log(formData.documentUpload);
-            uploadFile(formData.documentUpload);
-            setSuccessMessage("Review submitted successfully!");
-            setTimeout(() => {
-                setSuccessMessage('');
-            }, 3000);
 
         const ExamData = new FormData();
         ExamData.append('file', formData.examUpload); // Handle the exam file

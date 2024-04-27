@@ -20,6 +20,9 @@ public class CourseDao extends DataAccessObject<Course>{
 
     private static final String LASTVAL = "SELECT last_value FROM course_counter";
 
+    private static final String GET_RATINGS = "SELECT  course_rating FROM Reviews JOIN Course " +
+            "ON Reviews.course_id = Course.id WHERE Course.id = ?;";
+
     public CourseDao(Connection connection) {
         super(connection);
     }
@@ -98,6 +101,24 @@ public class CourseDao extends DataAccessObject<Course>{
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public int[] getDistribution(int id)
+    {
+        int[] ratings = {0, 0, 0, 0, 0};
+        try (PreparedStatement statement = this.connection.prepareStatement(GET_RATINGS);) {
+            statement.setInt(1, id);
+            ResultSet rs = statement.executeQuery();
+
+            while(rs.next())
+            {
+                ratings[rs.getInt("course_rating") - 1] ++;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return ratings;
     }
 
 }

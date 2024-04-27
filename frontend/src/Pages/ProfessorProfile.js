@@ -4,17 +4,49 @@ import './ProfessorProfile.css';
 import moment from 'moment';
 import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
+import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 const ProfessorProfile = () => {
 
   const [professorData, setProfessorData] = useState({
     profname: '',
     description: '',
-    rating: 0
+    rating: 0,
+    prof_id: 0
   });
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  // Assuming the endpoint supports offset for pagination
+
+  const [ratingDistribution, setRatingDistribution] = useState({
+    labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
+    datasets: [
+      {
+        label: 'Number of Reviews',
+        backgroundColor: 'rgba(75,192,192,1)',
+        borderColor: 'rgba(0,0,0,1)',
+        borderWidth: 1,
+        data: [0, 0, 0, 0, 0]
+      }
+    ]
+  });
+
+  const fetchRatingDistribution = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/getProfRatings/' + professorData.prof_id);
+      if (!response.ok) throw new Error('Failed to fetch rating distribution');
+      const data = await response.json();
+      setRatingDistribution(prevDistribution => ({
+        ...prevDistribution,
+        datasets: [{
+          ...prevDistribution.datasets[0],
+          data: data.reverse()
+        }]
+      }));
+    } catch (error) {
+      console.error('Error fetching rating distribution:', error);
+    }
+  };
 
   const saveUsername = (username, event) => {
     event.preventDefault();
@@ -42,8 +74,11 @@ const fetchProfessorData = async () => {
       setProfessorData({
         profname: data.name,
         description: data.description,
-        rating: data.rating
+        rating: data.rating,
+        prof_id: data.id
       });
+
+      await fetchRatingDistribution();
     } catch (error) {
       console.error('Error fetching user data:', error);
     } finally {
@@ -246,9 +281,19 @@ const fetchProfessorData = async () => {
 
 
   useEffect(() => {
-    fetchProfessorData();
-    fetchReviews(); // Fetch reviews when the component mounts
+    const loadData = async () => {
+      await fetchProfessorData();
+      fetchReviews();
+    };
+    loadData();
   }, []);
+
+  useEffect(() => {
+    if (professorData.prof_id) {
+      fetchRatingDistribution();
+    }
+  }, [professorData.prof_id]); // This useEffect triggers when prof_id changes
+  
 
   return (
     <div>
@@ -332,7 +377,47 @@ const fetchProfessorData = async () => {
             </div>
           </div>
         ))}
-        </div>
+          </div>
+
+          <div className="rating-chart">
+  <Bar
+    data={ratingDistribution}
+    options={{
+      plugins: {
+        title: {
+          display: true,
+          text: 'Rating Distribution',
+          fontSize: 20
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#666', // Darken the horizontal grid lines
+            borderColor: '#666' // Darken the border of the y-axis
+          }
+        },
+        x: {
+          grid: {
+            color: '#666', // Darken the vertical grid lines
+            borderColor: '#666' // Darken the border of the x-axis
+          }
+        }
+      },
+      elements: {
+        bar: {
+          borderColor: '#000', // Darken the borders of the bars
+          borderWidth: 2 // Optionally increase the width of the bar borders
+        }
+      }
+    }}
+  />
+</div>
+
       </div>
   );
 }

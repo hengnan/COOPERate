@@ -13,6 +13,7 @@ services:
       - 5432:5432
     restart: always
 
+
   backend:
     build: ./backend
     container_name: backend
@@ -24,18 +25,18 @@ services:
       - 8080:8080
 
 
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
+  #frontend:
+  #  build: ./frontend
+  #  container_name: frontend
+  #  ports:
+  #    - 3000:3000
+  #  depends_on:
+  #    - backend
   
-  proxy:
-    build: ./ProxyServer
-    container_name: proxy
-    ports:
-      - 8000:8000
-    depends_on:
-      - frontend
+  #proxy:
+  #  build: ./ProxyServer
+  #  container_name: proxy
+  #  ports:
+  #    - 8000:8000
+  #  depends_on:
+  #    - frontend

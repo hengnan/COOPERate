@@ -13,3 +13,14 @@
 .professor-profile p {
   color: #666;
 }
+
+.rating-chart {
+  position: fixed; /* Sticky position to keep it visible */
+  right: 10px; /* Adjust as necessary to position on the right */
+  top: 320px; /* Adjust as necessary based on header height or desired placement */
+  width: 400px; /* Adjust width to fit the content appropriately */
+  height: 1500px; /* Set a height */
+  z-index: 1000; /* Ensures it's above other content */
+  padding: 10px; /* Optional, adds space inside the container */
+  box-shadow: 0 16px 16px rgba(0,0,0,0.1); /* Optional, adds shadow for better visibility */
+}

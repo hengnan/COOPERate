@@ -406,6 +406,54 @@ public class CooperateApplication {
 		}
 	}
 
+	@CrossOrigin
+	@GetMapping("/getProfRatings/{prof_id}")
+	public int[] getProfRatings(@PathVariable("prof_id") Integer prof_id) {
+		Connection connection = null;
+		int[] ratings = {0, 0, 0, 0, 0};
+		try {
+			connection = dcm.getConnection();
+			ProfessorDao profDao = new ProfessorDao(connection);
+			ratings = profDao.getDistribution(prof_id);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+		return ratings;
+	}
+
+	@CrossOrigin
+	@GetMapping("/getCourseRatings/{course_id}")
+	public int[] getCourseRatings(@PathVariable("course_id") Integer course_id) {
+		Connection connection = null;
+		int[] ratings = {0, 0, 0, 0, 0};
+		try {
+			connection = dcm.getConnection();
+			CourseDao courseDao = new CourseDao(connection);
+			ratings = courseDao.getDistribution(course_id);
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+		return ratings;
+	}
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(CooperateApplication.class, args);
