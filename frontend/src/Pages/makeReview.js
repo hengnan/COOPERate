@@ -56,6 +56,7 @@ const ReviewForm = () => {
     const MAX_FILE_SIZE = 10;
 
 
+
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const auth = getAuth();
@@ -184,6 +185,12 @@ const ReviewForm = () => {
             year: selectedYear,
             type: "Syllabus",
         }));
+            //console.log(formData.documentUpload);
+            uploadFile(formData.documentUpload);
+            setSuccessMessage("Review submitted successfully!");
+            setTimeout(() => {
+                setSuccessMessage('');
+            }, 3000);
 
         const ExamData = new FormData();
         ExamData.append('file', formData.examUpload); // Handle the exam file
