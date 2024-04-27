@@ -493,7 +493,7 @@ return (
           </div>
         </div>
       ))}
-      <div ref={endOfPageRef} />
+      <div ref={endOfPageRef} className="loading-sentinel"></div>
     </div>
   </div>
 );

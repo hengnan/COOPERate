@@ -329,3 +329,8 @@ body {
     color: green;
     margin-top: 20px;
 }
+
+.loading-sentinel {
+  height: 1px; /* Minimum height to make it detectable */
+  width: 100%;
+}
