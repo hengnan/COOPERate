@@ -17,7 +17,7 @@ courProf = [(10000, 10000), (10001, 10001), (10001, 10002), (10002, 10003), (100
 
 courses = ["Software Engineering", "Communication Networks", "Probability Models & Stochastic Processes", "Integrated Circuit Engineering", "Digital Signals Processing"]
 
-profs = ["Christopher Hong", "Sam Keene", "Jabeom Koo", "Fred Fontaine"]
+profs = ["Christopher Hong", "Sam Keene", "Fred Fontaine", "Jabeom Koo"]
 
 users = ["sam123", "rowdley212", "jack13", "bob14", "cooper11", "dooper11"]
 

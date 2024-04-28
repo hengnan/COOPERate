@@ -13,3 +13,43 @@
 .course-profile p {
   color: #666;
 }
+
+.rating-chart {
+  position: fixed; /* Sticky position to keep it visible */
+  right: 10px; /* Adjust as necessary to position on the right */
+  top: 55%; /* Adjust as necessary based on header height or desired placement */
+  width: 400px; /* Adjust width to fit the content appropriately */
+  height: 300px; /* Set a height */
+  z-index: 1000; /* Ensures it's above other content */
+  padding: 10px; /* Optional, adds space inside the container */
+  box-shadow: 0 4px 4px rgba(0,0,0,0.1); /* Optional, adds shadow for better visibility */
+  overflow: hidden;
+}
+
+
+.rating-box2 {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  position: fixed;
+  top: 35%;
+  right: 100px;
+  transform: translateY(-50%);
+  transition: background-color 0.3s ease;
+}
+
+.rating-box2 h2 {
+  color: #333;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.high-rating {
+  background-color: #a5f1d6; /* Light green for high rating */
+}
+
+.low-rating {
+  background-color: #eb646b; /* Light red for low rating */
+}

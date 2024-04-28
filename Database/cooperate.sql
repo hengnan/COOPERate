@@ -1,7 +1,7 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
--- DROP DATABASE cooperate;
+DROP DATABASE cooperate;
 CREATE DATABASE cooperate;
 
 

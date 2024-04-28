@@ -4,16 +4,49 @@ import './CourseProfile.css';
 import moment from 'moment';
 import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
+import { Bar } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 const CourseProfile = () => {
   const [courseData, setCourseData] = useState({
     coursename: '',
     description: '',
-    rating: 0
+    rating: 0,
+    course_id: 0
   });
   const [reviews, setReviews] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   // Assuming the endpoint supports offset for pagination
+
+  const [ratingDistribution, setRatingDistribution] = useState({
+    labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
+    datasets: [
+      {
+        label: 'Number of Reviews',
+        backgroundColor: 'rgba(75,192,192,1)',
+        borderColor: 'rgba(0,0,0,1)',
+        borderWidth: 1,
+        data: [0, 0, 0, 0, 0]
+      }
+    ]
+  });
+
+  const fetchRatingDistribution = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/getCourseRatings/' + courseData.course_id);
+      if (!response.ok) throw new Error('Failed to fetch rating distribution');
+      const data = await response.json();
+      setRatingDistribution(prevDistribution => ({
+        ...prevDistribution,
+        datasets: [{
+          ...prevDistribution.datasets[0],
+          data: data.reverse()
+        }]
+      }));
+    } catch (error) {
+      console.error('Error fetching rating distribution:', error);
+    }
+  };
 
   const saveUsername = (username, event) => {
     event.preventDefault();
@@ -54,8 +87,10 @@ const CourseProfile = () => {
       setCourseData({
         coursename: data.name,
         description: data.description,
-        rating: data.rating
+        rating: data.rating,
+        course_id: data.id
       });
+      await fetchRatingDistribution();
     } catch (error) {
       console.error('Error fetching user data:', error);
     } finally {
@@ -245,9 +280,18 @@ const CourseProfile = () => {
 
 
   useEffect(() => {
-    fetchCourseData();
-    fetchReviews(); // Fetch reviews when the component mounts
+    const loadData = async () => {
+      await fetchCourseData();
+      fetchReviews();
+    };
+    loadData();
   }, []);
+
+  useEffect(() => {
+    if (courseData.course_id) {
+      fetchRatingDistribution();
+    }
+  }, [courseData.course_id]); 
 
   return (
     <div>
@@ -278,11 +322,11 @@ const CourseProfile = () => {
       ) : (
         <div>
           <h2>{courseData.coursename}</h2>
-          <p>Description: {courseData.description}</p>
-          <p>Rating: {courseData.rating}</p>
+          <p>{courseData.description}</p>
         </div>
       )}
       </div>
+
       <div className="reviews-section">
         <h2 class="banner-title">Reviews</h2>
         {reviews.map((review, index) => (
@@ -333,7 +377,55 @@ const CourseProfile = () => {
           </div>
         ))}
         </div>
-      </div>
+
+        <div className="rating-chart">
+  <Bar
+    data={ratingDistribution}
+    options={{
+      plugins: {
+        title: {
+          display: true,
+          text: 'Rating Distribution',
+          fontSize: 20
+        },
+        legend: {
+          display: false
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: '#666', // Darken the horizontal grid lines
+            borderColor: '#666' // Darken the border of the y-axis
+          }
+        },
+        x: {
+          grid: {
+            color: '#666', // Darken the vertical grid lines
+            borderColor: '#666' // Darken the border of the x-axis
+          }
+        }
+      },
+      elements: {
+        bar: {
+          borderColor: '#000', // Darken the borders of the bars
+          borderWidth: 2 // Optionally increase the width of the bar borders
+        }
+      }
+    }}
+  />
+</div>
+<div className={`rating-box2 ${courseData.rating < 3 ? 'low-rating' : 'high-rating'}`} id="ratingBox">
+  <h2>Overall Rating</h2>
+  <hr className="divider" />
+  <div className="rating-item">
+    <p>{courseData.rating}</p>
+  </div>
+</div>
+
+</div>
+
   );
 }
 
