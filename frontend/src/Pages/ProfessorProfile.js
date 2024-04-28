@@ -331,8 +331,7 @@ const fetchProfessorData = async () => {
       ) : (
         <div>
           <h2>{professorData.profname}</h2>
-          <p>Description: {professorData.description}</p>
-          <p> Rating: <StarRating rating={Math.round(professorData.rating)}/></p>
+          <p>{professorData.description}</p>
         </div>
       )}
       </div>
@@ -423,6 +422,13 @@ const fetchProfessorData = async () => {
       }
     }}
   />
+</div>
+<div className={`rating-box2 ${professorData.rating < 3 ? 'low-rating' : 'high-rating'}`} id="ratingBox">
+  <h2>Overall Rating</h2>
+  <hr className="divider" />
+  <div className="rating-item">
+    <p>{professorData.rating}</p>
+  </div>
 </div>
 
       </div>

@@ -322,11 +322,11 @@ const CourseProfile = () => {
       ) : (
         <div>
           <h2>{courseData.coursename}</h2>
-          <p>Description: {courseData.description}</p>
-          <p> Rating: <StarRating rating={Math.round(courseData.rating)}/></p>
+          <p>{courseData.description}</p>
         </div>
       )}
       </div>
+
       <div className="reviews-section">
         <h2 class="banner-title">Reviews</h2>
         {reviews.map((review, index) => (
@@ -416,7 +416,16 @@ const CourseProfile = () => {
     }}
   />
 </div>
-      </div>
+<div className={`rating-box2 ${courseData.rating < 3 ? 'low-rating' : 'high-rating'}`} id="ratingBox">
+  <h2>Overall Rating</h2>
+  <hr className="divider" />
+  <div className="rating-item">
+    <p>{courseData.rating}</p>
+  </div>
+</div>
+
+</div>
+
   );
 }
 
