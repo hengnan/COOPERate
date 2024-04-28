@@ -300,6 +300,8 @@ body {
 .net-likes {
   font-size: 18px;
   margin: 0 10px;
+  min-width: 30px;
+
 }
 
 .review-text {
