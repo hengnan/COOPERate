@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
@@ -11,7 +11,18 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    useEffect(() => {
+      // Add a unique class to the body
+      document.body.classList.add('login-page-body');
+  
+      // Cleanup function to remove the class when component unmounts
+      return () => {
+        document.body.classList.remove('login-page-body');
+      };
+    }, []);
+
     const logIn = async () => {
+
         try {
             if (!email.endsWith("@cooper.edu")) {
                 setError("Email needs to be a cooper.edu email!");
@@ -46,6 +57,8 @@ const LoginPage = () => {
               toast.error('Too many attempts, please try again later');
           }
         }
+
+        
     };
 
 

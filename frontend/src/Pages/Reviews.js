@@ -430,6 +430,7 @@ return (
         value={searchQuery}
         onChange={handleChange}
         className={`search-input`}
+        maxLength={100}
       />
 
       

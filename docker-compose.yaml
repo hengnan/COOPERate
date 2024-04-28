@@ -16,6 +16,7 @@ services:
 
   backend:
     build: ./backend
+    image: cooperateacr.azurecr.io/backend
     container_name: backend
     depends_on:
       - database
@@ -25,18 +26,20 @@ services:
       - 8080:8080
 
 
-  frontend:
-    build: ./frontend
-    container_name: frontend
-    ports:
-      - 3000:3000
-    depends_on:
-      - backend
+  #frontend:
+  #  build: ./frontend
+  #  image: cooperateacr.azurecr.io/frontend
+  #  container_name: frontend
+  #  ports:
+  #    - 3000:3000
+  #  depends_on:
+  #    - backend
   
-  proxy:
-    build: ./ProxyServer
-    container_name: proxy
-    ports:
-     - 8000:8000
-    depends_on:
-      - frontend
+  #proxy:
+  #  build: ./ProxyServer
+  #  image: cooperateacr.azurecr.io/proxy
+  #  container_name: proxy
+  #  ports:
+  #   - 8000:8000
+  #  depends_on:
+  #    - frontend

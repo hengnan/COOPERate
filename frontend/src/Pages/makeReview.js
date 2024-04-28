@@ -289,6 +289,7 @@ const ReviewForm = () => {
                         setError("");
                         setFormData({...formData, courseName: e.target.value})
                     }}
+                    maxLength={100}
                 />
                 </div>
                 <div className="form-group">
@@ -298,6 +299,8 @@ const ReviewForm = () => {
                         setError("");
                         setFormData({...formData, professorName: e.target.value})
                     }}
+
+                    maxLength={100}
                     />
                 </div>
                 <div className="form-group">

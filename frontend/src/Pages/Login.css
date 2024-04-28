@@ -3,7 +3,16 @@ body, html {
     margin: 0;
     background-color: #1a2a33; 
     color: #ffffff;
+    /*background-repeat: no-repeat;*/
 }
+
+
+.login-page-body {
+    background-image: url('COOPERate_Logo.png');
+    background-size: 500px 500px;
+  }
+
+
 
 .Login nav.container-fluid {
     display: flex;

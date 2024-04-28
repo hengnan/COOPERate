@@ -188,6 +188,7 @@ const CreateAccountPage = () => {
                 placeholder="Your username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
+                maxLength={20}
             />
 
             <input
@@ -195,6 +196,7 @@ const CreateAccountPage = () => {
                 placeholder="Your email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                maxLength={50}
             />
             <input
                 style={inputStyle}
@@ -202,6 +204,7 @@ const CreateAccountPage = () => {
                 placeholder="Your password"
                 value={password}
                 onChange={e => handlePasswordChange(e)}
+                maxLength={30}
             />
             <input
                 style={inputStyle}
@@ -209,6 +212,7 @@ const CreateAccountPage = () => {
                 placeholder="Re-enter your password"
                 value={confirmPassword}
                 onChange={e => setConfirmPassword(e.target.value)}
+                maxLength={30}
             />
             {passwordStrength && (
                 <>

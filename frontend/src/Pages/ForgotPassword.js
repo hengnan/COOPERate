@@ -14,6 +14,15 @@ const ForgotPasswordPage = () => {
     const [error, setError] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
+    useEffect(() => {
+      // Add a unique class to the body
+      document.body.classList.add('forgot-page-body');
+  
+      // Cleanup function to remove the class when component unmounts
+      return () => {
+        document.body.classList.remove('forgot-page-body');
+      };
+    }, []);
     const handlePasswordReset = async () => {
       try {
         if (!email.endsWith("@cooper.edu")) {
