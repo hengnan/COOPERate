@@ -93,7 +93,7 @@ const ReviewForm = () => {
 
         if (files && files[0]) {
             if (files[0].size > MAX_FILE_SIZE) {
-                setError(`File size should not exceed ${MAX_FILE_SIZE / 1024 / 1024} MB`);
+                setError(`File size should not exceed ${MAX_FILE_SIZE *1024 *1024} MB`);
                 return; // Stop processing if the file is too large
             }
         }
