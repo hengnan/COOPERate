@@ -269,6 +269,13 @@ const fetchProfessorData = async () => {
 
   const StarRating = ({ rating }) => {
     const stars = [];
+    const filledStarStyle = {
+      color: 'yellow', // Style for filled stars
+    };
+    const emptyStarStyle = {
+      color: '#ccc', // Style for empty stars
+    };
+    
     for (let i = 1; i <= 5; i++) {
       if (i <= rating) {
         stars.push(<span key={i} className="star filled">&#9733;</span>);
@@ -292,7 +299,7 @@ const fetchProfessorData = async () => {
     if (professorData.prof_id) {
       fetchRatingDistribution();
     }
-  }, [professorData.prof_id]); // This useEffect triggers when prof_id changes
+  }, [professorData.prof_id]);
   
 
   return (
@@ -325,7 +332,7 @@ const fetchProfessorData = async () => {
         <div>
           <h2>{professorData.profname}</h2>
           <p>Description: {professorData.description}</p>
-          <p>Rating: {professorData.rating}</p>
+          <p> Rating: <StarRating rating={Math.round(professorData.rating)}/></p>
         </div>
       )}
       </div>

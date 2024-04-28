@@ -323,7 +323,7 @@ const CourseProfile = () => {
         <div>
           <h2>{courseData.coursename}</h2>
           <p>Description: {courseData.description}</p>
-          <p>Rating: {courseData.rating}</p>
+          <p> Rating: <StarRating rating={Math.round(courseData.rating)}/></p>
         </div>
       )}
       </div>

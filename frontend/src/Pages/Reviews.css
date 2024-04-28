@@ -253,6 +253,14 @@ body {
   right: 10px;
 }
 
+.checked {
+  color: #FFD700;
+}
+
+.fa-star {
+  color: #ccc;
+}
+
 .review-content {
   text-align: left;
   margin-right: 10px;
