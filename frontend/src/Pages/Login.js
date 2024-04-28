@@ -1,9 +1,10 @@
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {Link, useNavigate} from "react-router-dom";
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import './Login.css';
+import logoImg from './COOPERate_Logo.png';
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
@@ -11,18 +12,7 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    useEffect(() => {
-      // Add a unique class to the body
-      document.body.classList.add('login-page-body');
-  
-      // Cleanup function to remove the class when component unmounts
-      return () => {
-        document.body.classList.remove('login-page-body');
-      };
-    }, []);
-
     const logIn = async () => {
-
         try {
             if (!email.endsWith("@cooper.edu")) {
                 setError("Email needs to be a cooper.edu email!");
@@ -57,8 +47,6 @@ const LoginPage = () => {
               toast.error('Too many attempts, please try again later');
           }
         }
-
-        
     };
 
 
@@ -66,18 +54,23 @@ const LoginPage = () => {
     return (
     <div className="Login">
       <nav className="container-fluid">
-        <ul><li><strong>COOPERATE</strong></li></ul>
+        <ul>
+          <li style={{ fontSize: '20px' }}><strong>COOPERATE</strong></li>
+        </ul>
         <ul>
           <li><a href="/AboutUs">About Us</a></li>
           <li><a href="/create-account" className="make-account-btn" role="button">Make an Account</a></li>
         </ul>
       </nav>
+      <div className="Logo">
+        <img src={logoImg} alt="Logo" className="login-logo" />
+      </div>
       <div className = "container">
         <main className="login-form">
 
           <h2>Sign In</h2>
-          <input  type = "text" placeholder="Email Address" value = {email} onChange={e=>setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" value={password} onChange={e=>setPassword(e.target.value)} />
+          <input  type = "text" placeholder="Email Address" maxLength={50} value = {email} onChange={e=>setEmail(e.target.value)} />
+          <input type="password" placeholder="Password" maxLength={30} value={password} onChange={e=>setPassword(e.target.value)} />
           <button onClick={logIn}>Log In</button>
           <Link to="/ForgotPassword" className="forgot-password-link">Forgot Password?</Link>
         </main>

@@ -6,11 +6,16 @@ body, html {
     /*background-repeat: no-repeat;*/
 }
 
+.Logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0px; /* Adjust based on spacing needs */
+}
 
-.login-page-body {
-    background-image: url('COOPERate_Logo.png');
-    background-size: 500px 500px;
-  }
+.login-logo {
+    max-width: 300px; /* Adjust based on your image size */
+    height: auto;
+}
 
 
 
@@ -34,6 +39,7 @@ body, html {
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     transition: background-color 0.3s ease;
+    font-size: large;
 }
 
 .Login nav ul li a:hover {
@@ -41,11 +47,14 @@ body, html {
     color: #ffffff;
 }
 
+
+
 .Login .container {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
+    margin-top: 1%;
 }
 
 .login-form {
@@ -71,6 +80,7 @@ button {
     border-radius: 0.25rem;
     border: none;
     color: #ffffff;
+    
     background-color: #007bff;
     cursor: pointer;
     width: 100%;
