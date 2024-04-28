@@ -310,8 +310,30 @@ body {
   left: 180px;
 }
 
+.review-link {
+  margin-top: 10px;
+  text-align: right;
+}
+
+.review-link a {
+  color: #0645AD;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.review-link a:hover {
+  text-decoration: underline;
+}
+
 .success-message {
     text-align: center;
     color: green;
     margin-top: 20px;
 }
+
+
+.loading-sentinel {
+  height: 1px; /* Minimum height to make it detectable */
+  width: 100%;
+}
+

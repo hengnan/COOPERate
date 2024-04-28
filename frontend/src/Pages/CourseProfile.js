@@ -319,6 +319,17 @@ const CourseProfile = () => {
                 </button>
                 </div>
             </div>
+
+            {review.syllabusLink &&
+                <div className="review-link">
+                  <a href={review.syllabusLink} target="_blank" rel="noopener noreferrer">Syllabus</a>
+                </div>
+              }
+              {review.examLink &&
+                <div className="review-link">
+                  <a href={review.examLink} target="_blank" rel="noopener noreferrer">Past Exams</a>
+                </div>
+              }
           </div>
         ))}
         </div>

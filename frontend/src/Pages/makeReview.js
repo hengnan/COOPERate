@@ -1,62 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './makeReview.css';
-import { gapi } from 'gapi-script';
 import {getAuth, signOut} from "firebase/auth";
 import { useNavigate } from 'react-router-dom';
+import $ from 'jquery';
+import 'jquery-ui-dist/jquery-ui';
+import 'jquery-ui-dist/jquery-ui.css';
 
-
-const authToken = "ya29.a0Ad52N39VERWZ-f2gZgTqrrE78li68O7NEgcv0bzzJvwk-NYq_U1jmfXOfaWR-G5Fd7VSNSr8CxCfdD7C2NT3N_dtOkZKGdacGU1M_TRJAHee_CkiWKiInjjr3df_vO9Ohq4E-VvjboDOQckaGvXlbcLXTe-6RH45TtkNaCgYKASISARISFQHGX2MikCWbj5Gv3KRT5mGvTz9E3w0171";
-
-function uploadFile(file) {
-
-    if (!file){
-        console.error('No file to upload.');
-        return;
-    }
-    const boundary = '-------314159265358979323846';
-    const delimiter = "\r\n--" + boundary + "\r\n";
-    const close_delim = "\r\n--" + boundary + "--";
-
-    console.log(file);
-    var reader = new FileReader();
-    reader.readAsBinaryString(file);
-    reader.onload = function (e) {
-        var contentType = file.type || 'application/octet-stream';
-        var metadata = {
-            'name': file.name,
-            'mimeType': contentType
-        };
-
-        var base64Data = btoa(reader.result);
-        var multipartRequestBody =
-            delimiter +
-            'Content-Type: application/json\r\n\r\n' +
-            JSON.stringify(metadata) +
-            delimiter +
-            'Content-Type: ' + contentType + '\r\n' +
-            'Content-Transfer-Encoding: base64\r\n' +
-            '\r\n' +
-            base64Data +
-            close_delim;
-
-        var request = gapi.client.request({
-            'path': '/upload/drive/v3/files',
-            'method': 'POST',
-            'params': { 'uploadType': 'multipart' },
-            'headers': {
-                'Authorization': 'Bearer ' + authToken,
-                'Content-Type': 'multipart/related; boundary="' + boundary + '"'
-            },
-            'body': multipartRequestBody
-        });
-
-        request.execute(function (file) {
-            console.log(file);
-        });
-    };
-}
-
-    
 
 
 const ReviewForm = () => {
@@ -69,9 +18,50 @@ const ReviewForm = () => {
         documentUpload: null
     });
 
+    useEffect(() => {
+        const courseNames = ["Software Engineering", "Integrated Circuit Engineering", "Digital Signal Processing"];
+        const professorNames = ["Christopher Hong", "Jabeom Koo", "Fred Fontaine"];
+    
+        $("#courseName").autocomplete({
+            source: courseNames,
+            select: function(event, ui) {
+                // Prevent the default behavior
+                event.preventDefault();
+                // Set the item as the value for the courseName input and update formData state
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    courseName: ui.item.value
+                }));
+                // Update the input field with selected value
+                $("#courseName").val(ui.item.value);
+            }
+        });
+    
+        $("#professorName").autocomplete({
+            source: professorNames,
+            select: function(event, ui) {
+                // Prevent the default behavior
+                event.preventDefault();
+                // Set the item as the value for the professorName input and update formData state
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    professorName: ui.item.value
+                }));
+                // Update the input field with selected value
+                $("#professorName").val(ui.item.value);
+            }
+        });
+    }, []);
+    
+    const MAX_FILE_SIZE = 10;
+
+
+
     const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
     const auth = getAuth();
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear()); // Default to current year
+
 
     const handleLogout = () => {               
         signOut(auth).then(() => {
@@ -91,25 +81,23 @@ const ReviewForm = () => {
 
     
     const [error, setError] = useState("");
-
-    
-    useEffect(() => {
-        function start() {
-            gapi.client.init({
-                apiKey: 'AIzaSyB741SY92gk5TMU9M5nKzIk7vPoDq-P0NQ',
-                clientId: '475017443270-lvbqsd7r9imro4orfjs1uef68blknej4.apps.googleusercontent.com',
-                scope: 'https://www.googleapis.com/auth/drive.file',
-                discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'],
-            }).then(() => {
-                console.log('GAPI client initialized.');
-            });
-        }
-
-        gapi.load('client:auth2', start);
-    }, []);
     
     const handleChange = (e) => {
+
+        setError("");
         const { name, value, files } = e.target;
+
+        if ((name === "courseRating" || name === "professorRating") && value.length > 1) {
+            return; // Stop processing if input length exceeds the maximum
+        }
+
+        if (files && files[0]) {
+            if (files[0].size > MAX_FILE_SIZE*1024*1024) {
+                setError(`File size should not exceed ${MAX_FILE_SIZE} MB`);
+                return; // Stop processing if the file is too large
+            }
+        }
+
         setFormData(prevState => ({
             ...prevState,
             [name]: files ? files[0] : value
@@ -118,13 +106,20 @@ const ReviewForm = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            if(formData.courseName === "")
-            {
-                setError("Course name field cannot be empty!");
-                return;
-            }
-            const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
+        
+        // Check for necessary fields first
+        if(formData.courseName === "" || formData.professorName === "") {
+            setError("Required fields cannot be empty!");
+            return;
+        }
+
+        const courseRating = parseInt(formData.courseRating, 10);
+        const profRating = parseInt(formData.professorRating, 10);
+
+        
+
+        
+        const courseDetails = await fetch("http://localhost:8080/Courses/" + formData.courseName);
             
             
             const courseInfo = await courseDetails.json()
@@ -132,7 +127,6 @@ const ReviewForm = () => {
             const courseID = courseInfo.id;
 
 
-            console.log(courseID);
             if (courseID <= 0) {
                 setError("Course Not Found!");
                 return;
@@ -149,7 +143,6 @@ const ReviewForm = () => {
 
             const profID = profInfo.id;
 
-            console.log(profID);
 
             if (profID <= 0){
                 setError("Professor Not Found!");
@@ -157,10 +150,6 @@ const ReviewForm = () => {
             }
 
             const uid = localStorage.getItem("user_id");
-            
-            
-            
-
 
             const pckg = await fetch("http://localhost:8080/makeReview", {
                 method: "POST",
@@ -186,29 +175,84 @@ const ReviewForm = () => {
                 setError("You already made a review for this course and professor!");
                 return;
             }
-            //console.log(formData.documentUpload);
-            uploadFile(formData.documentUpload);
-            setSuccessMessage("Review submitted successfully!");
-            setTimeout(() => {
-                setSuccessMessage('');
-            }, 3000);
+    
+        // Assuming all validations pass, prepare data for submission
+        const SyllabusData = new FormData();
+        SyllabusData.append('file', formData.syllabusUpload);
+        SyllabusData.append('reviewData', JSON.stringify({
+            username: localStorage.getItem("username"),
+            course_id: formData.courseName,
+            year: selectedYear,
+            type: "Syllabus",
+        }));
 
-        }
+        const ExamData = new FormData();
+        ExamData.append('file', formData.examUpload); // Handle the exam file
+        ExamData.append('reviewData', JSON.stringify({
+            username: localStorage.getItem("username"),
+            course_id: formData.courseName,
+            year: selectedYear,
+            type: "Exams" 
+        }));
         
-        catch (e) {
-            setError(e.message);
+        try {
+
+            var syllSuccess = true;
+            var examSuccess = true;
+            var syllabusLink = "";
+            var examLink=  "";
+            
+            if(formData.syllabusUpload){
+                const Syresponse = await fetch("http://localhost:8000/upload", {
+                    method: "POST",
+                    body: SyllabusData
+                });
+
+                const syllabusResponse = await Syresponse.json();
+
+                syllSuccess = Syresponse.ok;
+                syllabusLink = syllabusResponse.link;
+            }
+
+            if(formData.examUpload){
+                const Exresponse = await fetch("http://localhost:8000/upload", {
+                    method: "POST",
+                    body: ExamData
+                });
+
+                const examResponse = await Exresponse.json();
+                examSuccess = examResponse.ok;
+                examLink = examResponse.link;
+            }
+
+            if (syllSuccess && examSuccess) {
+                setSuccessMessage("Review and file submitted successfully!");
+                setTimeout(() => {
+                    setSuccessMessage('');
+                }, 5000);
+            }
+
+            const updtReview = await fetch ("http://localhost:8080/updateReview", {
+                method : "POST",
+                body: JSON.stringify({
+                    syllabus_link: syllabusLink,
+                    exam_link: examLink,
+                    review_id: '' + err_code
+                })
+            });
+
+        } catch (error) {
+            setError("Failed to submit: " + error.message);
         }
 
-        console.log("Successfully made review!");
-        setFormData({
-            courseName: '',
-            professorName: '',
-            courseRating: '',
-            professorRating: '',
-            reviewDescription: '',
-            documentUpload: null
-        });
+        localStorage.setItem('view-user', localStorage.getItem('username'));
+        window.location.href = '/Users';
     };
+    
+
+
+
+
 
     return (
         <div>
@@ -239,12 +283,22 @@ const ReviewForm = () => {
             <h2>Make A Review</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="courseName">Course Name</label>
-                    <input type="text" id="courseName" name="courseName" value={formData.courseName} onChange={handleChange} />
+                    <label htmlFor="courserName">Course Name</label>
+                    <input  type="text" id="courseName" name="courseName" value={formData.courseName} onChange={e => 
+                    {
+                        setError("");
+                        setFormData({...formData, courseName: e.target.value})
+                    }}
+                />
                 </div>
                 <div className="form-group">
                     <label htmlFor="professorName">Professor Name</label>
-                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={handleChange} />
+                    <input  type="text" id="professorName" name="professorName" value={formData.professorName} onChange={e => 
+                    {
+                        setError("");
+                        setFormData({...formData, professorName: e.target.value})
+                    }}
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="courseRating">Course Rating</label>
@@ -256,13 +310,41 @@ const ReviewForm = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="reviewDescription">Review Description</label>
-                    <textarea id="reviewDescription" name="reviewDescription" rows="4" value={formData.reviewDescription} onChange={handleChange}></textarea>
+                    <textarea id="reviewDescription" name="reviewDescription" rows="4" maxLength="500" value={formData.reviewDescription} onChange={handleChange}></textarea>
+                    <small style={{ fontSize: '0.75rem', textAlign: 'right', display: 'block', marginTop: '5px' }}>
+                        {500 - formData.reviewDescription.length} characters left
+                    </small>
                 </div>
+
                 <div className="form-group">
-                    <label htmlFor="documentUpload">Upload Document</label>
-                    <input type="file" id="documentUpload" name="documentUpload" onChange={handleChange} />
+                    <label htmlFor="syllabusUpload">Upload Syllabus</label>
+                    <div style={{ display: 'flex', alignItems: 'center', marginTop: '8px' }}>
+                        <input type="file" id="syllabusUpload" name="syllabusUpload" onChange={handleChange} />
+                        <label style={{ marginLeft: '10px', marginRight: '5px', textAlign: 'center'}}>Year Class Taken</label>
+                        <select
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.target.value)}
+                            style={{ marginLeft: '10px', width: 'auto' }}
+                            >
+                        {Array(new Date().getFullYear() - 1999).fill().map((_, index) => (
+                        <option key={index} value={2000 + index}>
+                            {2000 + index}
+                            </option>
+                        ))}
+                        </select>
+                    </div>
                 </div>
+
+                <div className="form-group">
+                    <label htmlFor="examUpload">Upload Past Exam</label>
+                    <input type="file" id="examUpload" name="examUpload" onChange={handleChange} />
+                </div>
+
+
+
                 <button type="submit">Submit Review</button>
+
+                
                 
             </form>
         </div>

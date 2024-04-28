@@ -18,12 +18,14 @@ public class Review implements DataTransferObject{
     private float prof_rating;
     private int net_likes;
     private float old_karma;
-    private String hyperlink;
+    private String syllabusLink;
+    private String examLink;
     private Timestamp timestamp;
+
 
     public Review() { super();}
     public Review(int user_id, int course_id, int prof_id, String username, String course_name, String prof_name,
-                  float course_rating, float prof_rating, float old_karma, String review, String hyperlink)
+                  float course_rating, float prof_rating, float old_karma, String review, String syllabusLink, String examLink)
     {
         this.user_id = user_id;
         this.course_id = course_id;
@@ -35,7 +37,8 @@ public class Review implements DataTransferObject{
         this.prof_rating = prof_rating;
         this.old_karma = old_karma;
         this.review = review;
-        this.hyperlink = hyperlink;
+        this.syllabusLink = syllabusLink;
+        this.examLink = examLink;
     }
 
     public int getId() {
@@ -109,10 +112,15 @@ public class Review implements DataTransferObject{
         this.net_likes = net_likes;
     }
 
-    public String getHyperLink(){
-        return hyperlink;
+    public String getSyllabusLink(){
+        return syllabusLink;
     }
-    public void setHyperLink(String hyperlink){this.hyperlink = hyperlink;}
+    public void setSyllabusLink(String hyperlink){this.syllabusLink = hyperlink;}
+
+    public String getExamLink(){
+        return examLink;
+    }
+    public void setExamLink(String hyperlink){this.examLink = hyperlink;}
 
     public Timestamp getTimestamp(){
         return timestamp;

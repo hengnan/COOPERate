@@ -31,3 +31,11 @@ services:
       - 3000:3000
     depends_on:
       - backend
+  
+  proxy:
+    build: ./ProxyServer
+    container_name: proxy
+    ports:
+      - 8000:8000
+    depends_on:
+      - frontend

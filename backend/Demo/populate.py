@@ -44,7 +44,8 @@ for user in userBank:
             "prof_name": profname,
             "course_rating": str(course_rating),
             "review": review,
-            "hyperlink": ""
+            "syllabus_link": "",
+            "exam_link": ""
             }
         print(requests.post(url, json = json))
         

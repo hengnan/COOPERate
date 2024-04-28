@@ -32,6 +32,7 @@ VALUES ('Digital Signals Processing', 'A course where students learn to process 
 
 
 
+/*
 
 INSERT INTO Reviews (course_id, prof_id, user_id, course_name, prof_name, username, orig_karma, review, course_rating, prof_rating)
 SELECT
@@ -89,3 +90,4 @@ WHERE NOT EXISTS (
       AND r.user_id = u.id
 );
 
+*/

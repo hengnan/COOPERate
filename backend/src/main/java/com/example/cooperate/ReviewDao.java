@@ -14,11 +14,12 @@ public class ReviewDao extends DataAccessObject<Review> {
     private static final String GET_ONE = "SELECT * " +
             "FROM Reviews WHERE review_id=?";
 
-    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, username, course_name, prof_name, review, course_rating, prof_rating, orig_karma, hyperlink)" +
-            " VALUES (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String INSERT = "INSERT INTO Reviews (user_id, course_id, prof_id, username, course_name, prof_name, review, course_rating, prof_rating, orig_karma, syllabus_link, exam_link)" +
+            " VALUES (?, ?, ?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE = "UPDATE Reviews SET net_likes = ? WHERE review_id=?";
 
+    private static final String UPDATE_LINK = "UPDATE Reviews SET syllabus_link = ?, exam_link = ? WHERE review_id=?";
     private static final String EXISTS = "SELECT *" +
             "FROM Reviews WHERE user_id =? AND course_id = ? AND prof_id = ?";
 
@@ -67,7 +68,8 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setProfRating(rs.getFloat("prof_rating"));
                 review.setNetLikes(rs.getInt("net_likes"));
                 review.setTimestamp(rs.getTimestamp("created_at"));
-                review.setHyperLink(rs.getString("hyperlink"));
+                review.setSyllabusLink(rs.getString("syllabus_link"));
+                review.setExamLink(rs.getString("exam_link"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,7 +91,8 @@ public class ReviewDao extends DataAccessObject<Review> {
             statement.setFloat(8, dto.getCourseRating());
             statement.setFloat(9, dto.getProfRating());
             statement.setFloat(10, dto.getOldKarma());
-            statement.setString(11, dto.getHyperLink());
+            statement.setString(11, dto.getSyllabusLink());
+            statement.setString(12, dto.getExamLink());
             statement.execute();
 
             int nextID = -1;
@@ -99,6 +102,19 @@ public class ReviewDao extends DataAccessObject<Review> {
             dto.setId(nextID);
             return dto;
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateHyperlink(Review dto)
+    {
+        try (PreparedStatement statement = this.connection.prepareStatement(UPDATE_LINK);) {
+            statement.setString(1, dto.getSyllabusLink());
+            statement.setString(2, dto.getExamLink());
+            statement.setInt(3, dto.getId());
+            statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -165,7 +181,8 @@ public class ReviewDao extends DataAccessObject<Review> {
                 review.setNetLikes(rs.getInt("net_likes"));
                 review.setOldKarma(rs.getFloat("orig_karma"));
                 review.setTimestamp(rs.getTimestamp("created_at"));
-                review.setHyperLink(rs.getString("hyperlink"));
+                review.setSyllabusLink(rs.getString("syllabus_link"));
+                review.setExamLink(rs.getString("exam_link"));
                 reviews.addLast(review);
             }
         } catch (SQLException e) {

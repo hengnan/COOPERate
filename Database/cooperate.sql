@@ -58,7 +58,8 @@ CREATE TABLE Reviews (
   course_rating float NOT NULL, --course rating 0 to 1 in increments of .2
   prof_rating float NOT NULL, --prof rating 0 to 1 in increments of .2
   net_likes integer NOT NULL DEFAULT 0, --net number of likes given by users
-  hyperlink varchar, --hyperlink to the google drive folder in which any attached documents for review are stored
+  syllabus_link varchar, --hyperlink to the google drive folder in which the attached syllabus for review is stored
+  exam_link varchar, --hyperlink to the google drive folder in which the attached exams for review is stored
   created_at timestamp NOT NULL DEFAULT NOW(),
 
   PRIMARY KEY(review_id),

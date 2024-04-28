@@ -6,6 +6,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,8 +18,8 @@ import java.util.Map;
 @SpringBootApplication
 @RestController
 public class CooperateApplication {
-
-	DatabaseConnectionManager dcm = new DatabaseConnectionManager("db", "cooperate", "postgres", "password");
+	// host.docker.internal
+	DatabaseConnectionManager dcm = new DatabaseConnectionManager("database", "cooperate", "postgres", "password");
 
 	@CrossOrigin
 	@GetMapping("/Users/username/{username}")
@@ -295,13 +299,7 @@ public class CooperateApplication {
 		ObjectMapper objectMapper = new ObjectMapper();
 		
 		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
-		/*
-		// String csvFile = "C:\\Users\\blank\\Downloads\\Word_Filter - Sheet1.csv";
-		String csvFile = "COOPERate\\Database\\Word_Filter - Sheet1.csv";
-		ProfanityFilter filter = ProfanityFilter.loadBadWordsFromFile(csvFile);
-		
-		String censoredReview = filter.filterProfanity(inputMap.get("review"));
-		*/
+
 		int maxDescriptionLength =  1000;
 		if (inputMap.get("review").length() > maxDescriptionLength){return -6;}
 
@@ -323,7 +321,8 @@ public class CooperateApplication {
 					//censoredReview,
 					Integer.parseInt(inputMap.get("course_rating")),
 					Integer.parseInt(inputMap.get("prof_rating")),
-					inputMap.get("hyperlink"), connection);
+					inputMap.get("syllabus_link"),
+					inputMap.get("exam_link"), connection);
 		}
 		catch (SQLException var8) {
 			var8.printStackTrace();
@@ -375,11 +374,43 @@ public class CooperateApplication {
 		return err_code;
 	}
 
+	@CrossOrigin
+	@PostMapping("/updateReview")
+	public void updateReview(@RequestBody String json) throws JsonProcessingException
+	{
+		Connection connection = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		Map<String, String> inputMap = objectMapper.readValue(json, Map.class);
+		try {
+			connection = dcm.getConnection();
+
+			int review_id = Integer.parseInt(inputMap.get("review_id"));
+			ReviewDao reviewDao = new ReviewDao(connection);
+			Review review = reviewDao.findById(review_id);
+			review.setSyllabusLink(inputMap.get("syllabus_link"));
+			review.setExamLink(inputMap.get("exam_link"));
+
+			reviewDao.updateHyperlink(review);
+		}
+
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (connection != null)
+			{
+				try {connection.close();}
+
+				catch (SQLException e) {}
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(CooperateApplication.class, args);
-		String currentDirectory = System.getProperty("user.dir");
-		System.out.println("Working directory: " + currentDirectory);
+
+
 	}
 
 }

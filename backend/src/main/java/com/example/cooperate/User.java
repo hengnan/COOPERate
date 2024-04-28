@@ -148,7 +148,7 @@ public class User implements DataTransferObject{
 
 
     public int makeReview(int course_id, int prof_id, String course_name, String prof_name, String review_des,
-                          int course_rating, int prof_rating, String hyperlink, Connection connection)
+                          int course_rating, int prof_rating, String syllabus_link, String exam_link, Connection connection)
     {
         ReviewDao reviewDao = new ReviewDao(connection);
         boolean reviewed = reviewDao.exists(this.id, course_id, prof_id);
@@ -156,7 +156,7 @@ public class User implements DataTransferObject{
         if (reviewed) {return -1;}
 
         Review review = new Review(this.id, course_id, prof_id, this.userName, course_name, prof_name,
-                course_rating, prof_rating, this.karma, review_des, hyperlink);
+                course_rating, prof_rating, this.karma, review_des, syllabus_link, exam_link);
 
         review = reviewDao.create(review);
 

@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 const ReviewsPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('Professors');
-  const [sortOption, setSortOption] = useState('time-ascending');
+  const [sortOption, setSortOption] = useState('time-descending');
   const [reviews, setReviews] = useState([]);
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -480,10 +480,20 @@ return (
                 <span className={`dislike-icon ${review.isDisliked ? 'highlighted' : ''}`}><i className="fas fa-thumbs-down"></i></span>
               </button>
               </div>
+              {review.syllabusLink &&
+                <div className="review-link">
+                  <a href={review.syllabusLink} target="_blank" rel="noopener noreferrer">Syllabus</a>
+                </div>
+              }
+              {review.examLink &&
+                <div className="review-link">
+                  <a href={review.examLink} target="_blank" rel="noopener noreferrer">Past Exams</a>
+                </div>
+              }
           </div>
         </div>
       ))}
-      <div ref={endOfPageRef} />
+      <div ref={endOfPageRef} className="loading-sentinel"></div>
     </div>
   </div>
 );

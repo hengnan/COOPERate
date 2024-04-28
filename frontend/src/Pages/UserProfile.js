@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const UserProfilePage = () => {
   const [userDetails, setUserDetails] = useState({ username: '', karma: '', dateJoined: '', user_id: ''});
   const [reviews, setReviews] = useState([]);
-  const [sortOption, setSortOption] = useState('time-ascending');
+  const [sortOption, setSortOption] = useState('time-descending');
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [endFeed, setFeed] = useState(false);
@@ -306,12 +306,60 @@ const UserProfilePage = () => {
       const response = await fetch(endpoint, {
         method: 'DELETE',
       });
+
       if (!response.ok) throw new Error('Network response was not ok.');
-      window.location.reload();
+
     } catch (error) {
       console.error('Error performing deletereview action:', error);
+      return;
     }
+
+    const reviewIndex = reviews.findIndex(r => r.id === review_id);
+
+    const review = reviews[reviewIndex];
+
+    if (review.syllabusLink) {
+      const file_id = review.syllabusLink.split("/")[5];
+
+      endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+  
+      try {
+        const response = await fetch(endpoint, 
+          {
+            method: 'DELETE'
+          });
+          if (!response.ok) throw new Error('Network response was not ok.');
+  
+      }
+  
+      catch (error) {
+        console.error('Error performing deletereview action:', error);
+        return;
+      }
     }
+
+      if (review.examLink) {
+        const file_id = review.examLink.split("/")[5];
+  
+        endpoint = 'http://localhost:8000/deleteFile/' + file_id;
+    
+        try {
+          const response = await fetch(endpoint, 
+            {
+              method: 'DELETE'
+            });
+            if (!response.ok) throw new Error('Network response was not ok.');
+    
+        }
+    
+        catch (error) {
+          console.error('Error performing deletereview action:', error);
+          return;
+        }
+
+    }
+    setReviews(reviews.filter(review => review.id !== review_id));
+  }
   
 
 
@@ -415,6 +463,18 @@ const UserProfilePage = () => {
                 <button className="delete-button" onClick={() => handleDeleteReview(review.id)}>Delete</button>
               )}
               </div>
+
+              {review.syllabusLink &&
+                <div className="review-link">
+                  <a href={review.syllabusLink} target="_blank" rel="noopener noreferrer">Syllabus</a>
+                </div>
+              }
+              {review.examLink &&
+                <div className="review-link">
+                  <a href={review.examLink} target="_blank" rel="noopener noreferrer">Past Exams</a>
+                </div>
+              }
+
           </div>
         </div>
       ))}
