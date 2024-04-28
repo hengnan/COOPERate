@@ -354,3 +354,5 @@ const ReviewForm = () => {
         </div>
     );
 };
+
+export default ReviewForm;
